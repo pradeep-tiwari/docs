@@ -52,3 +52,4 @@
   * [Containers](containers.md)
   * [CORS](cors.md)
   * [Console](console.md)
+  * [Auth](auth.md)
