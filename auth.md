@@ -21,8 +21,12 @@ To understand more about same origin, please refer to the awesome docs maintaine
 
 **How is the token stored on client?**
 
-After successful login, client receives the token which it stores in an **HTTP cookie** on the browser side. As because browsers automatically send the cookies on subsequent requests to the API server, a **session** is maintained between the client and server.
+After successful login, the server responds with `Set-Cookie` header which then client stores in an **HTTP cookie** on the browser side. As because browsers automatically send the cookies on subsequent requests to the API server, a **session** is maintained between the client and server.
 
 **How is the token stored on server?**
 
-API server stores the token on a shared database for persistence. For example, it can be MySQL, Redis, MongoDB or any such database for persistence.
+API server stores the token on a shared database for persistence. For example, it can be MySQL, Redis, MongoDB or any such database for persistence. In case of PHP application, this persistence by default is the server side session file.
+
+**Why is it called session cookie?**
+
+Because on successful login, server responds with the newly created session id in `Set-Cookie` header. This session id is also called the ``session token``.
