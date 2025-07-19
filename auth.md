@@ -202,6 +202,263 @@ Represents an authenticated user.
 
 ## 4. Authentication Flow
 
+---
+
+## API Authentication (Bearer Token)
+
+### 1. Introduction & Use Cases
+
+API authentication in Lightpack is designed for stateless, secure, and scalable access to your application's resources. It is ideal for:
+- RESTful APIs
+- Mobile apps
+- Single-page applications (SPAs)
+- Third-party integrations
+- Microservices
+
+Lightpack uses Bearer tokens (RFC 6750) for API authentication, ensuring each request can be independently verified without relying on sessions or cookies.
+
+---
+
+### 2. Core Concepts
+
+- **Bearer Token:** A cryptographically strong, opaque string provided to a client after successful authentication. Sent in the `Authorization: Bearer <token>` HTTP header.
+- **AccessToken Model:** Represents API tokens in the database, tracks abilities (scopes), expiry, and usage.
+- **BearerAuthenticator:** Authenticator that validates incoming tokens and resolves the associated user.
+- **Abilities/Scopes:** Fine-grained permissions attached to each token (e.g., `read:posts`, `write:comments`).
+- **Statelessness:** Each API request is self-contained; no session is required.
+
+---
+
+### 3. Token Lifecycle
+
+1. **Issuance:**
+   - User authenticates (usually via username/password) and requests an API token.
+   - Server generates a secure token, stores a hash in the database, and returns the plaintext token to the client.
+2. **Usage:**
+   - Client includes the token in the `Authorization` header for every API request.
+   - Server verifies the token, checks expiry and abilities, and authenticates the user.
+3. **Revocation/Expiry:**
+   - Tokens can be revoked by deleting them from the database or setting an expiry date.
+   - Expired or revoked tokens are rejected.
+
+---
+
+### 4. BearerAuthenticator Deep Dive
+
+**Location:** `Lightpack\Auth\Authenticators\BearerAuthenticator`
+
+- Extracts the Bearer token from the request header.
+- Hashes the token using SHA-256 for secure comparison.
+- Looks up the token in the `access_tokens` table.
+- Checks if the token is expired (`expires_at`).
+- Updates the `last_used_at` timestamp for analytics and security.
+- Loads the associated user (`AuthUser`), attaches the token as `currentAccessToken`.
+- Returns the user object or `null` if authentication fails.
+
+**Sample Flow:**
+```php
+$user = auth()->viaToken();
+if ($user && $user->tokenCan('read:posts')) {
+    // Access granted
+}
+```
+
+---
+
+### 5. AccessToken Model & Abilities
+
+**Location:** `Lightpack\Auth\Models\AccessToken`
+
+- **Fields:**
+  - `user_id`: Foreign key to the user
+  - `token`: SHA-256 hash of the plaintext token
+  - `abilities`: JSON array (e.g., `["*"]`, `["read:posts"]`)
+  - `expires_at`: Optional expiry timestamp
+  - `last_used_at`: Timestamp of last usage
+- **Methods:**
+  - `isExpired()`: Checks if the token is expired
+  - `can($ability)`: Checks if the token grants a specific ability
+  - `user()`: Returns the associated user
+
+**Abilities/Scopes:**
+- Use `*` for full access, or specify granular abilities (recommended for security).
+- Example: `['read:posts', 'write:comments']`
+
+---
+
+### 6. Issuing Tokens (How to Create)
+
+Tokens are typically issued after a user logs in via a form or API endpoint.
+
+**Example Controller Method:**
+```php
+public function issueToken()
+{
+    $user = auth()->attempt(); // Authenticates via form credentials
+    if (!$user) {
+        return response()->json(['error' => 'Invalid credentials'], 401);
+    }
+
+    // Create a token with specific abilities and optional expiry
+    $token = $user->createToken('My API Token', ['read:posts', 'write:comments'], '+1 month');
+
+    // Return the plaintext token (show only once!)
+    return response()->json([
+        'access_token' => $token->plainTextToken,
+        'token_type' => 'Bearer',
+        'expires_at' => $token->expires_at,
+        'abilities' => json_decode($token->abilities),
+    ]);
+}
+```
+
+**Important:**
+- The plaintext token is only shown once. Store it securely on the client.
+- Only the hash is stored in the database.
+
+---
+
+### 7. Using Tokens (How to Authenticate)
+
+Clients must include the token in the `Authorization` header:
+
+```
+Authorization: Bearer <your_token_here>
+```
+
+**Example API Request (cURL):**
+```
+curl -H "Authorization: Bearer eyJ0eXAiOiJK..." https://api.example.com/posts
+```
+
+**In Controller:**
+```php
+$user = auth()->viaToken();
+if (!$user) {
+    return response()->json(['error' => 'Unauthorized'], 401);
+}
+
+if (!$user->tokenCan('read:posts')) {
+    return response()->json(['error' => 'Forbidden'], 403);
+}
+// Proceed with request
+```
+
+---
+
+### 8. Token Revocation & Expiry
+
+- **Revocation:**
+  - Call `$user->deleteTokens($tokenId)` to delete a specific token.
+  - Call `$user->deleteTokens()` to revoke all tokens for a user.
+- **Expiry:**
+  - Set `expires_at` when creating the token.
+  - `BearerAuthenticator` rejects expired tokens automatically.
+- **Rotation:**
+  - Encourage clients to rotate tokens periodically for security.
+
+---
+
+### 9. Security Considerations
+
+- **HTTPS Only:** Never transmit tokens over HTTP. Always use HTTPS.
+- **Token Storage:**
+  - Mobile: Use secure storage (Keychain, Keystore).
+  - Web: Use memory or secure cookies (never localStorage for sensitive tokens).
+- **Least Privilege:**
+  - Grant only necessary abilities to each token.
+  - Avoid using `*` except for trusted internal clients.
+- **Short Expiry:**
+  - Use short-lived tokens for sensitive operations.
+- **No Token Logging:**
+  - Never log plaintext tokens.
+- **Rate Limiting:**
+  - Protect token issuance and sensitive endpoints.
+- **Token Hashing:**
+  - Only store SHA-256 hashes in the database.
+- **CORS:**
+  - Configure CORS policies to restrict API access as needed.
+
+---
+
+### 10. Extending API Auth
+
+- **Custom Abilities:**
+  - Define your own abilities/scopes and check with `$user->tokenCan('my:ability')`.
+- **Custom Token Models:**
+  - Extend `AccessToken` for extra metadata (e.g., device info, IP address).
+- **Multiple User Types:**
+  - Use multiple drivers and models for different API user classes.
+- **Custom Authenticators:**
+  - Implement and register new authenticators for alternative API auth schemes (JWT, OAuth, etc).
+
+---
+
+### 11. Real-World Patterns
+
+- **Mobile Apps:**
+  - Store tokens securely, refresh/rotate as needed.
+- **Single Page Apps (SPA):**
+  - Authenticate via API, store tokens in memory, renew on tab reload.
+- **Third-Party Integrations:**
+  - Issue tokens with limited scopes and expiry.
+  - Allow users to revoke tokens from their account settings.
+- **Microservices:**
+  - Use tokens for service-to-service authentication with limited scopes.
+
+---
+
+### 12. Troubleshooting & Best Practices
+
+- **401 Unauthorized:** Token missing, invalid, or expired.
+- **403 Forbidden:** Token does not have required ability.
+- **Token Leakage:** Rotate keys and revoke tokens immediately if exposed.
+- **Token Not Working:** Check hash, expiry, and abilities in the database.
+- **Multiple Devices:** Issue separate tokens per device for better control.
+- **Analytics:** Use `last_used_at` for monitoring and anomaly detection.
+
+---
+
+### 13. Example: Full API Token Flow
+
+**Issuing a Token:**
+```php
+// User logs in and requests a token
+$user = auth()->attempt();
+if ($user) {
+    $token = $user->createToken('Mobile App', ['read:profile'], '+7 days');
+    return response()->json(['access_token' => $token->plainTextToken]);
+}
+```
+
+**Authenticating an API Request:**
+```php
+// In your API controller
+$user = auth()->viaToken();
+if (!$user) {
+    return response()->json(['error' => 'Unauthorized'], 401);
+}
+if (!$user->tokenCan('read:profile')) {
+    return response()->json(['error' => 'Forbidden'], 403);
+}
+// Serve the protected resource
+```
+
+**Revoking a Token:**
+```php
+// User wants to logout from device
+$user->deleteTokens($tokenId); // Or delete all tokens
+```
+
+---
+
+**Summary:**
+
+Lightpack's API authentication system is robust, secure, and highly extensible. By leveraging Bearer tokens, abilities/scopes, and a clean authenticator architecture, you can build modern APIs for any client—mobile, web, or third-party—while maintaining strict security and flexibility. Always follow best practices for token management, storage, and revocation to keep your APIs safe and developer-friendly.
+
+---
+
+
 ### 4.1. Login
 
 - User submits credentials via form.

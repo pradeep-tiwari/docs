@@ -68,6 +68,7 @@
 
 * Advanced
 
+  * [Auth](auth.md)
   * [Mails](mails.md)
   * [Queue](queue.md)
   * [Schedule](schedule.md)
