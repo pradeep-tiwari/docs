@@ -1,0 +1,821 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>Lightpack Background Jobs: Complete Guide - Lightpack Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#lightpack-background-jobs-complete-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Lightpack Documentation" class="md-header__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Lightpack Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Lightpack Background Jobs: Complete Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../introduction/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../install/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../getting-started.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../authentication/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Lightpack Documentation" class="md-nav__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Lightpack Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Authentication
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Models
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Relationships
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orm-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ORM Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../..." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    None
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="lightpack-background-jobs-complete-guide">Lightpack Background Jobs: Complete Guide<a class="headerlink" href="#lightpack-background-jobs-complete-guide" title="Permanent link">&para;</a></h1>
+<p>Ideally, a time consuming job should be performed behind the scenes out of the main HTTP request context. For example, sending email to a user blocks the application untill the processing finishes and this may provide a bad experience to your application users. </p>
+<p>What if you could perform time consuming tasks, such as sending emails, in the background without blocking the actual request? </p>
+<p><strong>Welcome to background job processing.</strong></p>
+<p>While there are highly capable solutions available like <strong>RabbitMQ</strong>, <strong>ZeroMQ</strong>, <strong>ActiveMQ</strong>, <strong>RocketMQ</strong>, and many others, <code>Lightpack</code> provides background jobs processing capabilities that is super easy to use and understand. </p>
+<p>Although <code>Lightpack</code> will solve background jobs processing needs for most of the applications, it never aims to be a <strong>full-fledged</strong> message queue broker like those mentioned above.</p>
+<blockquote>
+<p><strong>Lightpack Jobs</strong> provides robust, extensible, and developer-friendly background job processing for PHP apps. Supports MySQL/MariaDB, Redis, synchronous, and null engines out of the box.</p>
+</blockquote>
+<h2 id="supported-engines">Supported Engines<a class="headerlink" href="#supported-engines" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Database:</strong> MySQL/MariaDB-backed persistent queue</li>
+<li><strong>Redis:</strong> High-performance, production-grade queue (sorted sets, atomic ops, delayed jobs)</li>
+<li><strong>Sync:</strong> Executes jobs immediately (for synchronous execution)</li>
+<li><strong>Null:</strong> Discards jobs (for tests/dev)</li>
+</ul>
+<p>View <code>config/jobs.php</code> for desired job queue related configurations.</p>
+<h2 id="jobs-table-migration-database-engine">Jobs Table Migration (Database Engine)<a class="headerlink" href="#jobs-table-migration-database-engine" title="Permanent link">&para;</a></h2>
+<p>If using the <strong>database</strong> engine, you need a <code>jobs</code> table. </p>
+<p><strong>Create the migration:</strong></p>
+<pre><code class="language-cli">php console create_table_jobs
+</code></pre>
+<p><strong>Update the migration logic:</strong></p>
+<pre><code class="language-php">return new class extends Migration
+{
+    public function up(): void
+    {
+        $this-&gt;create('jobs', function (Table $table) {
+            $table-&gt;id();
+            $table-&gt;varchar('handler', 255);
+            $table-&gt;varchar('queue', 55)-&gt;index();
+            $table-&gt;text('payload');
+            $table-&gt;varchar('status', 55)-&gt;index();
+            $table-&gt;column('attempts')-&gt;type('int');
+            $table-&gt;column('exception')-&gt;type('longtext')-&gt;nullable();
+            $table-&gt;createdAt();
+            $table-&gt;datetime('scheduled_at')-&gt;default('CURRENT_TIMESTAMP')-&gt;index();
+            $table-&gt;datetime('failed_at')-&gt;nullable();
+        });
+    }
+
+    public function down(): void
+    {
+        $this-&gt;drop('jobs');
+    }
+};
+</code></pre>
+<p><strong>Run the migration:</strong></p>
+<pre><code class="language-cli">php console migrate:up
+</code></pre>
+<hr />
+<h2 id="creating-jobs">Creating Jobs<a class="headerlink" href="#creating-jobs" title="Permanent link">&para;</a></h2>
+<p>Jobs are PHP classes extending <code>Lightpack\Jobs\Job</code> and implementing a <code>run()</code> method. </p>
+<p>To create a new job class, fire this command in your terminal from project root:</p>
+<pre><code class="language-terminal">php console create:job SendMail
+</code></pre>
+<p>This should have created a <code>SendMail.php</code> class file in <code>app/Jobs</code> folder. You can implement your job logic in the <code>run()</code> method.</p>
+<pre><code class="language-php">use Lightpack\Jobs\Job;
+
+class SendMail extends Job {
+    public function run() {
+        // Your job logic, e.g. send email using $this-&gt;payload
+    }
+}
+</code></pre>
+<h2 id="dispatching-jobs">Dispatching Jobs<a class="headerlink" href="#dispatching-jobs" title="Permanent link">&para;</a></h2>
+<p>Once you have implemented your job class, you can <strong>dispatch</strong> them by simply invoking its <code>dispatch()</code> method:</p>
+<pre><code class="language-php">(new SendMail)-&gt;dispatch();
+</code></pre>
+<p>You can optionally pass it an array as payload:</p>
+<pre><code class="language-php">$payload = [
+    'to' =&gt; 'bob@example.com',
+    'message' =&gt; 'Hello Bob'
+];
+
+(new SendMail)-&gt;dispatch($payload);
+</code></pre>
+<h2 id="advanced-job-features">Advanced Job Features<a class="headerlink" href="#advanced-job-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Queue:</strong> Set <code>$queue</code> property (default: 'default')</li>
+<li><strong>Delay:</strong> Set <code>$delay</code> property (strtotime string, e.g. '+30 seconds')</li>
+<li><strong>Attempts:</strong> Set <code>$attempts</code> property (default: 1)</li>
+<li><strong>Retry After:</strong> Set <code>$retryAfter</code> property (strtotime string, e.g. '+1 minute')</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-php">class SendMail extends Job {
+    protected $queue = 'emails';
+    protected $delay = '+1 minute';
+    protected $attempts = 3;
+    protected $retryAfter = '+10 seconds';
+}
+</code></pre>
+<h3 id="queue">Queue<a class="headerlink" href="#queue" title="Permanent link">&para;</a></h3>
+<p>You can specify a queue for a job by setting the <code>$queue</code> property:</p>
+<pre><code class="language-php">class SendMail
+{
+    protected $queue = 'emails';
+}
+</code></pre>
+<h3 id="delay">Delay<a class="headerlink" href="#delay" title="Permanent link">&para;</a></h3>
+<p>You can delay job processing by a specified amount of time by setting the <code>$delay</code> property:</p>
+<pre><code class="language-php">class SendMail
+{
+    protected $delay = '+30 seconds';
+}
+</code></pre>
+<h3 id="attempts">Attempts<a class="headerlink" href="#attempts" title="Permanent link">&para;</a></h3>
+<p>You can specify the number of attempts a job should be retried by setting the <code>$attempts</code> property:</p>
+<pre><code class="language-php">class SendMail
+{
+    protected $attempts = 3;
+}
+</code></pre>
+<h3 id="retry-after">Retry After<a class="headerlink" href="#retry-after" title="Permanent link">&para;</a></h3>
+<p>You can specify the time after which a failed job should be retried by setting the <code>$retryAfter</code> property:</p>
+<pre><code class="language-php">class SendMail
+{
+    protected $retryAfter = '+1 minute';
+}
+</code></pre>
+<h2 id="processing-jobs">Processing Jobs<a class="headerlink" href="#processing-jobs" title="Permanent link">&para;</a></h2>
+<p>Once you have dispatched your job its time to run them. Fire this command from the terminal in your project root:</p>
+<pre><code class="language-terminal">php console process:jobs
+</code></pre>
+<p>This will hang your terminal prompt and will wait for any jobs to process. If a job is processed successfully or faile, you should see a terminal message accordingly.</p>
+<h3 id="worker-options">Worker Options<a class="headerlink" href="#worker-options" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>--sleep=N</code> (default 5): Seconds to sleep between polling</li>
+<li><code>--queues=emails,default</code>: Comma-separated queue names</li>
+<li><code>--cooldown=N</code>: Max seconds to run before exiting</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-cli">php console process:jobs --sleep=2 --queues=emails,default --cooldown=600
+</code></pre>
+<h3 id="signal-handling">Signal Handling<a class="headerlink" href="#signal-handling" title="Permanent link">&para;</a></h3>
+<p>The worker supports UNIX signals for graceful shutdown and reload.</p>
+<h2 id="custom-hooks">Custom Hooks<a class="headerlink" href="#custom-hooks" title="Permanent link">&para;</a></h2>
+<p>To run custom logic after a job succeeds or fails (after all retries are exhausted), implement <code>onSuccess()</code> and/or <code>onFailure()</code> in your job class:</p>
+<pre><code class="language-php">class SendMail extends Job {
+    public function run() {
+        // ... job logic ...
+    }
+
+    public function onSuccess() {
+        // Called after successful processing
+    }
+
+    public function onFailure() {
+        // Called after all attempts fail
+    }
+}
+</code></pre>
+<p>The framework will call these methods automatically if they exist.</p>
+<h2 id="production">Production<a class="headerlink" href="#production" title="Permanent link">&para;</a></h2>
+<p>In  <strong>production</strong> environment, you should run and monitor job processing by using a process monitoring solution like <strong>supervisor</strong>.</p>
+<p>First, you will have to install <code>supervisor</code>:</p>
+<pre><code class="language-terminal">sudo apt-get install supervisor
+</code></pre>
+<p>Let us assume that your project root path is <code>/var/www/lightpack-app</code>.</p>
+<p>Create a file named <code>lightpack-worker.conf</code> in <code>/etc/supervisor/conf.d</code> directory with following contents:</p>
+<pre><code class="language-text">[program:lightshop-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/lightpack-app/console process:jobs
+autostart=true
+autorestart=true
+stopasgroup=true
+user=www-data
+numprocs=4
+redirect_stderr=true
+stdout_logfile=/var/www/lightpack-app/worker.log
+</code></pre>
+<p>Finally, fire these commands to start supervisor:</p>
+<pre><code class="language-terminal">sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl start lightshop-worker:*
+</code></pre>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.50899def.min.js"></script>
+      
+    
+  </body>
+</html>

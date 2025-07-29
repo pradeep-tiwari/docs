@@ -1,0 +1,851 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>Image Utilities - Lightpack Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#image-utilities" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Lightpack Documentation" class="md-header__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Lightpack Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Image Utilities
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../introduction/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../install/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../getting-started.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../authentication/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Lightpack Documentation" class="md-nav__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Lightpack Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Authentication
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Models
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Relationships
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orm-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ORM Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../..." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    None
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="image-utilities">Image Utilities<a class="headerlink" href="#image-utilities" title="Permanent link">&para;</a></h1>
+<p>Lightpack’s <code>Image</code> utility provides a robust, chainable API for image manipulation, supporting all common operations for avatars, thumbnails, and web graphics. It is built on PHP’s GD extension and covers resizing, cropping, filters, format conversion, and more, with strong error handling and test coverage.</p>
+<hr />
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Load from file or URL</strong> (JPEG, PNG, WebP)</li>
+<li><strong>Resize, crop, rotate, flip</strong> with aspect ratio and quality controls</li>
+<li><strong>Save</strong> to JPEG, PNG, or WebP with custom quality/compression</li>
+<li><strong>Generate avatars and thumbnails</strong> in standard sizes</li>
+<li><strong>Apply filters and effects:</strong> grayscale, brightness, contrast, blur, sharpen, colorize, sepia, invert, pixelate, emboss, edge detect, posterize</li>
+<li><strong>Watermark and text overlay</strong> support</li>
+<li><strong>Method chaining</strong> for expressive, fluent code</li>
+</ul>
+<hr />
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">use Lightpack\Utils\Image;
+
+// Load image
+$image = new Image('/path/to/photo.jpg');
+
+// Resize and save
+$image-&gt;resize(400, 300)-&gt;save('/path/to/output.jpg');
+
+// Crop, grayscale, and save as PNG
+$image = new Image('/path/to/photo.jpg');
+$image-&gt;crop(100, 100, 10, 10)
+      -&gt;grayscale()
+      -&gt;save('/path/to/cropped.png');
+</code></pre>
+<hr />
+<h2 id="loading-images">Loading Images<a class="headerlink" href="#loading-images" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Supports JPEG, PNG, WebP (file or URL)</li>
+<li>Throws if file/URL is missing or unsupported</li>
+</ul>
+<pre><code class="language-php">$image = new Image('photo.jpg');
+$image = new Image('https://example.com/pic.png');
+</code></pre>
+<hr />
+<h2 id="resizing-cropping">Resizing &amp; Cropping<a class="headerlink" href="#resizing-cropping" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// Resize (maintains aspect ratio if one dimension is zero)
+$image-&gt;resize(300, 0); // 300px wide, proportional height
+
+// Crop (x, y, width, height)
+$image-&gt;crop(100, 100, 10, 10);
+</code></pre>
+<hr />
+<h2 id="saving-format-conversion">Saving &amp; Format Conversion<a class="headerlink" href="#saving-format-conversion" title="Permanent link">&para;</a></h2>
+<p>The <code>save()</code> method writes the current image to disk, automatically selecting the format (JPEG, PNG, or WebP) based on the file extension you provide. It also lets you control quality and compression for each format.</p>
+<pre><code class="language-php">// Save as JPEG (with quality)
+$image-&gt;save('output.jpg', 90);    // 90% quality (default is 80)
+
+// Save as PNG (with compression)
+$image-&gt;save('output.png');        // Compression defaults to 7 (0 = none, 9 = max)
+$image-&gt;setDefaultPngCompression(4); // Set default for future PNG saves
+
+// Save as WebP (with quality)
+$image-&gt;save('output.webp', 80);   // 80% quality (default is 80)
+</code></pre>
+<p><strong>Format detection:</strong>
+- The format is determined by the file extension (<code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.webp</code>).
+- Throws an exception for unsupported extensions.</p>
+<p><strong>Quality &amp; Compression:</strong>
+- JPEG/WebP: Quality is 0–100 (higher = better quality, larger file).
+- PNG: Compression is 0–9 (higher = smaller file, slower save, no quality loss).
+- You can set global defaults for each format.</p>
+<p><strong>Directory checks:</strong>
+- Throws if the target directory does not exist or is not writable.
+- Does not create directories automatically.</p>
+<p><strong>Overwriting:</strong>
+- If the target file exists, it will be overwritten without warning.</p>
+<p><strong>Image object state after save:</strong>
+- After saving, the internal image resource is destroyed to free memory.
+- The <code>Image</code> object cannot be reused for further operations or additional saves.
+- <strong>To perform multiple saves or edits, reload the image or clone before saving:</strong></p>
+<pre><code class="language-php">$image = new Image('photo.jpg');
+$image-&gt;resize(200, 200)-&gt;save('small.jpg');
+
+// Need to reload or re-instantiate for further use:
+$image = new Image('photo.jpg');
+$image-&gt;resize(400, 400)-&gt;save('large.jpg');
+</code></pre>
+<blockquote>
+<p><strong>Tip:</strong> If you want to save multiple versions (e.g., different sizes or formats), clone the <code>Image</code> object before calling <code>save()</code>:</p>
+<p><code>php
+$img = new Image('photo.jpg');
+$clone = clone $img;
+$img-&gt;resize(200, 200)-&gt;save('small.jpg');
+$clone-&gt;resize(400, 400)-&gt;save('large.jpg');</code></p>
+</blockquote>
+<p><strong>Best Practices:</strong>
+- Always check that your target directory exists and is writable.
+- Use explicit file extensions to control output format.
+- Reload or clone the image for multiple operations after saving.</p>
+<blockquote>
+<p><strong>Warning:</strong> If you try to use the same <code>Image</code> object after <code>save()</code>, you will get an error because the underlying image resource has been destroyed.</p>
+</blockquote>
+<hr />
+<h2 id="quality-compression-settings">Quality &amp; Compression Settings<a class="headerlink" href="#quality-compression-settings" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">$image-&gt;setDefaultJpegQuality(85);
+$image-&gt;setDefaultWebpQuality(90);
+$image-&gt;setDefaultPngCompression(6); // 0 (none) to 9 (max)
+</code></pre>
+<hr />
+<h2 id="avatars-thumbnails">Avatars &amp; Thumbnails<a class="headerlink" href="#avatars-thumbnails" title="Permanent link">&para;</a></h2>
+<p>Lightpack’s <code>Image</code> utility provides dedicated methods for generating standardized avatar and thumbnail images—ideal for user profiles, listings, galleries, blog posts, and more. These helpers automate resizing and format selection, ensuring consistency and optimal display across your application.</p>
+<h3 id="what-are-avatars-and-thumbnails">What Are Avatars and Thumbnails?<a class="headerlink" href="#what-are-avatars-and-thumbnails" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Avatars:</strong> Square images, typically used for user profile pictures, comments, or account listings. Sizes are chosen for clarity at different UI scales.</li>
+<li><strong>Thumbnails:</strong> Rectangular or square images, optimized for previews, cards, or gallery grids. Useful for content teasers and fast-loading image lists.</li>
+</ul>
+<h3 id="standard-sizes">Standard Sizes<a class="headerlink" href="#standard-sizes" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Avatars:</strong></li>
+<li><code>small</code>: 48x48 px (comments, lists)</li>
+<li><code>medium</code>: 96x96 px (profile preview)</li>
+<li><code>large</code>: 192x192 px (profile page)</li>
+<li><strong>Thumbnails:</strong></li>
+<li><code>small</code>: 300px wide (height auto)</li>
+<li><code>medium</code>: 600px wide (height auto)</li>
+<li><code>large</code>: 1200px wide (height auto)</li>
+</ul>
+<blockquote>
+<p><strong>Note:</strong> Thumbnail height is automatically calculated to preserve the original aspect ratio.</p>
+</blockquote>
+<h3 id="generating-avatars">Generating Avatars<a class="headerlink" href="#generating-avatars" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">$image = new Image('userpic.jpg');
+$paths = $image-&gt;avatar('avatars/user123');
+// $paths['small']  =&gt; 'avatars/user123_avatar_small.webp'
+// $paths['medium'] =&gt; 'avatars/user123_avatar_medium.webp'
+// $paths['large']  =&gt; 'avatars/user123_avatar_large.webp'
+</code></pre>
+<ul>
+<li>Avatars are always saved as WebP for modern browser support and efficient storage.</li>
+<li>You can specify which sizes to generate:</li>
+</ul>
+<pre><code class="language-php">$paths = $image-&gt;avatar('avatars/user123', ['small', 'large']);
+</code></pre>
+<h3 id="generating-thumbnails">Generating Thumbnails<a class="headerlink" href="#generating-thumbnails" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">$image = new Image('photo.jpg');
+$thumbs = $image-&gt;thumbnail('thumbs/photo123');
+// $thumbs['small']  =&gt; 'thumbs/photo123_thumb_small.jpg'
+// $thumbs['medium'] =&gt; 'thumbs/photo123_thumb_medium.jpg'
+// $thumbs['large']  =&gt; 'thumbs/photo123_thumb_large.jpg'
+</code></pre>
+<ul>
+<li>Thumbnails are always saved as JPEG for maximum compatibility and fast loading.</li>
+<li>You can specify which sizes to generate:</li>
+</ul>
+<pre><code class="language-php">$thumbs = $image-&gt;thumbnail('thumbs/photo123', ['medium']);
+</code></pre>
+<h3 id="file-naming-conventions">File Naming Conventions<a class="headerlink" href="#file-naming-conventions" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Avatars: <code>{base}_avatar_{size}.webp</code></li>
+<li>Thumbnails: <code>{base}_thumb_{size}.jpg</code></li>
+</ul>
+<h3 id="custom-sizes-error-handling">Custom Sizes &amp; Error Handling<a class="headerlink" href="#custom-sizes-error-handling" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Both methods accept a custom array of sizes (must match supported keys).</li>
+<li>Throws an <code>InvalidArgumentException</code> if an invalid size is given.</li>
+<li>The original image is not modified; each output is generated from a clone.</li>
+</ul>
+<h3 id="method-chaining-reuse">Method Chaining &amp; Reuse<a class="headerlink" href="#method-chaining-reuse" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Both <code>avatar()</code> and <code>thumbnail()</code> clone the image internally, so you can reuse the original <code>Image</code> object for other operations.</li>
+<li>The returned array contains the full paths to each generated image.</li>
+</ul>
+<h3 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Store avatars and thumbnails in dedicated directories for easy management.</li>
+<li>Always check that your output directories exist and are writable.</li>
+<li>Use the returned paths for referencing images in your application.</li>
+</ul>
+<blockquote>
+<p><strong>Tip:</strong> You can combine avatars, thumbnails, and other manipulations by chaining methods or by working with clones for batch processing.</p>
+</blockquote>
+<hr />
+<h2 id="filters-effects">Filters &amp; Effects<a class="headerlink" href="#filters-effects" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">$image-&gt;grayscale()-&gt;contrast(-20)-&gt;brightness(30)-&gt;blur(2)-&gt;sharpen();
+$image-&gt;colorize(255, 0, 0)-&gt;sepia()-&gt;invert()-&gt;pixelate(8);
+$image-&gt;emboss()-&gt;edgedetect()-&gt;posterize();
+</code></pre>
+<ul>
+<li>All filters are chainable</li>
+</ul>
+<hr />
+<h2 id="watermark-text-overlay">Watermark &amp; Text Overlay<a class="headerlink" href="#watermark-text-overlay" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// Overlay PNG watermark at (x, y), opacity 0-100
+$image-&gt;watermark('logo.png', 10, 10, 60);
+
+// Overlay text (x, y, size, color, font)
+$image-&gt;text('Sample', 20, 40, 16, '#ff0000', '/path/to/font.ttf');
+</code></pre>
+<hr />
+<h2 id="rotating-flipping">Rotating &amp; Flipping<a class="headerlink" href="#rotating-flipping" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">$image-&gt;rotate(90); // Degrees, counter-clockwise
+$image-&gt;flip('vertical'); // or 'horizontal'
+</code></pre>
+<hr />
+<h2 id="error-handling-edge-cases">Error Handling &amp; Edge Cases<a class="headerlink" href="#error-handling-edge-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Throws exceptions for missing files, unsupported formats, invalid sizes, or failed operations</li>
+<li>All operations require GD extension</li>
+<li>Output image is destroyed after save (reload to reuse)</li>
+<li>Method chaining is supported for all mutators</li>
+</ul>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.50899def.min.js"></script>
+      
+    
+  </body>
+</html>

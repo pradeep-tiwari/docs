@@ -1,0 +1,1005 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>Query Builder - Lightpack Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#query-builder" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Lightpack Documentation" class="md-header__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Lightpack Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Query Builder
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../introduction/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../install/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../getting-started.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../authentication/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Lightpack Documentation" class="md-nav__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Lightpack Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Authentication
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Models
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Relationships
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orm-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ORM Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../..." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    None
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="query-builder">Query Builder<a class="headerlink" href="#query-builder" title="Permanent link">&para;</a></h1>
+<p>While you can definitely write raw SQL queries, <strong>Lightpack</strong> does come with a fluent query builder that helps you build SQL queries programatically.</p>
+<p>It also helps you protect against SQL injection attacks by properly binding query parameters.</p>
+<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
+<p>Call the <code>table()</code> method to get an instance of the query builder for the database connection.</p>
+<p>For example, this will create a query builder object for <code>products</code> table. </p>
+<pre><code class="language-php">$products = db()-&gt;table('products');
+</code></pre>
+<p>Now you can start building and executing queries as documented below.</p>
+<h2 id="fetch-all">Fetch all<a class="headerlink" href="#fetch-all" title="Permanent link">&para;</a></h2>
+<p>Call the <code>all()</code> method to retrieve all the rows in a table.</p>
+<pre><code class="language-php">// SELECT * FROM products
+$products-&gt;all();
+</code></pre>
+<h2 id="fetch-one">Fetch one<a class="headerlink" href="#fetch-one" title="Permanent link">&para;</a></h2>
+<p>To retrieve only a single record, call <code>one()</code> method instead.</p></p>
+<pre><code class="language-php">// SELECT * FROM products LIMIT 1
+$products-&gt;one();
+</code></pre>
+<h2 id="fetch-column">Fetch column<a class="headerlink" href="#fetch-column" title="Permanent link">&para;</a></h2>
+<p>To retrieve a specific column value from a record:</p>
+<pre><code class="language-php">// SELECT name FROM products LIMIT 1
+$products-&gt;column('name');
+</code></pre>
+<h2 id="select">Select<a class="headerlink" href="#select" title="Permanent link">&para;</a></h2>
+<p>You can specify table columns you need.</p>
+<pre><code class="language-php">// SELECT id, name FROM products
+$products-&gt;select('id', 'name')-&gt;all();
+</code></pre>
+<pre><code class="language-php">// SELECT id AS product_id, name FROM products
+$products-&gt;select('id AS product_id', 'name')-&gt;all();
+</code></pre>
+<pre><code class="language-php">// SELECT count(*) as total_products FROM products
+$products-&gt;select('count(*) AS total_products')-&gt;all();
+</code></pre>
+<h2 id="alias">Alias<a class="headerlink" href="#alias" title="Permanent link">&para;</a></h2>
+<p>You can alias a table name using <code>alias()</code> method.</p>
+<pre><code class="language-php">// SELECT * FROM products AS p
+$products-&gt;alias('p')-&gt;all();
+</code></pre>
+<h2 id="distinct">Distinct<a class="headerlink" href="#distinct" title="Permanent link">&para;</a></h2>
+<p>You can select distinct rows too.</p>
+<pre><code class="language-php">// SELECT DISTINCT name FROM products
+$products-&gt;select('name')-&gt;distinct()-&gt;all();
+</code></pre>
+<h2 id="where">Where<a class="headerlink" href="#where" title="Permanent link">&para;</a></h2>
+<p>You can narrow result set using where clauses.</p>
+<pre><code class="language-php">// SELECT * FROM products WHERE id = ?
+$products-&gt;where('id', '=', 2)-&gt;all();
+
+// SELECT * FROM products WHERE id &gt; ?
+$products-&gt;where('id', '&gt;', 2)-&gt;all();
+
+// SELECT * FROM products WHERE id &gt; ? AND color = ?
+$products-&gt;where('id', '&gt;', 2)-&gt;where('color', '=', '#000')-&gt;all();
+
+// SELECT * FROM products WHERE id &gt; ? OR color = ?
+$products-&gt;where('id', '&gt;', 2)-&gt;orWhere('color', '=', '#000')-&gt;all();
+</code></pre>
+<h3 id="where-in">Where in<a class="headerlink" href="#where-in" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><strong>Note:</strong> The SQL generated uses parentheses: <code>IN (?, ?, ?)</code>. If you pass an empty array to <code>whereIn</code>, the condition will always be false. If you pass an empty array to <code>whereNotIn</code>, the condition will always be true. You can also pass a closure for subqueries.</p>
+</blockquote>
+<pre><code class="language-php">// SELECT * FROM products WHERE id IN (?, ?, ?)
+$products-&gt;whereIn('id', [23, 24, 25])-&gt;all();
+
+// SELECT * FROM products WHERE id IN (?, ?, ?) OR color IN (?, ?)
+$products-&gt;whereIn('id', [23, 24, 25])-&gt;orWhereIn('color', ['#000', '#FFF'])-&gt;all();
+
+// SELECT * FROM products WHERE id NOT IN (?, ?, ?)
+$products-&gt;whereNotIn('id', [23, 24, 25])-&gt;all();
+
+// SELECT * FROM products WHERE id NOT IN (?, ?, ?) OR color NOT IN (?, ?)
+$products-&gt;whereNotIn('id', [23, 24, 25])-&gt;orWhereNotIn('color', ['#000', '#FFF'])-&gt;all();
+
+// Subquery support:
+$products-&gt;whereIn('size', function($q) {
+    $q-&gt;from('sizes')-&gt;select('id')-&gt;where('size', '=', 'XL');
+})-&gt;all();
+</code></pre>
+<h3 id="where-null">Where null<a class="headerlink" href="#where-null" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">// SELECT * FROM products WHERE owner IS NULL
+$products-&gt;whereNull('owner')-&gt;all();
+
+// SELECT * FROM products WHERE owner IS NOT NULL
+$products-&gt;whereNotNull('owner')-&gt;all();
+
+// SELECT * FROM products WHERE owner IS NULL AND weight IS NULL
+$products-&gt;whereNull('owner')-&gt;whereNull('weight')-&gt;all();
+
+// SELECT * FROM products WHERE owner IS NULL OR weight IS NULL
+$products-&gt;whereNull('owner')-&gt;orWhereNull('weight')-&gt;all();
+
+// SELECT * FROM products WHERE owner IS NULL OR weight IS NOT NULL
+$products-&gt;whereNull('owner')-&gt;orWhereNotNull('weight')-&gt;all();
+</code></pre>
+<h3 id="where-between">Where between<a class="headerlink" href="#where-between" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><strong>Note:</strong> You must provide exactly two values for the between clause, e.g. <code>[min, max]</code>.</p>
+</blockquote>
+<pre><code class="language-php">// SELECT * FROM products WHERE price BETWEEN ? AND ?
+$products-&gt;whereBetween('price', [10, 20]);
+</code></pre>
+<pre><code class="language-php">// SELECT * FROM products WHERE price NOT BETWEEN ? AND ?
+$products-&gt;whereNotBetween('price', [10, 20]);
+</code></pre>
+<pre><code class="language-php">// SELECT * FROM products WHERE price BETWEEN ? AND ? OR size BETWEEN ? AND ?
+$products-&gt;whereBetween('price', [10, 20])-&gt;orWhereBetween('size', ['M', 'L']);
+</code></pre>
+<pre><code class="language-php">// SELECT * FROM products WHERE price NOT BETWEEN ? AND ? OR size NOT BETWEEN ? AND ?
+$products-&gt;whereNotBetween('price', [10, 20])-&gt;orWhereNotBetween('size', ['M', 'L']);
+</code></pre>
+<h3 id="logical-grouping">Logical Grouping<a class="headerlink" href="#logical-grouping" title="Permanent link">&para;</a></h3>
+<p>You can group <code>where</code> conditions logically by passing a callback. This callback will recieve an instance of query builder.</p>
+<pre><code class="language-php">// SELECT * FROM products WHERE (color = ? OR size = ?)
+$products-&gt;where(function($q) {
+    $q-&gt;where('color', '=', '#000')-&gt;orWhere('size', '=', 'XL');
+})-&gt;all();
+</code></pre>
+<pre><code class="language-php">// SELECT * FROM products WHERE id = ? AND (color = ? OR color = ?)
+$products-&gt;where('id', '=', 1)-&gt;where(function($q) {
+    $q-&gt;where('color', '=', '#000')-&gt;orWhere('color', '=', '#FFF');
+})-&gt;all();
+</code></pre>
+<h3 id="subqueries">Subqueries<a class="headerlink" href="#subqueries" title="Permanent link">&para;</a></h3>
+<p>You can specify subqueries as callback functions in <code>where</code> clauses.</p>
+<pre><code class="language-php">// SELECT * FROM products WHERE size IN (SELECT id FROM sizes WHERE size = ?)
+$products-&gt;whereIn('size', function($q) {
+    $q-&gt;from('sizes')-&gt;select('id')-&gt;where('size', '=', 'XL');
+})-&gt;all();
+</code></pre>
+<h3 id="where-exists">Where exists<a class="headerlink" href="#where-exists" title="Permanent link">&para;</a></h3>
+<p>To specify <code>WHERE EXISTS</code> subquery, use <code>whereExists()</code> method.</p>
+<pre><code class="language-php">// SELECT * FROM products WHERE EXISTS (SELECT id FROM sizes WHERE size = ?)';
+$products-&gt;whereExists(function($q) {
+    $q-&gt;from('sizes')-&gt;select('id')-&gt;where('size', '=', 'XL');
+});
+</code></pre>
+<p>To specify <code>WHERE NOT EXISTS</code> subquery, use <code>whereNotExists()</code> method.</p>
+<pre><code class="language-php">// SELECT * FROM products WHERE NOT EXISTS (SELECT id FROM sizes WHERE size = ?)';
+$products-&gt;whereNotExists(function($q) {
+    $q-&gt;from('sizes')-&gt;select('id')-&gt;where('size', '=', 'XL');
+});
+</code></pre>
+<h3 id="raw-queries">Raw queries<a class="headerlink" href="#raw-queries" title="Permanent link">&para;</a></h3>
+<p>Sometimes it's handy to write complex <code>where</code> clauses using <strong>raw</strong> query strings. For such cases, use <code>whereRaw()</code> and <code>orWhereRaw()</code> methods.</p>
+<pre><code class="language-php">// SELECT * FROM products WHERE color = '#000' AND size = 'XL';
+$products-&gt;whereRaw(&quot;color = '#000' AND size = 'XL'&quot;);
+</code></pre>
+<p>To protect <strong>raw</strong> where queries against SQL injection attacks, you can pass an array of parameters as the second argument.</p>
+<pre><code class="language-php">// SELECT * FROM products WHERE color = ? AND size = ?';
+$products-&gt;whereRaw('color = ? AND size = ?', ['#000', 'XL']);
+</code></pre>
+<pre><code class="language-php">// SELECT * FROM products WHERE color = ? OR status = 'active'&quot;;
+$products-&gt;where('color', '=', '#000')-&gt;orWhereRaw(&quot;status = 'active'&quot;);
+</code></pre>
+<h2 id="order-by">Order By<a class="headerlink" href="#order-by" title="Permanent link">&para;</a></h2>
+<p>You can specify order of result set.</p>
+<pre><code class="language-php">// SELECT id, name FROM products ORDER BY id ASC
+$products-&gt;select('id', 'name')-&gt;orderBy('id')-&gt;all();
+
+// SELECT id, name FROM products ORDER BY id DESC
+$products-&gt;select('id', 'name')-&gt;orderBy('id', 'DESC')-&gt;all();
+
+// SELECT id, name FROM products ORDER BY name DESC, id DESC
+$products-&gt;select('id', 'name')-&gt;orderBy('name', 'DESC')-&gt;orderBy('id', 'DESC')-&gt;all();
+</code></pre>
+<h2 id="group-by">Group By<a class="headerlink" href="#group-by" title="Permanent link">&para;</a></h2>
+<p>You can group rows together.</p>
+<pre><code class="language-php">// SELECT * FROM products GROUP BY color
+$products-&gt;groupBy('color')-&gt;all();
+</code></pre>
+<pre><code class="language-php">// SELECT * FROM products GROUP BY color, size
+$products-&gt;groupBy('color', 'size')-&gt;all();
+</code></pre>
+<h2 id="limit">Limit<a class="headerlink" href="#limit" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// SELECT * FROM products LIMIT 10
+$products-&gt;limit(10)-&gt;all();
+</code></pre>
+<h2 id="offset">Offset<a class="headerlink" href="#offset" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// SELECT * FROM products LIMIT 10 OFFSET 2
+$products-&gt;limit(10)-&gt;offset(2)-&gt;all();
+</code></pre>
+<h2 id="paginate">Paginate<a class="headerlink" href="#paginate" title="Permanent link">&para;</a></h2>
+<p>Use <code>paginate()</code> method to fetch the records page wise. </p>
+<p>So if the request URL is <code>http://domain.com?page=3</code>,</p>
+<pre><code class="language-php">// SELECT * FROM products LIMIT 10 OFFSET 20
+$rows = $products-&gt;paginate(10);
+</code></pre>
+<p>By default it will try to look for <code>page</code> query parameter from the URL string. But, you can also pass the current page value manually as second parameter. For example, following query will paginate the result with <code>10</code> results for <code>3rd</code> page.</p>
+<pre><code class="language-php">// SELECT * FROM products LIMIT 10 OFFSET 20
+$rows = $products-&gt;paginate(10, 3);
+</code></pre>
+<p>Now you can iterate the result as an array.</p>
+<pre><code class="language-php">foreach($rows as $product) {
+    $product-&gt;name;
+    $product-&gt;color;
+}
+</code></pre>
+<h2 id="count">Count<a class="headerlink" href="#count" title="Permanent link">&para;</a></h2>
+<p>This methods returns the total number of rows in the table.</p>
+<pre><code class="language-php">// SELECT count(*) AS num FROM products
+$products-&gt;count();
+
+// SELECT count(* AS num FROM products WHERE price &gt; 200
+$products-&gt;where('price', '&gt;', 200)-&gt;count();
+</code></pre>
+<h2 id="joins">Joins<a class="headerlink" href="#joins" title="Permanent link">&para;</a></h2>
+<p>You can also join multiple tables.</p>
+<pre><code class="language-php">// SELECT * FROM products INNER JOIN options ON products.id = options.product_id
+$products-&gt;join('options', 'products.id', 'options.product_id')-&gt;all();
+
+// SELECT * FROM products LEFT JOIN options ON products.id = options.product_id
+$products-&gt;leftJoin('options', 'products.id', 'options.product_id')-&gt;all();
+
+// SELECT * FROM products RIGHT JOIN options ON products.id = options.product_id
+$products-&gt;rightJoin('options', 'products.id', 'options.product_id')-&gt;all();
+
+// SELECT products.*, options.name AS oname FROM products INNER JOIN options ON products.id = options.product_id
+$products-&gt;select('products.*', 'options.name AS oname')-&gt;join('options', 'products.id', 'options.product_id')-&gt;all();
+</code></pre>
+<h2 id="insert">Insert<a class="headerlink" href="#insert" title="Permanent link">&para;</a></h2>
+<p>Use <code>insert()</code> method to insert a new record. The method returns the result of the query execution (not the inserted ID).</p>
+<pre><code class="language-php">// INSERT INTO products (name, color) VALUES (?, ?)
+$products-&gt;insert([
+    'name' =&gt; 'Product 4',
+    'color' =&gt; '#CCC',
+]);
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong> To get the last inserted auto-incremented ID, use the <code>lastInsertId()</code> method after insert.</p>
+</blockquote>
+<h3 id="get-last-inserted-id">Get Last Inserted ID<a class="headerlink" href="#get-last-inserted-id" title="Permanent link">&para;</a></h3>
+<p>After performing an insert, you can retrieve the last auto-incremented primary key value using the <code>lastInsertId()</code> method. This is useful for working with records that use auto-incrementing IDs.</p>
+<pre><code class="language-php">$products-&gt;insert([
+    'name' =&gt; 'Product 4',
+    'color' =&gt; '#CCC',
+]);
+
+$lastId = $products-&gt;lastInsertId(); // Gets the last inserted ID
+</code></pre>
+<h3 id="bulk-insert">Bulk Insert<a class="headerlink" href="#bulk-insert" title="Permanent link">&para;</a></h3>
+<p>To insert multiple records, simply pass an array of arrays to the <code>insert()</code> method:</p>
+<pre><code class="language-php">$products-&gt;insert([
+    ['name' =&gt; 'Product 1', 'color' =&gt; '#CCC'],
+    ['name' =&gt; 'Product 2', 'color' =&gt; '#DDD'],
+    ['name' =&gt; 'Product 3', 'color' =&gt; '#EEE'],
+]);
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong> There is no <code>bulkInsert()</code> method. Use <code>insert()</code> for both single and multiple records.</p>
+</blockquote>
+<h2 id="update">Update<a class="headerlink" href="#update" title="Permanent link">&para;</a></h2>
+<p>Use <code>update()</code> method to modify an existing record.</p>
+<pre><code class="language-php">// UPDATE products SET name = ?, color = ? WHERE id = 23
+$products-&gt;where('id', '=', 23)-&gt;update([
+    'name' =&gt; 'Product 4',
+    'color' =&gt; '#CCC',
+]);
+</code></pre>
+<h2 id="delete">Delete<a class="headerlink" href="#delete" title="Permanent link">&para;</a></h2>
+<p>Use <code>delete()</code> method to delete an existing record.</p>
+<pre><code class="language-php">// DELETE FROM products WHERE id = 23
+$products-&gt;where('id', '=', 23)-&gt;delete();
+</code></pre>
+<h2 id="insert-ignore">Insert Ignore<a class="headerlink" href="#insert-ignore" title="Permanent link">&para;</a></h2>
+<p>Insert a record, ignoring errors (like duplicate keys):</p>
+<pre><code class="language-php">$products-&gt;insertIgnore([
+    'name' =&gt; 'Product 4',
+    'color' =&gt; '#CCC',
+]);
+</code></pre>
+<h2 id="upsert-insert-or-update">Upsert (Insert or Update)<a class="headerlink" href="#upsert-insert-or-update" title="Permanent link">&para;</a></h2>
+<p>Insert or update records using MySQL's ON DUPLICATE KEY UPDATE:</p>
+<pre><code class="language-php">$products-&gt;upsert(['id' =&gt; 1, 'name' =&gt; 'New Name']);
+</code></pre>
+<p>You can specify which columns to update:</p>
+<pre><code class="language-php">$products-&gt;upsert(['id' =&gt; 1, 'name' =&gt; 'New Name'], ['name']);
+</code></pre>
+<hr />
+<h2 id="tosql">toSql<a class="headerlink" href="#tosql" title="Permanent link">&para;</a></h2>
+<p>To inspect the generated <code>SQL</code> query as string, use <code>toSql()</code> method:</p>
+<pre><code class="language-php">$products-&gt;toSql(); // SELECT * FROM products
+</code></pre>
+<p>Note that when you call <code>toSql()</code>, you cannot use methods that execute the query. For example, this is wrong to do:</p>
+<pre><code class="language-php">$products-&gt;all()-&gt;toSql(); // Error
+$products-&gt;one()-&gt;toSql(); // Error
+$products-&gt;where('id', '=', 23)-&gt;delete()-&gt;toSql(); // Error
+</code></pre>
+<p>This is because those methods actually execute the <code>SQL</code> query. So calling <code>toSql()</code> will result in error.</p>
+<hr />
+<h2 id="raw-select-expressions">Raw Select Expressions<a class="headerlink" href="#raw-select-expressions" title="Permanent link">&para;</a></h2>
+<p>If you need to select expressions or use SQL functions, use <code>selectRaw()</code>:</p>
+<pre><code class="language-php">// SELECT id, SUM(score) AS total FROM products
+$products-&gt;select('id')-&gt;selectRaw('SUM(score) AS total')-&gt;groupBy('id')-&gt;all();
+</code></pre>
+<p>You can pass bindings as the second argument for safety:</p>
+<pre><code class="language-php">$products-&gt;selectRaw('SUM(score) &gt; ? AS high', [100]);
+</code></pre>
+<hr />
+<h2 id="having-clauses">HAVING Clauses<a class="headerlink" href="#having-clauses" title="Permanent link">&para;</a></h2>
+<p>You can filter groups after aggregation using <code>having()</code>, <code>orHaving()</code>, <code>havingRaw()</code>, and <code>orHavingRaw()</code>:</p>
+<pre><code class="language-php">// SELECT category, COUNT(*) FROM products GROUP BY category HAVING COUNT(*) &gt; 5
+$products-&gt;select('category')-&gt;selectRaw('COUNT(*)')-&gt;groupBy('category')-&gt;having('COUNT(*)', '&gt;', 5)-&gt;all();
+</code></pre>
+<p>For more complex conditions, use raw SQL:</p>
+<pre><code class="language-php">$products-&gt;havingRaw('SUM(score) &gt; ?', [100]);
+</code></pre>
+<hr />
+<h2 id="row-locking">Row Locking<a class="headerlink" href="#row-locking" title="Permanent link">&para;</a></h2>
+<p>You can lock rows for update using <code>forUpdate()</code>, or skip locked rows with <code>skipLocked()</code>:</p>
+<pre><code class="language-php">$products-&gt;where('stock', '&gt;', 0)-&gt;forUpdate()-&gt;all();
+$products-&gt;where('stock', '&gt;', 0)-&gt;forUpdate()-&gt;skipLocked()-&gt;all();
+</code></pre>
+<hr />
+<h2 id="full-text-search">Full-Text Search<a class="headerlink" href="#full-text-search" title="Permanent link">&para;</a></h2>
+<p>To perform full-text search on indexed columns:</p>
+<pre><code class="language-php">// WHERE MATCH(title, body) AGAINST ('foo bar' IN BOOLEAN MODE)
+$products-&gt;search('foo bar', ['title', 'body'])-&gt;all();
+</code></pre>
+<hr />
+<h2 id="boolean-shortcuts">Boolean Shortcuts<a class="headerlink" href="#boolean-shortcuts" title="Permanent link">&para;</a></h2>
+<p>You can quickly filter on boolean columns:</p>
+<pre><code class="language-php">$products-&gt;whereTrue('is_active')-&gt;all();
+$products-&gt;orWhereFalse('is_deleted')-&gt;all();
+</code></pre>
+<hr />
+<h2 id="conditional-query-building">Conditional Query Building<a class="headerlink" href="#conditional-query-building" title="Permanent link">&para;</a></h2>
+<p>Add conditions only if a value is present:</p>
+<pre><code class="language-php">$products-&gt;whereIf($userId, 'user_id', '=', $userId);
+</code></pre>
+<p>Or, run a callback if a condition is true:</p>
+<pre><code class="language-php">$products-&gt;when($isAdmin, function($q) {
+    $q-&gt;where('is_admin', true);
+});
+</code></pre>
+<hr />
+<h2 id="incrementdecrement">Increment/Decrement<a class="headerlink" href="#incrementdecrement" title="Permanent link">&para;</a></h2>
+<p>Atomically increase or decrease a column value:</p>
+<pre><code class="language-php">$products-&gt;where('id', 1)-&gt;increment('stock', 5);
+$products-&gt;where('id', 1)-&gt;decrement('stock', 2);
+</code></pre>
+<hr />
+<h2 id="chunked-processing">Chunked Processing<a class="headerlink" href="#chunked-processing" title="Permanent link">&para;</a></h2>
+<p>Process large datasets in batches:</p>
+<pre><code class="language-php">$products-&gt;chunk(100, function($chunk) {
+    foreach ($chunk as $product) {
+        // Process each product
+    }
+});
+</code></pre>
+<hr />
+<h2 id="aggregates">Aggregates<a class="headerlink" href="#aggregates" title="Permanent link">&para;</a></h2>
+<p>You can use the following methods for aggregate queries:</p>
+<pre><code class="language-php">$products-&gt;sum('price');
+$products-&gt;avg('rating');
+$products-&gt;min('created_at');
+$products-&gt;max('updated_at');
+$products-&gt;countBy('category'); // returns an array of objects with counts for each group
+</code></pre>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.50899def.min.js"></script>
+      
+    
+  </body>
+</html>

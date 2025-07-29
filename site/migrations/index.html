@@ -1,0 +1,923 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>Migrations - Lightpack Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#migrations" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Lightpack Documentation" class="md-header__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Lightpack Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Migrations
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../introduction/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../install/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../getting-started.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../authentication/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Lightpack Documentation" class="md-nav__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Lightpack Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Authentication
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Models
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Relationships
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orm-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ORM Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../..." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    None
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="migrations">Migrations<a class="headerlink" href="#migrations" title="Permanent link">&para;</a></h1>
+<p>Migrations provide version control for your database schema. Each migration is a PHP class that represents a set of database changes.</p>
+<p class="tip">Please note that only <b>MySQL/MariaDB</b> based migrations are supported.</p>
+
+<h2 id="creating-migrations">Creating Migrations<a class="headerlink" href="#creating-migrations" title="Permanent link">&para;</a></h2>
+<p>To create a new migration file, fire this command from console:</p>
+<pre><code class="language-terminal">php console create:migration create_table_products
+</code></pre>
+<p>This will create the migration file prefixed with current <strong>datetime</strong> in <code>database/migrations</code> folder. The migration class contains methods <code>up()</code> and <code>down()</code>.</p>
+<p>The <code>up()</code> method contains definition for required schema changes. Any reverse operations should go inside <code>down()</code> folder.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Called when</th>
+<th>Purpose</th>
+<th>Common contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>up()</code></td>
+<td>When you apply or run a migration</td>
+<td>Build or evolve the schema—create tables, add columns/indexes/constraints, insert seed data that must exist, rename things, etc.</td>
+<td>DDL or data-manipulating statements written in the migration DSL</td>
+</tr>
+<tr>
+<td><code>down()</code></td>
+<td>When you roll back or undo a migration</td>
+<td>Reverse whatever <code>up()</code> did so the database returns to its previous state</td>
+<td>The inverse DDL (drop tables, remove columns, delete seed rows, etc.)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>In short: <code>up()</code> is the <strong>do</strong> part of a migration; <code>down()</code> is the <strong>undo</strong>.</p></p>
+</blockquote>
+<h2 id="running-migrations">Running Migrations<a class="headerlink" href="#running-migrations" title="Permanent link">&para;</a></h2>
+<p>To run your migration files:</p>
+<pre><code class="language-terminal">php console migrate:up
+</code></pre>
+<p>This command will run the <code>up()</code> method in all the migration scripts defined inside <strong>database/migrations</strong> folder. </p>
+<p>To track the files that have been migrated, it will also create a <code>migrations</code> table in the database.</p>
+<h2 id="rollback-migrations">Rollback Migrations<a class="headerlink" href="#rollback-migrations" title="Permanent link">&para;</a></h2>
+<p>To rollback or undo all your migrations:</p>
+<pre><code class="language-terminal">php console migrate:down
+</code></pre>
+<p>This will run the <code>down()</code> method in all the migration scripts inside <strong>database/migrations</strong> folder.</p>
+<p>To rollback a limited number of migrations, provide the <code>steps</code> flag:</p>
+<pre><code class="language-terminal">php console migrate:down --steps=2
+</code></pre>
+<p>This will rollback last two <strong>batches</strong> of migrations if present.</p>
+<h2 id="defining-migrations">Defining Migrations<a class="headerlink" href="#defining-migrations" title="Permanent link">&para;</a></h2>
+<p>The following documentation details about creating/modifying tables, columns, and indexes.</p>
+<h3 id="create-table">Create Table<a class="headerlink" href="#create-table" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">public function up(): void
+{
+    $this-&gt;create('users', function(Table $table) {
+        $table-&gt;id();
+        $table-&gt;varchar('name');
+        $table-&gt;varchar('email');
+    });
+}
+
+public function down(): void
+{
+    $this-&gt;drop('users');
+}
+</code></pre>
+<h3 id="rename-table">Rename Table<a class="headerlink" href="#rename-table" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">public function up(): void
+{
+    $this-&gt;rename('users', 'customers');
+}
+
+public function down(): void
+{
+    $this-&gt;rename('customers', 'users');
+}
+</code></pre>
+<h3 id="alter-table">Alter Table<a class="headerlink" href="#alter-table" title="Permanent link">&para;</a></h3>
+<p>You may alter an existing table definition as documented below.</p>
+<h4 id="add-new-columns">Add New Columns<a class="headerlink" href="#add-new-columns" title="Permanent link">&para;</a></h4>
+<pre><code class="language-php">public function up(): void
+{
+    $this-&gt;alter('users')-&gt;add(function(Table $table) {
+        $table-&gt;varchar('password');
+        $table-&gt;timestamps();
+    });
+}
+</code></pre>
+<h4 id="modify-existing-columns">Modify Existing Columns<a class="headerlink" href="#modify-existing-columns" title="Permanent link">&para;</a></h4>
+<pre><code class="language-php">public function up(): void
+{
+    $this-&gt;alter('users')-&gt;modify(function(Table $table) {
+        $table-&gt;varchar('name', 55);
+    });
+}
+</code></pre>
+<h4 id="drop-existing-columns">Drop Existing Columns<a class="headerlink" href="#drop-existing-columns" title="Permanent link">&para;</a></h4>
+<pre><code class="language-php">public function up(): void
+{
+    $this-&gt;alter('users')-&gt;modify(function(Table $table) {
+        $table-&gt;dropColumn('password');
+    });
+}
+</code></pre>
+<h2 id="table-columns">Table Columns<a class="headerlink" href="#table-columns" title="Permanent link">&para;</a></h2>
+<p>This documentation summarizes all available column types, their configuration options, and usage patterns.</p>
+<h3 id="numeric-columns">Numeric Columns<a class="headerlink" href="#numeric-columns" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>id(string $name = 'id')</strong>: BIGINT UNSIGNED AUTO_INCREMENT primary key</li>
+<li><strong>int(string $name, int $length = 11)</strong>: INT</li>
+<li><strong>bigint(string $name)</strong>: BIGINT</li>
+<li><strong>smallint(string $name)</strong>: SMALLINT</li>
+<li><strong>tinyint(string $name)</strong>: TINYINT</li>
+<li><strong>decimal(string $name, int $precision = 10, int $scale = 2)</strong>: DECIMAL(precision, scale)</li>
+</ul>
+<h3 id="stringtext-columns">String/Text Columns<a class="headerlink" href="#stringtext-columns" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>varchar(string $name, int $length = 255)</strong>: VARCHAR(length)</li>
+<li><strong>char(string $name, int $length = 255)</strong>: CHAR(length)</li>
+<li><strong>text(string $name)</strong>: TEXT</li>
+<li><strong>tinytext(string $name)</strong>: TINYTEXT</li>
+<li><strong>mediumtext(string $name)</strong>: MEDIUMTEXT</li>
+<li><strong>longtext(string $name)</strong>: LONGTEXT</li>
+<li><strong>enum(string $name, array $values)</strong>: ENUM(values)</li>
+<li><strong>json(string $name)</strong>: JSON</li>
+</ul>
+<h3 id="datetime-columns">Date/Time Columns<a class="headerlink" href="#datetime-columns" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>date(string $name)</strong>: DATE</li>
+<li><strong>time(string $name)</strong>: TIME</li>
+<li><strong>datetime(string $name)</strong>: DATETIME</li>
+<li><strong>timestamp(string $name)</strong>: TIMESTAMP</li>
+<li><strong>year(string $name)</strong>: YEAR</li>
+<li><strong>createdAt()</strong>: DATETIME, default CURRENT_TIMESTAMP</li>
+<li><strong>updatedAt()</strong>: DATETIME, nullable, ON UPDATE CURRENT_TIMESTAMP</li>
+<li><strong>deletedAt()</strong>: DATETIME, nullable</li>
+<li><strong>timestamps()</strong>: Adds both createdAt and updatedAt</li>
+</ul>
+<h3 id="booleanbit-columns">Boolean/Bit Columns<a class="headerlink" href="#booleanbit-columns" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>boolean(string $name, bool $default = false)</strong>: TINYINT(1), default 0/1</li>
+</ul>
+<h3 id="special-columns">Special Columns<a class="headerlink" href="#special-columns" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>ipAddress(string $name = 'ip_address')</strong>: VARCHAR(45) for IPv4/IPv6</li>
+<li><strong>macAddress(string $name = 'mac_address')</strong>: VARCHAR(17)</li>
+<li><strong>morphs(string $name)</strong>: Adds <code>{name}_id</code> (BIGINT UNSIGNED) and <code>{name}_type</code> (VARCHAR(255)) for polymorphic relations</li>
+</ul>
+<hr />
+<h3 id="column-configuration-via-column-object">Column Configuration (via Column object)<a class="headerlink" href="#column-configuration-via-column-object" title="Permanent link">&para;</a></h3>
+<p>All column methods return a <code>Column</code> object, allowing further configuration:
+- <strong>type(string $type)</strong>: Set SQL type manually
+- <strong>length(int $length)</strong>: Set length for applicable types
+- <strong>default(mixed $value)</strong>: Set default value
+- <strong>nullable()</strong>: Mark column as nullable
+- <strong>attribute(string $attr)</strong>: Add SQL attribute (e.g., UNSIGNED, ZEROFILL)
+- <strong>increments()</strong>: Set AUTO_INCREMENT</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-php">$table-&gt;varchar('username', 50)-&gt;unique()-&gt;nullable();
+$table-&gt;int('age')-&gt;default(0);
+$table-&gt;decimal('balance', 12, 2)-&gt;attribute('UNSIGNED');
+</code></pre>
+<hr />
+<h2 id="table-indexes">Table Indexes<a class="headerlink" href="#table-indexes" title="Permanent link">&para;</a></h2>
+<p><strong>Supported Index Types</strong></p>
+<ul>
+<li><strong>Primary Key</strong></li>
+<li><strong>Unique Index</strong></li>
+<li><strong>Regular Index</strong></li>
+<li><strong>Fulltext Index</strong></li>
+<li><strong>Spatial Index</strong></li>
+</ul>
+<hr />
+<h3 id="primary">primary()<a class="headerlink" href="#primary" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Defines a primary key (single or composite).</li>
+<li>primary(string|array $columns)</li>
+</ul>
+<pre><code class="language-php">// single primary key
+$table-&gt;primary('id');
+
+// composite key
+$table-&gt;primary(['user_id', 'post_id']);
+</code></pre>
+<h3 id="dropprimary">dropPrimary()<a class="headerlink" href="#dropprimary" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Drops the primary key constraint (not the column).</li>
+</ul>
+<pre><code class="language-php">$table-&gt;dropPrimary();
+</code></pre>
+<h3 id="unique">unique()<a class="headerlink" href="#unique" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Adds a unique index to one or more columns.</li>
+<li><code>unique(string|array $columns, ?string $indexName = null)</code></li>
+<li>Supports custom unique index name.</li>
+</ul>
+<pre><code class="language-php">$table-&gt;unique('email');
+$table-&gt;unique(['first', 'last'], 'name_unique');
+</code></pre>
+<h3 id="dropunique">dropUnique()<a class="headerlink" href="#dropunique" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Drops a unique index by name.</li>
+<li><code>dropUnique(string $indexName)</code></li>
+</ul>
+<pre><code class="language-php">$table-&gt;dropUnique('email');
+$table-&gt;unique(['first', 'last'], 'name_unique');
+</code></pre>
+<h3 id="index">index()<a class="headerlink" href="#index" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Adds a regular (non-unique) index.</li>
+<li><code>index(string|array $columns, ?string $indexName = null)</code></li>
+<li>Supports custom index name.</li>
+</ul>
+<pre><code class="language-php">$table-&gt;index('created_at');
+$table-&gt;index(['user_id', 'status'], 'user_status_idx');
+</code></pre>
+<h3 id="dropindex">dropIndex()<a class="headerlink" href="#dropindex" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Drops a regular index by name.</li>
+<li><code>dropIndex(string $indexName)</code></li>
+</ul>
+<pre><code class="language-php">$this-&gt;dropIndex('user_status_idx');
+</code></pre>
+<h3 id="fulltext">fulltext()<a class="headerlink" href="#fulltext" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Adds a FULLTEXT index for text search.</li>
+<li><code>fulltext(string|array $columns, ?string $indexName = null)</code></li>
+<li>Supports custom full text index name.</li>
+</ul>
+<pre><code class="language-php">$table-&gt;fulltext('body');
+$table-&gt;fulltext(['title', 'body'], 'post_fulltext');
+</code></pre>
+<h3 id="dropfulltext">dropFulltext()<a class="headerlink" href="#dropfulltext" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Drops one or more FULLTEXT indexes by name.</li>
+<li><code>dropFulltext(string ...$indexName)</code></li>
+</ul>
+<pre><code class="language-php">$table-&gt;dropFulltext('post_fulltext');
+</code></pre>
+<h3 id="spatial">spatial()<a class="headerlink" href="#spatial" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Adds a SPATIAL index for GIS data.</li>
+<li><code>spatial(string|array $columns, ?string $indexName = null)</code></li>
+<li>Support passing custom spatial index name.</li>
+</ul>
+<pre><code class="language-php">$table-&gt;spatial('location', 'loc_idx');
+</code></pre>
+<h3 id="dropspatial">dropSpatial()<a class="headerlink" href="#dropspatial" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Drops a SPATIAL index by name.</li>
+<li><code>dropSpatial(string $indexName)</code></li>
+</ul>
+<pre><code class="language-php">$this-&gt;dropSpatial('loc_idx');
+</code></pre>
+<hr />
+<h2 id="foreign-keys">Foreign Keys<a class="headerlink" href="#foreign-keys" title="Permanent link">&para;</a></h2>
+<p><strong>Foreign keys</strong> enforce referential integrity between tables, ensuring that a column (or set of columns) in one table matches the primary key or unique key in another table. Foreign keys can be defined during table creation or added/removed during schema alteration. The following document details the support for working with foreign keys.</p>
+<h3 id="foreignkey">foreignKey()<a class="headerlink" href="#foreignkey" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>foreignKey(string $column)</code></li>
+<li>Defines a foreign key on the specified column.</li>
+</ul>
+<pre><code class="language-php">$table-&gt;foreignKey('user_id')
+    -&gt;references('id')
+    -&gt;on('users')
+    -&gt;onDelete('CASCADE') // CASCADE, SET NULL, RESTRICT
+    -&gt;onUpdate('CASCADE'); // CASCADE, SET NULL, RESTRICT
+</code></pre>
+<h3 id="dropforeign">dropForeign()<a class="headerlink" href="#dropforeign" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>dropForeign(string ...$constraintNames)</code></li>
+<li>Drop one or more foreign key constraints by name.</li>
+</ul>
+<pre><code class="language-php">$table-&gt;dropForeign('users_user_id_foreign');
+</code></pre>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.50899def.min.js"></script>
+      
+    
+  </body>
+</html>

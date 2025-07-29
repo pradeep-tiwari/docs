@@ -1,0 +1,967 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>Request - Lightpack Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#request" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Lightpack Documentation" class="md-header__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Lightpack Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Request
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../introduction/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../install/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../getting-started.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../authentication/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Lightpack Documentation" class="md-nav__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Lightpack Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Authentication
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Models
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Relationships
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orm-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ORM Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../..." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    None
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="request">Request<a class="headerlink" href="#request" title="Permanent link">&para;</a></h1>
+<p>The <code>Lightpack\Http\Request</code> class provides a comprehensive API for accessing and interacting with incoming HTTP requests.</p>
+<p>Lightpack automatically configures an instance of <code>Request</code> in the IoC container. You can access it anywhere in your project using the <code>request()</code> helper.</p>
+<hr />
+<h2 id="url-and-path-methods">URL and Path Methods<a class="headerlink" href="#url-and-path-methods" title="Permanent link">&para;</a></h2>
+<p>Assuming your application is installed in the <code>app</code> folder within the web root, and the request URL is <code>http://localhost/app/users/editors?status=active</code>, the following methods are available:</p>
+<pre><code class="language-php">// Returns: /app/users/editors?status=active
+request()-&gt;uri();
+
+// Returns: /app/users/editors
+request()-&gt;fullpath();
+
+// Returns: /users/editors
+request()-&gt;path();
+
+// Returns: /app
+request()-&gt;basepath();
+
+// Returns: http://localhost/app/users/editors
+request()-&gt;url();
+
+// Returns: http://localhost/app/users/editors?status=active
+request()-&gt;fullUrl();
+</code></pre>
+<h3 id="path-segments">Path Segments<a class="headerlink" href="#path-segments" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">// Returns: ['users', 'editors']
+request()-&gt;segments();
+
+// Returns: 'users'
+request()-&gt;segments(0);
+
+// Returns: 'editors'
+request()-&gt;segments(1);
+</code></pre>
+<hr />
+<h2 id="http-methods-and-verbs">HTTP Methods and Verbs<a class="headerlink" href="#http-methods-and-verbs" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// Returns the HTTP method as a string (e.g., 'GET', 'POST', etc.)
+request()-&gt;method();
+
+// Returns true if HTTP method is GET
+request()-&gt;isGet();
+
+// Returns true if HTTP method is POST
+request()-&gt;isPost();
+
+// Returns true if HTTP method is PUT
+request()-&gt;isPut();
+
+// Returns true if HTTP method is PATCH
+request()-&gt;isPatch();
+
+// Returns true if HTTP method is DELETE
+request()-&gt;isDelete();
+
+// Returns true if the HTTP method was spoofed via _method
+request()-&gt;isSpoofed();
+
+// Returns an array of all supported HTTP verbs
+request()-&gt;verbs();
+</code></pre>
+<blockquote>
+<p><strong>Note:</strong> Method spoofing allows you to use PUT, PATCH, or DELETE via a POST request with a hidden <code>_method</code> field.</p>
+</blockquote>
+<hr />
+<h2 id="input-and-query-data">Input and Query Data<a class="headerlink" href="#input-and-query-data" title="Permanent link">&para;</a></h2>
+<h3 id="merged-input">Merged Input<a class="headerlink" href="#merged-input" title="Permanent link">&para;</a></h3>
+<p>The <code>input()</code> method intelligently merges input from query string, POST data, JSON body, or parsed body depending on the HTTP method and content type.</p>
+<pre><code class="language-php">// Get a specific input value
+request()-&gt;input('key');
+
+// Get a specific input value with a default
+request()-&gt;input('key', 'default');
+
+// Get all input data as an array
+request()-&gt;input();
+</code></pre>
+<h3 id="query-string">Query String<a class="headerlink" href="#query-string" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">// Get a specific query parameter
+request()-&gt;query('status');
+
+// Get all query parameters as an array
+request()-&gt;query();
+</code></pre>
+<h3 id="raw-and-parsed-body">Raw and Parsed Body<a class="headerlink" href="#raw-and-parsed-body" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">// Get the raw request body as a string
+request()-&gt;getRawBody();
+
+// Get the parsed body (for PUT/PATCH/DELETE with form data)
+request()-&gt;getParsedBody();
+
+// Get a specific parsed body value with a default
+request()-&gt;getParsedBody('key', 'default');
+</code></pre>
+<hr />
+<h2 id="json-requests">JSON Requests<a class="headerlink" href="#json-requests" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// Returns true if the request Content-Type is application/json
+request()-&gt;isJson();
+
+// Returns true if the client expects a JSON response (Accept: application/json)
+request()-&gt;expectsJson();
+</code></pre>
+<blockquote>
+<p><strong>Deprecated:</strong> <code>json()</code> is an alias for <code>input()</code> and is deprecated. Use <code>input()</code> instead.</p>
+</blockquote>
+<hr />
+<h2 id="ajax-requests">AJAX Requests<a class="headerlink" href="#ajax-requests" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// Returns true if the request was made via AJAX (X-Requested-With: XMLHttpRequest)
+request()-&gt;isAjax();
+</code></pre>
+<hr />
+<h2 id="security-and-protocol">Security and Protocol<a class="headerlink" href="#security-and-protocol" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// Returns true if the request is over HTTPS
+request()-&gt;isSecure();
+
+// Returns the scheme (http or https)
+request()-&gt;scheme();
+
+// Returns the HTTP protocol version (e.g., 'HTTP/1.1')
+request()-&gt;protocol();
+
+// Returns the Content-Type of the request
+request()-&gt;format();
+</code></pre>
+<hr />
+<h2 id="host-and-port">Host and Port<a class="headerlink" href="#host-and-port" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// Returns the host name (without port)
+request()-&gt;host();
+
+// Returns the port number (if available)
+request()-&gt;port();
+
+// Returns the host with port (e.g., 'localhost:8080')
+request()-&gt;hostWithPort();
+</code></pre>
+<hr />
+<h2 id="headers">Headers<a class="headerlink" href="#headers" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// Get a specific header value
+request()-&gt;header('User-Agent');
+
+// Get all headers as an associative array
+request()-&gt;headers();
+
+// Check if a header exists
+request()-&gt;hasHeader('Authorization');
+
+// Get the User-Agent string
+request()-&gt;userAgent();
+
+// Get the Bearer token from the Authorization header
+request()-&gt;bearerToken();
+</code></pre>
+<hr />
+<h2 id="csrf-token">CSRF Token<a class="headerlink" href="#csrf-token" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// Get the CSRF token from header or input
+request()-&gt;csrfToken();
+</code></pre>
+<hr />
+<h2 id="referer">Referer<a class="headerlink" href="#referer" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// Get the referer URL, if present
+request()-&gt;referer();
+</code></pre>
+<hr />
+<h2 id="route-information">Route Information<a class="headerlink" href="#route-information" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// Get the matched route instance (if available)
+request()-&gt;route();
+
+// Get all route parameters as an array
+request()-&gt;params(null);
+
+// Get a specific route parameter (with optional default)
+request()-&gt;params('userId', 0);
+</code></pre>
+<hr />
+<h2 id="url-signature-validation">URL Signature Validation<a class="headerlink" href="#url-signature-validation" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// Throws an exception if the URL signature is invalid
+request()-&gt;validateUrlSignature();
+
+// Returns true if the URL signature is valid
+request()-&gt;hasValidSignature();
+
+// Returns true if the URL signature is invalid
+request()-&gt;hasInValidSignature();
+</code></pre>
+<h2 id="client-ip-address">Client IP Address<a class="headerlink" href="#client-ip-address" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">// Get the client's IP address
+request()-&gt;ip();
+</code></pre>
+<h2 id="file-uploads">File Uploads<a class="headerlink" href="#file-uploads" title="Permanent link">&para;</a></h2>
+<p>Lightpack provides a robust API for handling file uploads via the <code>request()-&gt;file()</code> and <code>request()-&gt;hasFile()</code> methods. </p>
+<p>Uploaded file are represented by the <code>UploadedFile</code> class.</p>
+<h3 id="single-file">Single File<a class="headerlink" href="#single-file" title="Permanent link">&para;</a></h3>
+<pre><code class="language-html">&lt;input name=&quot;photo&quot;&gt;
+</code></pre>
+<pre><code class="language-php">// Retrieve the uploaded file by key
+$file = request()-&gt;file('photo');
+
+// Check if a file was uploaded for the given key
+request()-&gt;hasFile('photo');
+</code></pre>
+<pre><code class="language-php">$file = request()-&gt;file('avatar');
+
+// Check if file upload failed
+if ($file-&gt;hasError()) {
+    //
+}
+</code></pre>
+<h3 id="multiple-files">Multiple Files<a class="headerlink" href="#multiple-files" title="Permanent link">&para;</a></h3>
+<pre><code class="language-html">&lt;input name=&quot;photos[]&quot; type=&quot;file&quot; multiple&gt;
+</code></pre>
+<pre><code class="language-php">$photos = request()-&gt;file('photos'); 
+
+foreach ($photos as $photo) {
+    if (!$photo-&gt;hasError()) {
+        // Handle each uploaded file
+    }
+}
+</code></pre>
+<h3 id="uploadedfile-methods">UploadedFile Methods<a class="headerlink" href="#uploadedfile-methods" title="Permanent link">&para;</a></h3>
+<p>Each <code>UploadedFile</code> instance provides:</p>
+<ul>
+<li><code>getName()</code>: Original filename</li>
+<li><code>getSize()</code>: File size in bytes</li>
+<li><code>getType()</code>: MIME type (e.g., <code>image/jpeg</code>)</li>
+<li><code>getExtension()</code>: File extension (e.g., <code>jpg</code>)</li>
+<li><code>getTmpName()</code>: Temporary path on disk</li>
+<li><code>hasError()</code>: Returns <code>true</code> if there was an upload error</li>
+<li><code>getError()</code>: Returns the error code (see PHP file upload errors)</li>
+<li><code>isEmpty()</code>: Returns <code>true</code> if file is empty</li>
+<li><code>isImage()</code>: Returns <code>true</code> if file is an image</li>
+<li><code>getDimensions()</code>: Returns <code>['width' =&gt; ..., 'height' =&gt; ...]</code> for images</li>
+<li><code>getWidth()</code>, <code>getHeight()</code>: Image dimensions (0 if not an image)</li>
+</ul>
+<h3 id="storing-uploaded-files">Storing Uploaded Files<a class="headerlink" href="#storing-uploaded-files" title="Permanent link">&para;</a></h3>
+<p>Lightpack abstracts the storage of uploaded files to utilize the configured <a href="../storage/">Storage</a> service.</p>
+<h4 id="store-in-arbitrary-location">Store in Arbitrary Location<a class="headerlink" href="#store-in-arbitrary-location" title="Permanent link">&para;</a></h4>
+<pre><code class="language-php">$path = $file-&gt;store('some/directory');
+</code></pre>
+<h4 id="store-in-public-uploads">Store in Public Uploads<a class="headerlink" href="#store-in-public-uploads" title="Permanent link">&para;</a></h4>
+<pre><code class="language-php">$path = $file-&gt;storePublic('avatars');
+</code></pre>
+<ul>
+<li>Stores in <code>uploads/public/avatars/</code> (web-accessible).</li>
+</ul>
+<h4 id="store-in-private-uploads">Store in Private Uploads<a class="headerlink" href="#store-in-private-uploads" title="Permanent link">&para;</a></h4>
+<pre><code class="language-php">$path = $file-&gt;storePrivate('documents');
+</code></pre>
+<ul>
+<li>Stores in <code>uploads/private/documents/</code> (not web-accessible by default).</li>
+</ul>
+<h4 id="storage-options">Storage Options<a class="headerlink" href="#storage-options" title="Permanent link">&para;</a></h4>
+<p>You can customize storage via the <code>$options</code> array:</p>
+<ul>
+<li><code>'name'</code>: Custom filename (string or callable)</li>
+<li><code>'unique'</code>: Generate a unique filename (bool)</li>
+<li><code>'preserve_name'</code>: Keep original name as prefix when unique (bool)</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-php">$path = $file-&gt;storePublic('avatars', [
+    'unique' =&gt; true,
+    'preserve_name' =&gt; true,
+]);
+</code></pre>
+<h3 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>request()-&gt;file('key')</code> returns <code>null</code> if no file was uploaded.</li>
+<li>For multiple files, always check <code>is_array()</code> before looping.</li>
+<li>Always check <code>hasError()</code> to avoid processing failed uploads.</li>
+<li>Use <code>storePublic</code> for files that should be accessible via URL, and <code>storePrivate</code> for protected files.</li>
+</ul>
+<hr />
+<h2 id="http-headers">HTTP Headers<a class="headerlink" href="#http-headers" title="Permanent link">&para;</a></h2>
+<p>Lightpack provides a clean API for accessing request headers through the <code>request()</code> helper.</p>
+<h3 id="retrieving-a-single-header">Retrieving a Single Header<a class="headerlink" href="#retrieving-a-single-header" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">// Get a specific header value (case-insensitive)
+$userAgent = request()-&gt;header('User-Agent');
+$auth = request()-&gt;header('Authorization');
+$custom = request()-&gt;header('X-Custom-Header', 'default-value');
+</code></pre>
+<ul>
+<li>Header names are case-insensitive and normalized internally.</li>
+<li>If the header is not present, the default value is returned (or <code>null</code> if not specified).</li>
+</ul>
+<h3 id="checking-for-a-header">Checking for a Header<a class="headerlink" href="#checking-for-a-header" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">if (request()-&gt;hasHeader('X-Requested-With')) {
+    // Handle AJAX request
+}
+</code></pre>
+<h3 id="retrieving-all-headers">Retrieving All Headers<a class="headerlink" href="#retrieving-all-headers" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">$headers = request()-&gt;headers(); // Returns an associative array of all headers
+foreach ($headers as $name =&gt; $value) {
+    // Process each header
+}
+</code></pre>
+<h3 id="common-header-patterns">Common Header Patterns<a class="headerlink" href="#common-header-patterns" title="Permanent link">&para;</a></h3>
+<h4 id="authorization-bearer-token">Authorization / Bearer Token<a class="headerlink" href="#authorization-bearer-token" title="Permanent link">&para;</a></h4>
+<pre><code class="language-php">$token = request()-&gt;bearerToken();
+if ($token) {
+    // Use the Bearer token for authentication
+}
+</code></pre>
+<h4 id="csrf-token_1">CSRF Token<a class="headerlink" href="#csrf-token_1" title="Permanent link">&para;</a></h4>
+<pre><code class="language-php">$csrf = request()-&gt;csrfToken();
+</code></pre>
+<h4 id="user-agent">User-Agent<a class="headerlink" href="#user-agent" title="Permanent link">&para;</a></h4>
+<pre><code class="language-php">$ua = request()-&gt;userAgent();
+</code></pre>
+<h4 id="forwarded-headers">Forwarded Headers<a class="headerlink" href="#forwarded-headers" title="Permanent link">&para;</a></h4>
+<p>Lightpack automatically parses common proxy headers:</p>
+<ul>
+<li><code>X-Forwarded-For</code> (client IP)</li>
+<li><code>X-Forwarded-Proto</code> (scheme)</li>
+<li><code>X-Forwarded-Host</code> (host)</li>
+<li><code>X-Forwarded-Port</code> (port)</li>
+</ul>
+<p>These are used internally by <code>request()-&gt;ip()</code>, <code>request()-&gt;scheme()</code>, etc., but you can also access them directly:</p>
+<pre><code class="language-php">$proto = request()-&gt;header('X-Forwarded-Proto');
+</code></pre>
+<h3 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h3>
+<ul>
+<li>All header methods are case-insensitive.</li>
+<li>For custom headers, always use the normalized name (e.g., <code>X-Custom-Header</code>).</li>
+</ul>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.50899def.min.js"></script>
+      
+    
+  </body>
+</html>

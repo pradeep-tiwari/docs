@@ -1,0 +1,1039 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>Lightpack Validation - Lightpack Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#lightpack-validation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Lightpack Documentation" class="md-header__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Lightpack Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Lightpack Validation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../introduction/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../install/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../getting-started.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../authentication/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Lightpack Documentation" class="md-nav__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Lightpack Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Authentication
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Models
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Relationships
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orm-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ORM Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../..." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    None
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="lightpack-validation">Lightpack Validation<a class="headerlink" href="#lightpack-validation" title="Permanent link">&para;</a></h1>
+<p>Lightpack provides robust data validation support. This can be helpful when validating form inputs or data to be stored in database.</p>
+<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<p>In your controller's method, you can typehint <code>Lightpack\Validation\Validator</code> as dependency or you can call the <code>validator()</code> helper function.</p>
+<pre><code class="language-php">$validator = validator();
+
+$validator
+    -&gt;field('username')-&gt;required()-&gt;string()-&gt;min(3)-&gt;max(50)
+    -&gt;field('email')-&gt;required()-&gt;email()
+    -&gt;field('age')-&gt;int()-&gt;between(18, 100);
+
+$validator-&gt;validate($_POST);
+
+if ($validator-&gt;fails()) {
+    $errors = $validator-&gt;getErrors();
+}
+</code></pre>
+<hr />
+<h2 id="how-validation-works">How Validation Works<a class="headerlink" href="#how-validation-works" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Define fields and rules</strong> using the fluent API.</li>
+<li><strong>Call <code>validate($input)</code></strong> to run validation.</li>
+<li><strong>Check results</strong> with <code>passes()</code>, <code>fails()</code>, <code>getErrors()</code>, or <code>getError('field')</code>.</li>
+</ol>
+<hr />
+<h2 id="sticky-forms-and-errors">Sticky Forms and Errors<a class="headerlink" href="#sticky-forms-and-errors" title="Permanent link">&para;</a></h2>
+<p>If the form validation fails for the current request, you would want to:
+- Repopulate fields with the user's previous input ("sticky" forms)
+- Show validation error messages next to each field</p>
+<p>When you call <code>validateRequest()</code> method on the <strong>validator</strong> instance, Lightpack automatically sets the current request input data and validation error messages in the active session.</p>
+<p>Lightpack provides two helpers:
+- <code>old('field')</code> — Returns the previous value for a field
+- <code>error('field')</code> — Returns the validation error message for a field</p>
+<h3 id="old">old()<a class="headerlink" href="#old" title="Permanent link">&para;</a></h3>
+<p><code>old(string $key, $default = '', bool $escape = true)</code></p>
+<p><strong>What it does:</strong>
+Returns the previously submitted value for a form field, or a default if not present.</p>
+<p><strong>When to use:</strong>
+- To repopulate form fields after a validation error, so users don’t lose their input.
+- Especially useful in large forms or when validation fails.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-php">&lt;input name=&quot;email&quot; value=&quot;&lt;?= old('email') ?&gt;&quot;&gt;
+</code></pre>
+<p>If the user submitted the form and it failed validation, their email input will be preserved.</p>
+<h3 id="error">error()<a class="headerlink" href="#error" title="Permanent link">&para;</a></h3>
+<p><code>error(string $key)</code></p>
+<p><strong>What it does:</strong>
+Returns the validation error message for a specific field, if any.</p>
+<p><strong>When to use:</strong>
+- To show users what went wrong with their input after a failed form submission.
+- Place near each form field for clear feedback.</p>
+<p><strong>Example:</strong></p>
+<pre><code class="language-php">&lt;input name=&quot;email&quot; value=&quot;&lt;?= old('email') ?&gt;&quot;&gt;
+&lt;span class=&quot;error&quot;&gt;&lt;?= error('email') ?&gt;&lt;/span&gt;
+</code></pre>
+<p>If validation fails for <code>email</code>, the error message appears next to the field.</p>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
+<p>Below is an example showing usage of above two helper functions.</p>
+<p><strong>Controller</strong></p>
+<pre><code class="language-php">public function register(Request $request)
+{
+    $validator = validator()
+        -&gt;field('username')-&gt;required()-&gt;min(3)
+        -&gt;field('email')-&gt;required()-&gt;email()
+        -&gt;field('password')-&gt;required()-&gt;min(8);
+
+    $validator-&gt;validateRequest();
+
+    if ($validator-&gt;fails()) {
+        return redirect()-&gt;back();
+    }
+
+    // ... proceed with registration
+}
+</code></pre>
+<p><strong>View</strong></p>
+<pre><code class="language-php">&lt;form method=&quot;POST&quot;&gt;
+    &lt;?= csrf_input() ?&gt;
+
+    &lt;label&gt;Username&lt;/label&gt;
+    &lt;input name=&quot;username&quot; value=&quot;&lt;?= old('username') ?&gt;&quot;&gt;
+    &lt;span class=&quot;error&quot;&gt;&lt;?= error('username') ?&gt;&lt;/span&gt;
+
+    &lt;label&gt;Email&lt;/label&gt;
+    &lt;input name=&quot;email&quot; value=&quot;&lt;?= old('email') ?&gt;&quot;&gt;
+    &lt;span class=&quot;error&quot;&gt;&lt;?= error('email') ?&gt;&lt;/span&gt;
+
+    &lt;label&gt;Password&lt;/label&gt;
+    &lt;input name=&quot;password&quot; type=&quot;password&quot;&gt;
+    &lt;span class=&quot;error&quot;&gt;&lt;?= error('password') ?&gt;&lt;/span&gt;
+
+    &lt;button type=&quot;submit&quot;&gt;Register&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+<hr />
+<h2 id="form-requests">Form Requests<a class="headerlink" href="#form-requests" title="Permanent link">&para;</a></h2>
+<p>The <code>FormRequest</code> class in Lightpack provides a powerful, expressive, and reusable way to handle HTTP request validation and authorization in your applications. It encapsulates validation logic, error handling, and request data preparation, making your controllers clean and focused.</p>
+<hr />
+<h3 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Thin Controllers:</strong> Move all validation logic to FormRequest classes.</li>
+<li><strong>Reusable Rules:</strong> Centralize and reuse request validation across controllers.</li>
+<li><strong>Automatic Validation:</strong> Requests are validated before reaching your controller logic.</li>
+<li><strong>AJAX &amp; JSON Support:</strong> Automatically returns JSON error responses for AJAX/JSON requests.</li>
+<li><strong>Custom Hooks:</strong> Easily customize data preparation and error handling with overridable methods.</li>
+<li><strong>Seamless Integration:</strong> Works with Lightpack’s DI container, session, and redirect systems.</li>
+<li><strong>Session Flash</strong>: Validation errors and current request input are automatically flashed to the session for easy display in views.</li>
+<li>Use <strong>old()</strong> and <strong>error()</strong> methods to work with sticky forms and displaying error messages.</li>
+</ul>
+<hr />
+<h3 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>Extend FormRequest:</strong> Create your own request classes by extending <code>Lightpack\Http\FormRequest</code>.</li>
+<li><strong>Define Rules:</strong> Implement the <code>rules()</code> method to return your validation rules.</li>
+<li><strong>Rule Resolution:</strong> Your <code>rules()</code> method is called via the container.</li>
+<li>You can typehint dependencies you would like to get injected by the framework.</li>
+<li><strong>Automatic Bootstrapping:</strong> Lightpack boots your FormRequest, runs validation, and handles errors or passes control to your controller.</li>
+<li>On successful validation, controller method executes further.</li>
+<li><strong>On Failure:</strong></li>
+<li><strong>AJAX/JSON:</strong> Responds with HTTP 422 and a JSON error structure.</li>
+<li><strong>Standard Request:</strong> Redirects back with errors in the session.</li>
+<li>Custom hooks (<code>beforeSend</code>, <code>beforeRedirect</code>) are available for advanced control.</li>
+</ol>
+<h3 id="example-usage">Example Usage<a class="headerlink" href="#example-usage" title="Permanent link">&para;</a></h3>
+<h4 id="1-create-a-formrequest">1. Create a FormRequest<a class="headerlink" href="#1-create-a-formrequest" title="Permanent link">&para;</a></h4>
+<pre><code class="language-php">php console create:request RegisterUserRequest
+</code></pre>
+<p>Then implement the <code>rules()</code> method. For example:</p>
+<pre><code class="language-php">namespace App\Requests;
+
+use Lightpack\Http\FormRequest;
+
+class RegisterUserRequest extends FormRequest
+{
+    protected function rules()
+    {
+         $this-&gt;validator
+            -&gt;field('name')
+            -&gt;required()
+            -&gt;max(255);
+
+         $this-&gt;validator
+            -&gt;field('email')
+            -&gt;required()
+            -&gt;email()
+            -&gt;custom(new UniqueEmailRule, UniqueEmailRule::MESSAGE);
+
+         $this-&gt;validator
+            -&gt;field('password')
+            -&gt;required()
+            -&gt;min(6)
+            -&gt;max(25);
+
+         $this-&gt;validator
+            -&gt;field('confirm_password')
+            -&gt;required()
+            -&gt;same('password');
+    }
+}
+</code></pre>
+<h4 id="2-use-in-controller">2. Use in Controller<a class="headerlink" href="#2-use-in-controller" title="Permanent link">&para;</a></h4>
+<p>Typehint the request class as dependency in your controller's method:</p>
+<pre><code class="language-php">public function register(RegisterUserRequest $request)
+{
+   // If validation passes, you reach here!
+
+    $data = $request-&gt;all();
+
+   // Proceed with user registration...
+}
+</code></pre>
+<h3 id="overridable-hooks">Overridable Hooks<a class="headerlink" href="#overridable-hooks" title="Permanent link">&para;</a></h3>
+<p>You can customize the request lifecycle by overriding these methods:</p>
+<ul>
+<li><code>protected function data()</code>: Prepare or mutate request data before validation.</li>
+<li><code>protected function beforeSend()</code>: Run logic before sending a JSON error response.</li>
+<li><code>protected function beforeRedirect()</code>: Run logic before redirecting on validation failure.</li>
+</ul>
+<p>Override any of the following in your FormRequest:</p>
+<pre><code class="language-php">protected function data()
+{
+   // Manipulate request input data before validation
+}
+
+protected function beforeSend()
+{
+   // Add custom headers or logging before JSON error response
+}
+
+protected function beforeRedirect()
+{
+   // Custom logic before redirecting on failure
+}
+</code></pre>
+<hr />
+<h2 id="available-rules">Available Rules<a class="headerlink" href="#available-rules" title="Permanent link">&para;</a></h2>
+<h3 id="string-rules">String Rules<a class="headerlink" href="#string-rules" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>required()</code> — Field must be present and not empty</li>
+<li><code>string()</code> — Must be a string</li>
+<li><code>min($n)</code> / <code>max($n)</code> — Length constraints</li>
+<li><code>length($n)</code> — Exact length</li>
+<li><code>alpha()</code> / <code>alphaNum()</code> — Only letters or letters/numbers</li>
+<li><code>regex($pattern)</code> — Custom regex</li>
+<li><code>slug()</code> — URL-friendly string</li>
+<li><code>email()</code> — Valid email address</li>
+<li><code>url()</code> — Valid URL</li>
+<li><code>ip()</code> / <code>ip('v6')</code> - Valid IPv4 or IPv6 address</li>
+</ul>
+<h3 id="numeric-rules">Numeric Rules<a class="headerlink" href="#numeric-rules" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>numeric()</code> — Any number</li>
+<li><code>int()</code> / <code>float()</code> — Integer or float</li>
+<li><code>between($min, $max)</code> — Value range</li>
+<li><code>min($n)</code> / <code>max($n)</code> — Value constraints</li>
+</ul>
+<h3 id="datetime-rules">Date/Time Rules<a class="headerlink" href="#datetime-rules" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>date($format = null)</code> — Valid date (optionally with format)</li>
+<li><code>before($date, $format = null)</code> / <code>after($date, $format = null)</code> — Date comparison</li>
+</ul>
+<h3 id="boolean-rules">Boolean Rules<a class="headerlink" href="#boolean-rules" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>bool()</code> — Must be boolean</li>
+</ul>
+<h3 id="array-rules">Array Rules<a class="headerlink" href="#array-rules" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>array($min = null, $max = null)</code> — Must be array, with optional length</li>
+<li><code>in($values)</code> / <code>notIn($values)</code> — Value must (not) be in list</li>
+<li><code>unique()</code> — All values must be unique</li>
+</ul>
+<h3 id="comparison-rules">Comparison Rules<a class="headerlink" href="#comparison-rules" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>same($field)</code> — Must match another field</li>
+<li><code>different($field)</code> — Must not match another field</li>
+</ul>
+<h3 id="file-image-rules">File &amp; Image Rules<a class="headerlink" href="#file-image-rules" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>file()</code> — Valid file upload</li>
+<li><code>fileSize($size)</code> — Max file size (e.g. '2M', '500K')</li>
+<li><code>fileType($types)</code> — Allowed MIME types</li>
+<li><code>fileExtension($exts)</code> — Allowed extensions</li>
+<li><code>files($min = null, $max = null)</code> — Multiple files</li>
+<li><code>image($options)</code> — Image validation (width, height, ratio)</li>
+</ul>
+<h3 id="custom-advanced-rules">Custom &amp; Advanced Rules<a class="headerlink" href="#custom-advanced-rules" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>custom($fn, $message)</code> — Custom closure for validation</li>
+<li><code>transform($fn)</code> — Preprocess value before validation</li>
+<li><code>nullable()</code> — Field can be null or empty</li>
+</ul>
+<hr />
+<h2 id="wildcards-nested-validation">Wildcards &amp; Nested Validation<a class="headerlink" href="#wildcards-nested-validation" title="Permanent link">&para;</a></h2>
+<p>Validate arrays of objects or deeply nested data with wildcards:</p>
+<pre><code class="language-php">$validator
+    -&gt;field('users.*.email')-&gt;required()-&gt;email()
+    -&gt;field('users.*.roles')-&gt;array()-&gt;in(['admin', 'user']);
+
+$input = [
+    'users' =&gt; [
+        ['email' =&gt; 'john@example.com', 'roles' =&gt; ['admin']],
+        ['email' =&gt; 'jane@example.com', 'roles' =&gt; ['user']],
+    ]
+];
+
+$validator-&gt;validate($input);
+</code></pre>
+<hr />
+<h2 id="file-image-validation">File &amp; Image Validation<a class="headerlink" href="#file-image-validation" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">$validator-&gt;field('avatar')
+    -&gt;file()
+    -&gt;fileSize('1M')
+    -&gt;fileType(['image/jpeg', 'image/png'])
+    -&gt;image([
+        'min_width' =&gt; 100,
+        'max_width' =&gt; 1000,
+        'min_height' =&gt; 100,
+        'max_height' =&gt; 1000,
+        'ratio' =&gt; '1:1'
+    ]);
+</code></pre>
+<p>Multiple files:</p>
+<pre><code class="language-php">$validator-&gt;field('photos')
+    -&gt;files(1, 5)
+    -&gt;fileSize('2M')
+    -&gt;fileType(['image/jpeg', 'image/png']);
+</code></pre>
+<hr />
+<h2 id="error-handling-messages">Error Handling &amp; Messages<a class="headerlink" href="#error-handling-messages" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>getErrors()</code> — All errors as <code>[field =&gt; message]</code></li>
+<li><code>getError('field')</code> — First error for a field</li>
+<li><code>getFieldErrors('field')</code> — All errors for a field</li>
+</ul>
+<h3 id="custom-error-messages">Custom error messages<a class="headerlink" href="#custom-error-messages" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">$validator-&gt;field('age')
+    -&gt;numeric()
+    -&gt;message('Age must be a number')
+    -&gt;between(18, 100)
+    -&gt;message('Age must be between 18 and 100');
+</code></pre>
+<hr />
+<h2 id="example-password-strength">Example: Password Strength<a class="headerlink" href="#example-password-strength" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">$validator-&gt;field('password')
+    -&gt;required()
+    -&gt;between(8, 32)
+    -&gt;hasUppercase()
+    -&gt;hasLowercase()
+    -&gt;hasNumber()
+    -&gt;hasSymbol();
+</code></pre>
+<hr />
+<h2 id="example-user-registration">Example: User Registration<a class="headerlink" href="#example-user-registration" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">$validator
+    -&gt;field('username')-&gt;required()-&gt;string()-&gt;min(3)-&gt;max(50)-&gt;alphaNum()
+    -&gt;field('email')-&gt;required()-&gt;email()
+    -&gt;field('password')-&gt;required()-&gt;between(8, 32)-&gt;hasUppercase()-&gt;hasLowercase()-&gt;hasNumber()-&gt;hasSymbol()
+    -&gt;field('avatar')-&gt;nullable()-&gt;image([
+        'max_width' =&gt; 1000,
+        'max_height' =&gt; 1000,
+        'max_size' =&gt; '1M'
+    ]);
+</code></pre>
+<hr />
+<h2 id="nested-conditional-validation">Nested &amp; Conditional Validation<a class="headerlink" href="#nested-conditional-validation" title="Permanent link">&para;</a></h2>
+<pre><code class="language-php">$validator
+    -&gt;field('user.profile.name')-&gt;required()
+    -&gt;field('user.profile.age')-&gt;required()-&gt;int()-&gt;custom(fn($v) =&gt; $v &gt;= 18, 'Must be 18 or older');
+
+$validator
+    // Only one address can be primary
+    -&gt;field('user.addresses')-&gt;custom(function($addresses) {
+        $primaryCount = 0;
+        foreach ($addresses as $address) {
+            if ($address['is_primary']) {
+                $primaryCount++;
+            }
+        }
+        return $primaryCount === 1;
+    }, 'Only one address can be marked as primary');
+</code></pre>
+<h2 id="custom-rules-transformers">Custom Rules &amp; Transformers<a class="headerlink" href="#custom-rules-transformers" title="Permanent link">&para;</a></h2>
+<h3 id="register-a-custom-rule-globally">Register a custom rule globally<a class="headerlink" href="#register-a-custom-rule-globally" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">$validator-&gt;addRule('uppercase', function($value) {
+    return strtoupper($value) === $value;
+}, 'Must be uppercase');
+
+$validator-&gt;field('code')-&gt;uppercase();
+</code></pre>
+<h3 id="custom-rule-per-field">Custom rule per field<a class="headerlink" href="#custom-rule-per-field" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">$validator-&gt;field('code')-&gt;custom(function($value) {
+    return preg_match('/^CODE-\\d{6}$/', $value);
+}, 'Invalid code format');
+</code></pre>
+<h3 id="transform-values-before-validation">Transform values before validation<a class="headerlink" href="#transform-values-before-validation" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">$validator-&gt;field('tags')
+    -&gt;transform(fn($v) =&gt; explode(',', $v))
+    -&gt;array();
+</code></pre>
+<h3 id="class-based-custom-rules">Class-Based Custom Rules<a class="headerlink" href="#class-based-custom-rules" title="Permanent link">&para;</a></h3>
+<p>For advanced scenarios, you can use <strong>invokable classes</strong> as custom validation rules. This is ideal for business logic that needs dependencies, database access, or configuration.</p>
+<p><strong>Example: Unique Email Rule</strong></p>
+<pre><code class="language-php">namespace App\Rules;
+
+use App\Models\User;
+
+class UniqueEmailRule
+{
+    public const MESSAGE = 'Email already exists';
+
+    public function __construct(
+        private ?int $excludeId = null
+    ) {}
+
+    public function __invoke(string $email): bool
+    {
+        return User::query()
+            -&gt;where('email', '=', $email)
+            -&gt;whereIf($this-&gt;excludeId, 'id', '!=', $this-&gt;excludeId)
+            -&gt;notExists();
+    }
+}
+</code></pre>
+<p><strong>Usage:</strong></p>
+<pre><code class="language-php">$validator-&gt;field('email')
+    -&gt;required()
+    -&gt;email()
+    -&gt;custom(new UniqueEmailRule, UniqueEmailRule::MESSAGE);
+</code></pre>
+<ul>
+<li>The rule can accept constructor arguments (e.g., <code>$excludeId</code> for updates).</li>
+<li>The validator will call the class as an invokable (<code>__invoke</code>) object.</li>
+<li>This pattern keeps business logic clean, testable, and reusable.</li>
+</ul>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.50899def.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1665 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../models/">
+      
+      
+        <link rel="next" href="../orm-introduction/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>Relationships - Lightpack Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#orm-relationships" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Lightpack Documentation" class="md-header__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Lightpack Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Relationships
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../introduction/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../install/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../getting-started.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../authentication/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Lightpack Documentation" class="md-nav__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Lightpack Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Authentication
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Models
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Relationships
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Relationships
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Introduction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-modelling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Modelling
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-associations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Entity Associations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#association-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Association Types
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Association Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#one-to-one-11" class="md-nav__link">
+    <span class="md-ellipsis">
+      One to One (1:1)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#one-to-many-1n" class="md-nav__link">
+    <span class="md-ellipsis">
+      One to Many (1:N)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#many-to-one-n1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Many to One (N:1)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#many-to-many-nm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Many to Many (N:M)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relationship-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Relationship Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Relationship Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#has-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      Has One
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#belongs-to" class="md-nav__link">
+    <span class="md-ellipsis">
+      Belongs To
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#has-many" class="md-nav__link">
+    <span class="md-ellipsis">
+      Has Many
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#many-to-many" class="md-nav__link">
+    <span class="md-ellipsis">
+      Many to Many
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Many to Many">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#attach-pivot-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      Attach Pivot Records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#detach-pivot-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      Detach Pivot Records
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sync-pivot-records" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sync Pivot Records
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#through-relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      Through Relationships
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Through Relationships">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#has-one_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Has One
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#has-many_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Has Many
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#polymorphic-relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      Polymorphic Relationships
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Polymorphic Relationships">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#introduction_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#morph-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      Morph One
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#morph-many" class="md-nav__link">
+    <span class="md-ellipsis">
+      Morph Many
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#morph-inverse" class="md-nav__link">
+    <span class="md-ellipsis">
+      Morph Inverse
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#querying-relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      Querying Relationships
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Querying Relationships">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#accessing-relationships-property-vs-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      Accessing Relationships: Property vs. Method
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Accessing Relationships: Property vs. Method">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-happens-behind-the-scenes" class="md-nav__link">
+    <span class="md-ellipsis">
+      What Happens Behind the Scenes?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collections-working-with-multiple-related-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      Collections: Working with Multiple Related Models
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-practices-and-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices and Semantics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#semantic-relationship-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Semantic Relationship Methods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Semantic Relationship Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-semantic-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why Semantic Methods?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-organization-and-departments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Organization and Departments
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example: Organization and Departments">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#standard-relationship" class="md-nav__link">
+    <span class="md-ellipsis">
+      Standard Relationship
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#semantic-filtered-relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      Semantic (Filtered) Relationships
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-semantic-relationships" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to Use Semantic Relationships
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orm-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ORM Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../..." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    None
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="orm-relationships">ORM Relationships<a class="headerlink" href="#orm-relationships" title="Permanent link">&para;</a></h1>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+<p><img alt="Order UI and Entity Diagram" src="_media/orm/orm-order-items-ui-prototype.svg" /></p>
+<p>ORMs turn the abstract relationships of your database into natural, intuitive code. By mapping database associations to model methods, you unlock the full power of relational data—without the pain of raw SQL joins.</p>
+<p>To set the context let's understand the diagram above. It shows a simplified version of an <strong>order</strong> screen on the left and associated table <strong>entities</strong> on the right. The <strong>order</strong> UI shows information about the associated <code>order</code>, <code>customer</code>, <code>order items</code>, and <code>payment</code> details.</p>
+<h3 id="data-modelling">Data Modelling<a class="headerlink" href="#data-modelling" title="Permanent link">&para;</a></h3>
+<p>Although the <strong>order</strong> UI shows all the information together on the screen, when modelling the database schema, you would consider normalized forms with:</p>
+<ul>
+<li>tables named <code>order</code>, <code>customer</code>, <code>product</code>, <code>order_item</code>, and <code>payment</code>. </li>
+<li>a foreign key column <code>customer_id</code> in the <code>order</code> table.</li>
+<li>a foreign key column <code>order_id</code> in the <code>payment</code> table.</li>
+<li>two foreign key columns <code>order_id</code> and <code>product_id</code> in the <code>order_item</code> table.</li>
+</ul>
+<blockquote>
+<p>Note: to uniquely identify the order and its related items, we need a table named <code>order_item</code> which stores references to the <code>order_id</code> and <code>product_id</code>. Such a table is often called a <strong>pivot</strong> or <strong>junction</strong> or <strong>bridge</strong> table.</p>
+</blockquote>
+<h3 id="entity-associations">Entity Associations<a class="headerlink" href="#entity-associations" title="Permanent link">&para;</a></h3>
+<p>When relating data models (<strong>entities</strong>) together, we may think in terms of <strong>associations</strong> or <strong>relationships</strong>. For example:</p>
+<ul>
+<li>A <code>customer</code> has many <code>order</code>.</li>
+<li>An <code>order</code> belongs to one <code>customer</code>.</li>
+<li>An <code>order</code> has one <code>payment</code>.</li>
+<li>A <code>payment</code> belongs to one <code>order</code>.</li>
+<li>A <code>product</code> has many <code>order</code>.</li>
+<li>An <code>order</code> has many <code>product</code>. </li>
+</ul>
+<p>In <strong>Relation Databases</strong>, we introduce 4 main types of associations:</p>
+<ul>
+<li>One to One</li>
+<li>One to Many</li>
+<li>Many to One</li>
+<li>Many to Many</li>
+</ul>
+<p><img alt="Association Types between Entities" src="_media/orm/rdbms-association-types.svg" /></p>
+<h3 id="association-types">Association Types<a class="headerlink" href="#association-types" title="Permanent link">&para;</a></h3>
+<h4 id="one-to-one-11">One to One (1:1)<a class="headerlink" href="#one-to-one-11" title="Permanent link">&para;</a></h4>
+<p>A <strong>One to One</strong> relationship means that each record in <strong>Table A</strong> is linked to one and only one record in <strong>Table B</strong>, and vice versa. </p>
+<p>Think of it as a <strong>passport</strong> and a <strong>person</strong>: each person has one unique passport, and each passport belongs to one person.</p>
+<p><strong>Order Example:</strong>
+- Each <code>order</code> has one <code>payment</code> record.
+- Each <code>payment</code> belongs to one <code>order</code>.</p>
+<p><strong>In Schema:</strong>
+- <code>payment</code> table has a unique <code>order_id</code> column (foreign key).</p>
+<h4 id="one-to-many-1n">One to Many (1:N)<a class="headerlink" href="#one-to-many-1n" title="Permanent link">&para;</a></h4>
+<p>A <strong>One to Many</strong> relationship means that a single record in <strong>Table A</strong> can be related to many records in <strong>Table B</strong>, but each record in <strong>Table B</strong> relates back to only one record in <strong>Table A</strong>. </p>
+<p>Imagine a customer placing multiple orders: one customer, many orders.</p>
+<p><strong>Order Example:</strong>
+- A <code>customer</code> can have many <code>orders</code>.
+- Each <code>order</code> belongs to one <code>customer</code>.</p>
+<p><strong>Schema:</strong>
+- <code>order</code> table has a <code>customer_id</code> column (foreign key).</p>
+<h4 id="many-to-one-n1">Many to One (N:1)<a class="headerlink" href="#many-to-one-n1" title="Permanent link">&para;</a></h4>
+<p>A <strong>Many to One</strong> relationship is simply the inverse of <strong>One to Many</strong>. Many records in <strong>Table A</strong> relate to a single record in <strong>Table B</strong>. </p>
+<p>Think of students and schools: Many students can attend the same school, but each student is enrolled in only one school.</p>
+<p><strong>Order Example:</strong>
+- Many <code>order_item</code> rows belong to one <code>order</code>.</p>
+<p><strong>Schema:</strong>
+- <code>order_item</code> table has an <code>order_id</code> column (foreign key).</p>
+<h4 id="many-to-many-nm">Many to Many (N:M)<a class="headerlink" href="#many-to-many-nm" title="Permanent link">&para;</a></h4>
+<p>A <strong>Many to Many</strong> relationship means that multiple records in <strong>Table A</strong> can relate to multiple records in <strong>Table B</strong>. This is typically implemented using a <strong>junction</strong> (<strong>pivot</strong>) table. </p>
+<p>Think of products and orders: an order can have many products, and a product can appear in many orders.</p>
+<p><strong>Order Example:</strong>
+- An <code>order</code> can have many <code>products</code> (through <code>order_item</code>).
+- A <code>product</code> can belong to many <code>orders</code> (through <code>order_item</code>).</p>
+<p><strong>Schema:</strong>
+- <code>order_item</code> table has both <code>order_id</code> and <code>product_id</code> columns (foreign keys).</p>
+<blockquote>
+<p><strong>Summary:</strong>
+- <strong>One to One:</strong> Each order has one payment.
+- <strong>One to Many:</strong> One customer, many orders.
+- <strong>Many to One:</strong> Many order items, one order.
+- <strong>Many to Many:</strong> Many products in many orders, connected by order items.</p>
+</blockquote>
+<h2 id="relationship-methods">Relationship Methods<a class="headerlink" href="#relationship-methods" title="Permanent link">&para;</a></h2>
+<p>Now that you’ve seen how relationships are structured at the database level, let’s translate these concepts into the world of ORMs. While the database focuses on tables, foreign keys, and junction tables, an ORM lets you work with your data as rich, interconnected objects—making your code more expressive, maintainable, and closer to how you think about your domain.</p>
+<p>In an ORM, each type of database relationship is represented by a specific method or association on your model classes. Instead of writing SQL joins, you define these relationships once, and then access related data as if you were simply navigating object properties.</p>
+<h3 id="has-one">Has One<a class="headerlink" href="#has-one" title="Permanent link">&para;</a></h3>
+<p><img alt="ORM One to One Association" src="_media/orm/orm-one-to-one-association.svg" /></p>
+<p>Use the relationship method <code>hasOne()</code> to define <strong>one to one</strong> relationhsip between <strong>order</strong> and <strong>payment</strong> entity.</p>
+<pre><code class="language-php">class Order extends Model
+{
+    public function payment()
+    {
+        return $this-&gt;hasOne(Payment::class, 'order_id');
+    }
+}
+</code></pre>
+<p>Now to get the associated payment for an order, simply use the name of the <strong>payment()</strong> method on <strong>Order</strong> instance.</p>
+<pre><code class="language-php">/**
+ * Find order with id: 23
+ */
+$order = new Order(23);
+
+/**
+ * Get the associated payment
+ */
+$order-&gt;payment;
+</code></pre>
+<p>Behind the scenes, the ORM intercepts the call to <code>$order-&gt;payment</code> and resolves the associated <strong>Payment</strong> instance.</p>
+<h3 id="belongs-to">Belongs To<a class="headerlink" href="#belongs-to" title="Permanent link">&para;</a></h3>
+<p>Use the relationship method <strong>belongsTo()</strong> to define the inverse of the <strong>hasOne()</strong> relationship.</p>
+<pre><code class="language-php">class Payment extends Model
+{
+    public function order()
+    {
+        return $this-&gt;belongsTo(Order::class, 'order_id');
+    }
+}
+</code></pre>
+<p>Now this makes it possible to fetch the <code>Order</code> instance that the <code>Payment</code> belongs to.</p>
+<pre><code class="language-php">/**
+ * Find the payment with id: 101
+ */
+$payment = new Payment(101);
+
+/**
+* Get the associated order
+*/
+$payment-&gt;order;
+</code></pre>
+<h3 id="has-many">Has Many<a class="headerlink" href="#has-many" title="Permanent link">&para;</a></h3>
+<p><img alt="ORM One to Many Association" src="_media/orm/orm-one-to-many-association.svg" /></p>
+<p>Use the relationship method <code>hasMany()</code> to define a <strong>one to many</strong> relationship between the <strong>customer</strong> and <strong>order</strong> entities.</p>
+<pre><code class="language-php">class Customer extends Model
+{
+    public function orders()
+    {
+        return $this-&gt;hasMany(Order::class, 'customer_id');
+    }
+}
+</code></pre>
+<p>Now, to get all orders placed by a customer, simply use the name of the <strong>orders()</strong> method on a <strong>Customer</strong> instance.</p>
+<pre><code class="language-php">/**
+ * Find the customer with id: 7
+ */
+$customer = new Customer(7);
+
+/**
+ * Get all orders for this customer
+ */
+$orders = $customer-&gt;orders;
+</code></pre>
+<p>Behind the scenes, the ORM intercepts the call to <code>$customer-&gt;orders</code> and returns a collection of <strong>Order</strong> instances related to that customer.</p>
+<p><strong>Inverse of Has Many</strong></p>
+<p>You should not be surprised to know that <code>belongsTo()</code> also represents the inverse of <code>hasMany()</code>.</p>
+<pre><code class="language-php">class Order extends Model
+{
+    public function customer()
+    {
+        return $this-&gt;belongsTo(Customer::class, 'customer_id');
+    }
+}
+</code></pre>
+<p>Now, you can fetch the <code>Customer</code> instance for a given <code>Order</code>:</p>
+<pre><code class="language-php">/**
+ * Find the order with id: 42
+ */
+$order = new Order(42);
+
+/**
+ * Get the customer who placed this order
+ */
+$customer = $order-&gt;customer;
+</code></pre>
+<h3 id="many-to-many">Many to Many<a class="headerlink" href="#many-to-many" title="Permanent link">&para;</a></h3>
+<p><img alt="ORM Many to Many Association" src="_media/orm/orm-many-to-many-association.svg" /></p>
+<p>Use the relationship method <code>pivot()</code> to define a <strong>many to many</strong> relationship between the <strong>order</strong> and <strong>product</strong> entities, using a pivot table (like <code>order_item</code>).</p>
+<pre><code class="language-php">class Order extends Model
+{
+    public function products()
+    {
+        return $this-&gt;pivot(Product::class, 'order_item', 'order_id', 'product_id');
+    }
+}
+</code></pre>
+<p>Now, to get all products in a given order, simply use the name of the <strong>products()</strong> method on an <strong>Order</strong> instance.</p>
+<pre><code class="language-php">/**
+ * Find the order with id: 12
+ */
+$order = new Order(12);
+
+/**
+ * Get all products in this order
+ */
+$products = $order-&gt;products;
+</code></pre>
+<p>Behind the scenes, the ORM joins the <code>orders</code>, <code>order_item</code>, and <code>products</code> tables to return all related <strong>Product</strong> instances for the order.</p>
+<p><strong>Inverse of Many to Many</strong></p>
+<p>Essentailly <strong>many to many</strong> relationship works both ways, so use the same relationship method on the <strong>Product</strong> model to access all orders that include a given product. </p>
+<pre><code class="language-php">class Product extends Model
+{
+    public function orders()
+    {
+        return $this-&gt;pivot(Order::class, 'order_item', 'product_id', 'order_id');
+    }
+}
+</code></pre>
+<p>Now, you can fetch all orders that include a specific product:</p>
+<pre><code class="language-php">/**
+ * Find the product with id: 99
+ */
+$product = new Product(99);
+
+/**
+ * Get all orders that include this product
+ */
+$orders = $product-&gt;orders;
+</code></pre>
+<hr />
+<h4 id="attach-pivot-records">Attach Pivot Records<a class="headerlink" href="#attach-pivot-records" title="Permanent link">&para;</a></h4>
+<p>To insert a pivot record, use <code>attach()</code> method. 
+* It creates new records to the pivot table,
+* ignores duplicates,
+* also supports inserting data for extra columns.</p>
+<p>Let's take <strong>User</strong> and <strong>Role</strong> models for example.</p>
+<pre><code class="language-php">class User extends Model
+{
+    /**
+     * A user has many roles assigned.
+     */ 
+    public function roles()
+    {
+        return $this-&gt;pivot(Role::class, 'user_role', 'user_id', 'role_id');
+    }
+}
+</code></pre>
+<p>Now to assign new roles to the user:</p>
+<pre><code class="language-php">$user = new User(23);
+
+// Attach a role to the user
+$user-&gt;roles()-&gt;attach(1);
+
+// Attach multiple roles together
+$user-&gt;roles()-&gt;attach([1, 2]);
+
+// Pass additional attributes in pivot table
+$user-&gt;roles()-&gt;attach([1, 2], [
+    'assigned_by' =&gt; $adminId,
+    'assigned_at' =&gt; now(),
+]);
+</code></pre>
+<h4 id="detach-pivot-records">Detach Pivot Records<a class="headerlink" href="#detach-pivot-records" title="Permanent link">&para;</a></h4>
+<p>To delete a pivot record, use <code>detach()</code> method. It removes records in the pivot table, supporting extra columns as additional where filters.</p>
+<pre><code class="language-php">$user = new User(23);
+
+// Remove role 1 for the user
+$user-&gt;roles()-&gt;detach(1);
+
+// Remove multiple roles together
+$user-&gt;roles()-&gt;detach([1, 2]);
+
+// Remove roles 2 and 3 only if assigned_by matches
+$user-&gt;roles()-&gt;detach([2, 3], ['assigned_by' =&gt; $adminId]);
+</code></pre>
+<h4 id="sync-pivot-records">Sync Pivot Records<a class="headerlink" href="#sync-pivot-records" title="Permanent link">&para;</a></h4>
+<p>To update pivot records, use <code>sync()</code> method. What is syncing pivot records?</p>
+<ul>
+<li>When you <strong>attach</strong> a new role to a user, it creates a new pivot record in the <code>user_role</code> table. It ignores passed duplicate IDs</li>
+<li>When you <strong>detach</strong> a role from a user, it deletes the pivot record from the <code>user_role</code> table.</li>
+<li>But when you <strong>sync</strong> roles to a user, it will ensure that the user will have only the roles that are passed to the <code>sync()</code> method.</li>
+<li>It also supports passing extra columns.</li>
+</ul>
+<pre><code class="language-php">$user = new User(23);
+
+// Assign roles 1, 2, 3 to user, removing any others
+$user-&gt;roles()-&gt;sync([1, 2, 3]);
+
+// Sync with extra data (e.g., assigned_at timestamp)
+$user-&gt;roles()-&gt;sync([1, 2], ['assigned_at' =&gt; now()]);
+</code></pre>
+<p>Note that all <code>sync</code> operations are wrapped in a transaction:
+- If any part fails, the whole operation is rolled back.
+- Prevents partial updates and race conditions.</p>
+<h3 id="through-relationships">Through Relationships<a class="headerlink" href="#through-relationships" title="Permanent link">&para;</a></h3>
+<h4 id="has-one_1">Has One<a class="headerlink" href="#has-one_1" title="Permanent link">&para;</a></h4>
+<p>The <code>hasOneThrough()</code> relationship method lets you access a single, distant related record through an intermediate model. This is ideal for cases where you want to “reach through” one model to get a single related record from another.</p>
+<p>Consider this example:</p>
+<ul>
+<li>A <strong>patient</strong> has one <strong>appointment</strong></li>
+<li>Each <strong>appointment</strong> has one <strong>doctor</strong></li>
+<li>A <strong>patient</strong> has one <strong>doctor</strong> <em>through</em> their <strong>appointment</strong></li>
+<li><strong>patient</strong> → <strong>appointment</strong> → <strong>doctor</strong></li>
+</ul>
+<p>This pattern allows you to fetch the doctor for a patient, even though the doctor is not directly linked to the patient, but is associated through the patient’s appointment.</p>
+<p><strong>Example: Patient, Appointment, Doctor</strong></p>
+<pre><code class="language-php">class Patient extends Model
+{
+    // Each patient has one doctor through their appointment
+    public function doctor()
+    {
+        return $this-&gt;hasOneThrough(Doctor::class, Appointment::class, 'patient_id', 'doctor_id');
+    }
+}
+</code></pre>
+<p>Now you can easily fetch the doctor for a patient:</p>
+<pre><code class="language-php">$patient = new Patient(1);
+$doctor = $patient-&gt;doctor;
+</code></pre>
+<p>Behind the scenes, Lightpack ORM joins the <code>patients</code>, <code>appointments</code>, and <code>doctors</code> tables to fetch the doctor for the patient’s appointment—no manual SQL or nested queries required.</p>
+<hr />
+<h4 id="has-many_1">Has Many<a class="headerlink" href="#has-many_1" title="Permanent link">&para;</a></h4>
+<p>The <code>hasManyThrough()</code> relationship method lets you access related records that are connected by an intermediate model. This is perfect for scenarios where you want to “reach through” one model to get to another.</p>
+<p>Consider this example:</p>
+<ul>
+<li>An <strong>author</strong> <em>has many</em> <strong>books</strong></li>
+<li>Each <strong>book</strong> <em>has many</em> <strong>reviews</strong></li>
+<li>An <strong>author</strong> <em>has many</em> <strong>reviews</strong> <em>through</em> their <strong>books</strong></li>
+<li><strong>author</strong> → <strong>books</strong> → <strong>reviews</strong></li>
+</ul>
+<p>This means you can fetch all reviews for an author, even though reviews are not directly linked to the author, but come through the author’s books.</p>
+<pre><code class="language-php">class Author extends Model
+{
+    // One author has many reviews through books
+    public function reviews()
+    {
+        return $this-&gt;hasManyThrough(Review::class, Book::class, 'author_id', 'book_id');
+    }
+}
+</code></pre>
+<p>Now you can easily fetch associated <strong>reviews</strong>, </p>
+<pre><code class="language-php">$author = new Author(1);
+$reviews = $author-&gt;reviews;
+</code></pre>
+<p>Behind the scenes, Lightpack ORM joins the <code>authors</code>, <code>books</code>, and <code>reviews</code> tables to fetch all reviews for books written by that author—no manual SQL or nested loops required.</p>
+<hr />
+<h3 id="polymorphic-relationships">Polymorphic Relationships<a class="headerlink" href="#polymorphic-relationships" title="Permanent link">&para;</a></h3>
+<h4 id="introduction_1">Introduction<a class="headerlink" href="#introduction_1" title="Permanent link">&para;</a></h4>
+<p>Polymorphic relationships are a powerful feature that let a single model relate to more than one type of parent model—using a unified, elegant approach. In Lightpack ORM, this is implemented with confidence and clarity, so you can tackle real-world use cases like comments, media attachments, or user avatars without convoluted table structures.</p>
+<p><img alt="Polymorphic Relationship Diagram" src="_media/orm/orm-polymorphic-relationships.svg" /></p>
+<p><strong>Polymorphic Table Schema Example</strong></p>
+<p>Your polymorphic child table (e.g., <code>comments</code>) <strong>must</strong> have columns named exactly <code>morph_id</code> and <code>morph_type</code>:</p>
+<pre><code class="language-sql">CREATE TABLE comments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    morph_id INT NOT NULL,
+    morph_type VARCHAR(64) NOT NULL,
+    body TEXT,
+    created_at DATETIME,
+    updated_at DATETIME
+);
+</code></pre>
+<p>This enforced naming approach makes your migrations and queries consistent, readable, and future-proof.</p>
+<blockquote>
+<p><strong>Column Naming Convention:</strong>
+Lightpack requires you to name your polymorphic columns as <code>morph_id</code> and <code>morph_type</code>—no exceptions. This is a deliberate design choice. To avoid awkward column names like <code>commentable_id</code>, <code>articleable_id</code>, or <code>imageable_id</code>, Lightpack keeps it simple and predictable. Your schema is always easy to interpret, and your code stays clean.</p>
+</blockquote>
+<hr />
+<p><strong>When (Not) to Use Polymorphic Relations</strong></p>
+<p>Polymorphic relations are a pragmatic solution for flexible data models, but they come with tradeoffs:
+- <strong>No DB-enforced FKs:</strong> Integrity is enforced in application code only.
+- <strong>Migration complexity:</strong> Changing parent types later requires careful data handling.
+- <strong>Query performance:</strong> Can be less efficient than standard FKs for some workloads.</p>
+<p><strong>Bottom line:</strong> If you require absolute referential integrity, avoid polymorphic relations—split your tables or redesign your schema. But if you need flexibility and can enforce integrity at the application level, Lightpack’s polymorphic support is robust, expressive, and easy to use.</p>
+<blockquote>
+<p><strong>Referential Integrity Warning:</strong>
+Polymorphic relationships are not enforced by database-level foreign keys. The integrity is maintained by your application and ORM alone. If you need strict referential integrity, <strong>avoid polymorphic patterns</strong>—split your tables or redesign your schema. Use polymorphic relations only when flexibility outweighs the need for DB-enforced constraints.</p>
+</blockquote>
+<hr />
+<p>Polymorphic relationships in Lightpack are designed to make your codebase more maintainable, not more confusing. Use them wisely, and you’ll unlock elegant solutions to complex data modeling challenges. Lets explore the polymorphic relationship methods available:</p>
+<pre><code class="language-php">morphOne()
+morphMany()
+morphTo()
+</code></pre>
+<hr />
+<h4 id="morph-one">Morph One<a class="headerlink" href="#morph-one" title="Permanent link">&para;</a></h4>
+<p>For a one-to-one polymorphic relationship, such as a <strong>User</strong> having a single <strong>Avatar</strong>, use the <code>morphOne()</code> method to fetch related avatar model:</p>
+<pre><code class="language-php">class User extends Model
+{
+    public function avatar()
+    {
+        return $this-&gt;morphOne(Avatar::class);
+    }
+}
+</code></pre>
+<p>Usage:</p>
+<pre><code class="language-php">$user = new User(42);
+$avatar = $user-&gt;avatar;
+</code></pre>
+<hr />
+<h4 id="morph-many">Morph Many<a class="headerlink" href="#morph-many" title="Permanent link">&para;</a></h4>
+<p>If you want each <strong>Post</strong>, <strong>Photo</strong>, or <strong>Video</strong> to have many comments, use the <code>morphMany()</code> method to fetch related comments model collection.</p>
+<pre><code class="language-php">class Post extends Model
+{
+    public function comments()
+    {
+        return $this-&gt;morphMany(Comment::class);
+    }
+}
+
+class Photo extends Model
+{
+    public function comments()
+    {
+        return $this-&gt;morphMany(Comment::class);
+    }
+}
+
+class Video extends Model
+{
+    public function comments()
+    {
+        return $this-&gt;morphMany(Comment::class);
+    }
+}
+</code></pre>
+<p>Usage:</p>
+<pre><code class="language-php">$video = new Video(7);
+$comments = $video-&gt;comments; // All comments for this video
+</code></pre>
+<hr />
+<h4 id="morph-inverse">Morph Inverse<a class="headerlink" href="#morph-inverse" title="Permanent link">&para;</a></h4>
+<p>Use the method <code>morphTo()</code> to define the polymorphic inverse relation to fetch related parent model. </p>
+<p>Suppose you want to fetch parent <strong>Post</strong>, <strong>Photo</strong>, or <strong>Video</strong> model for the <strong>Comment</strong> model:</p>
+<pre><code class="language-php">class Comment extends Model
+{
+    public function parent()
+    {
+        return $this-&gt;morphTo([
+            Post::class,
+            Photo::class,
+            Video::class,
+        ]);
+    }
+}
+</code></pre>
+<p>Now, given a comment, you can access its parent—no matter the type:</p>
+<pre><code class="language-php">$comment = new Comment(101);
+$parent = $comment-&gt;parent; // Could be a Post, Photo, or Video instance
+</code></pre>
+<hr />
+<h2 id="querying-relationships">Querying Relationships<a class="headerlink" href="#querying-relationships" title="Permanent link">&para;</a></h2>
+<p>Understanding how to access and work with relationships is fundamental to getting the most out of your ORM. Lightpack ORM makes it intuitive to fetch related data, whether you want a single associated record or a whole collection of related models. This section will guide you through the mechanics, best practices, and the semantics of querying relationships. So let's reconsider the relation where an  <strong>organization</strong> has many <strong>departments</strong>.</p>
+<pre><code class="language-php">class Organization extends Model
+{
+    public function departments()
+    {
+        return $this-&gt;hasMany(Department::class, 'organization_id');
+    }
+}
+</code></pre>
+<h3 id="accessing-relationships-property-vs-method">Accessing Relationships: Property vs. Method<a class="headerlink" href="#accessing-relationships-property-vs-method" title="Permanent link">&para;</a></h3>
+<p>You can access a relationship in two ways:</p>
+<ol>
+<li>
+<p><strong>As a dynamic property:</strong>
+    <code>php
+    $org = new Organization(1);
+    $departments = $org-&gt;departments; // Property access</code>
+    When you access a relationship as a property, the ORM automatically runs the underlying query and returns the related data. This is the most common and convenient way to fetch associated models.</p>
+</li>
+<li>
+<p><strong>As a method call:</strong>
+    <code>php
+    $query = $org-&gt;departments(); // Method access</code>
+    When you call the relationship as a method, you get the underlying query builder. This allows you to further customize the query before executing it:</p>
+<p><code>php
+$activeDepartments = $org-&gt;departments()-&gt;where('status', 'active')-&gt;all();</code></p>
+</li>
+</ol>
+<h4 id="what-happens-behind-the-scenes">What Happens Behind the Scenes?<a class="headerlink" href="#what-happens-behind-the-scenes" title="Permanent link">&para;</a></h4>
+<ul>
+<li>
+<p><strong>Property Access:</strong></p>
+<ul>
+<li>The first time you access a relationship as a property (e.g., <code>$org-&gt;departments</code>), the ORM calls your relationship method, executes the query, and caches the result on the model instance. Subsequent accesses return the cached result.</li>
+<li>If the relationship returns multiple models (like <code>hasMany</code>), you receive a <strong>Collection</strong> of models. </li>
+<li>If the relationship returns a single model (like <code>hasOne</code> or <code>belongsTo</code>), you get a single model instance or <code>null</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Method Access:</strong></p>
+<ul>
+<li>Calling the relationship as a method (e.g., <code>$org-&gt;departments()</code>) returns the query builder object. You can chain additional constraints, then call query methods like <code>all()</code>, <code>one()</code>, <code>count()</code>, etc., to execute the query and fetch results.</li>
+<li>This is ideal when you want to apply dynamic scopes or advanced queries on the relationship.</li>
+</ul>
+</li>
+</ul>
+<h3 id="collections-working-with-multiple-related-models">Collections: Working with Multiple Related Models<a class="headerlink" href="#collections-working-with-multiple-related-models" title="Permanent link">&para;</a></h3>
+<p>When a relationship returns multiple models (such as with <code>hasMany</code>, <code>belongsToMany</code>, or <code>morphMany</code>), the result is a <strong>Collection</strong> object. This collection behaves much like an array, but is enhanced with a rich set of methods for filtering, mapping, reducing, and more. For example:</p>
+<pre><code class="language-php">$departments = $org-&gt;departments; // Collection of Department models
+
+// Get the names of all departments
+$names = $departments-&gt;column('name');
+
+// Filter only active departments
+$active = $departments-&gt;filter(function($dept) {
+    return $dept-&gt;status === 'active';
+});
+</code></pre>
+<p>Collections make it easy to work with groups of related models in a fluent, expressive way. You’ll find a full guide to collections in a dedicated section of this documentation.</p>
+<h3 id="best-practices-and-semantics">Best Practices and Semantics<a class="headerlink" href="#best-practices-and-semantics" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Use property access</strong> for simple, direct retrieval of related data.</li>
+<li><strong>Use method access</strong> when you need to customize the query.</li>
+<li><strong>Remember caching:</strong> Property access caches the result for the current model instance.</li>
+<li><strong>Understand return types:</strong> Relationships that return many models give you a <strong>Collection</strong>; those that return one give you a model instance or <code>null</code>.</li>
+<li><strong>Be intention-revealing:</strong> Name your relationship methods for clarity and business meaning.</li>
+</ul>
+<hr />
+<p>By understanding the difference between property and method access, and how collections work, you’ll write more expressive, efficient, and maintainable code with Lightpack ORM. For a deep dive into collections and their powerful capabilities, see the <a href="../collections/">Collections documentation</a>.</p>
+<hr />
+<h2 id="semantic-relationship-methods">Semantic Relationship Methods<a class="headerlink" href="#semantic-relationship-methods" title="Permanent link">&para;</a></h2>
+<p>Semantic relationship methods empower you to define model relationships that are not only technically correct, but also meaningful and intention-revealing. Instead of limiting your models to generic accessors like <code>departments()</code>, you can define expressive methods such as <code>activeDepartments()</code>, <code>hrDepartments()</code>, or <code>recentlyCreatedDepartments()</code>. This approach makes your codebase more readable, maintainable, and aligned with real business logic.</p>
+<h3 id="why-semantic-methods">Why Semantic Methods?<a class="headerlink" href="#why-semantic-methods" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Clarity:</strong> Your model methods communicate <em>why</em> you’re fetching certain related data, not just <em>how</em>.</li>
+<li><strong>Maintainability:</strong> Changes to business logic (e.g., what counts as “active”) are isolated to a single place.</li>
+<li><strong>Expressiveness:</strong> Your code reads like natural language, making it easier for new developers to understand intent.</li>
+</ul>
+<h3 id="example-organization-and-departments">Example: Organization and Departments<a class="headerlink" href="#example-organization-and-departments" title="Permanent link">&para;</a></h3>
+<p>Suppose you have an <code>Organization</code> model and a related <code>Department</code> model. Each organization can have many departments, but you want to easily fetch only the active ones, or only those in the HR domain.</p>
+<h4 id="standard-relationship">Standard Relationship<a class="headerlink" href="#standard-relationship" title="Permanent link">&para;</a></h4>
+<pre><code class="language-php">class Organization extends Model
+{
+    // All departments for this organization
+    public function departments()
+    {
+        return $this-&gt;hasMany(Department::class);
+    }
+}
+</code></pre>
+<h4 id="semantic-filtered-relationships">Semantic (Filtered) Relationships<a class="headerlink" href="#semantic-filtered-relationships" title="Permanent link">&para;</a></h4>
+<pre><code class="language-php">class Organization extends Model
+{
+    // Only active departments
+    public function activeDepartments()
+    {
+        return $this-&gt;hasMany(Department::class)-&gt;where('status', 'active');
+    }
+
+    // Only HR departments
+    public function hrDepartments()
+    {
+        return $this-&gt;hasMany(Department::class)-&gt;where('type', 'hr');
+    }
+
+    // Departments created in the last 30 days
+    public function recentlyCreatedDepartments()
+    {
+        return $this-&gt;hasMany(Department::class)
+                    -&gt;where('created_at', '&gt;=', now()-&gt;subDays(30));
+    }
+}
+</code></pre>
+<h3 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">$org = new Organization(1);
+
+// Get all departments
+$departments = $org-&gt;departments;
+
+// Get only active departments
+$active = $org-&gt;activeDepartments;
+
+// Get only HR departments
+$hr = $org-&gt;hrDepartments;
+
+// Get recently created departments
+$recent = $org-&gt;recentlyCreatedDepartments;
+</code></pre>
+<h3 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Name methods for intent:</strong> Use clear, business-driven names like <code>activeDepartments()</code> or <code>financeDepartments()</code>.</li>
+<li><strong>Centralize logic:</strong> Place filtering logic in the relationship method, not scattered throughout your codebase.</li>
+<li><strong>Document your methods:</strong> Briefly describe what each semantic relationship returns.</li>
+</ul>
+<h3 id="when-to-use-semantic-relationships">When to Use Semantic Relationships<a class="headerlink" href="#when-to-use-semantic-relationships" title="Permanent link">&para;</a></h3>
+<ul>
+<li>When you have common queries that filter or scope related data.</li>
+<li>When business logic or access rules change over time.</li>
+<li>When you want your code to be self-documenting and intention-revealing.</li>
+</ul>
+<hr />
+<p>Semantic relationship methods are a powerful way to make your models expressive, maintainable, and aligned with your domain. By naming relationships for what they <em>mean</em>, not just what they <em>are</em>, you create a codebase that’s easier to read, reason about, and extend.</p>
+<p><strong>How does this work behind the scenes?</strong></p>
+<p>Each relationship method returns a query builder. This means you can chain and apply any filtering, sorting, or limiting logic directly within your relationship method. When you access a property like <code>$organization-&gt;activeDepartments</code>, the ORM executes the query as defined in your method—including all your custom conditions—and returns the result. This is why you can define as many semantic, filtered relationships as your application needs.</p>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.50899def.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,949 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.16">
+    
+    
+      
+        <title>CSV Utility - Lightpack Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#csv-utility" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Lightpack Documentation" class="md-header__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Lightpack Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CSV Utility
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../introduction/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../install/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Installation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../getting-started.md" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../authentication/" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Lightpack Documentation" class="md-nav__button md-logo" aria-label="Lightpack Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Lightpack Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/lightpack/docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path fill="currentColor" d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    lightpack/docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Guides
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Guides
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Authentication
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Models
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../relationships/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Relationships
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../orm-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ORM Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../..." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    None
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="csv-utility">CSV Utility<a class="headerlink" href="#csv-utility" title="Permanent link">&para;</a></h1>
+<p>Lightpack’s <code>Csv</code> utility provides a robust, memory-efficient, and highly flexible interface for reading, writing, streaming, and transforming CSV data. It is designed for both small and very large files, with a focus on practical ETL, data import/export, and reporting workflows.</p>
+<hr />
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Memory-efficient</strong>: Reads large files with generators, never loads all rows into memory.</li>
+<li><strong>Flexible mapping</strong>: Rename columns, transform values, or apply callables per column.</li>
+<li><strong>Type casting</strong>: Automatically cast columns to <code>int</code>, <code>float</code>, <code>bool</code>, or <code>date</code> (timestamp).</li>
+<li><strong>Column exclusion</strong>: Remove sensitive or unwanted columns.</li>
+<li><strong>Validation</strong>: Row-level validation with three error handling modes (<code>skip</code>, <code>collect</code>, <code>fail</code>).</li>
+<li><strong>Streaming</strong>: Stream CSV data to output (e.g., HTTP response) with consistent header order.</li>
+<li><strong>Customizable</strong>: Set delimiter, enclosure, and escape characters.</li>
+<li><strong>Header order</strong>: Control and cache column order for consistent output.</li>
+</ul>
+<hr />
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<h3 id="reading-csv-files">Reading CSV Files<a class="headerlink" href="#reading-csv-files" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">use Lightpack\Utils\Csv;
+
+$csv = new Csv();
+
+// Read with headers (default)
+foreach ($csv-&gt;read('users.csv') as $row) {
+    echo $row['name'];
+}
+
+// Read without headers (returns indexed arrays)
+foreach ($csv-&gt;read('data.csv', false) as $row) {
+    echo $row[0];
+}
+</code></pre>
+<h3 id="writing-csv-files">Writing CSV Files<a class="headerlink" href="#writing-csv-files" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">$data = [
+    ['name' =&gt; 'John', 'age' =&gt; 25],
+    ['name' =&gt; 'Jane', 'age' =&gt; 30],
+];
+
+// Write with auto-detected headers
+$csv-&gt;write('users.csv', $data);
+
+// Write with explicit header order
+$csv-&gt;write('users.csv', $data, ['name', 'age']);
+
+// Write from generator or database cursor
+$users = User::query()-&gt;cursor();
+$csv-&gt;write('users.csv', $users, ['id', 'name', 'email']);
+</code></pre>
+<hr />
+<h2 id="data-transformation">Data Transformation<a class="headerlink" href="#data-transformation" title="Permanent link">&para;</a></h2>
+<h3 id="column-mapping-value-transformation">Column Mapping &amp; Value Transformation<a class="headerlink" href="#column-mapping-value-transformation" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Rename columns</strong> (e.g., <code>user_id</code> → <code>id</code>) or <strong>transform values</strong> (e.g., uppercase names):</li>
+</ul>
+<pre><code class="language-php">// Rename columns and apply callables
+$csv-&gt;map([
+    'user_id' =&gt; 'id',               // Rename 'user_id' to 'id'
+    'user_name' =&gt; 'name',           // Rename 'user_name' to 'name'
+    'salary' =&gt; fn($v) =&gt; (float)$v, // Transform 'salary' to float
+    'name' =&gt; fn($v) =&gt; strtoupper($v), // Uppercase names
+]);
+</code></pre>
+<ul>
+<li><strong>Mapping is bidirectional:</strong> When writing, mapped headers are used; when reading, output keys are the mapped names.</li>
+</ul>
+<h3 id="type-casting">Type Casting<a class="headerlink" href="#type-casting" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Supported types:</strong> <code>int</code>, <code>float</code>, <code>bool</code>, <code>date</code> (as UNIX timestamp)</li>
+<li><strong>Works on read and write</strong></li>
+</ul>
+<pre><code class="language-php">$csv-&gt;casts([
+    'age' =&gt; 'int',
+    'active' =&gt; 'bool',
+    'joined' =&gt; 'date', // Converts to timestamp on read, to Y-m-d H:i:s on write
+]);
+</code></pre>
+<h3 id="excluding-columns">Excluding Columns<a class="headerlink" href="#excluding-columns" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Remove unwanted columns:</strong></li>
+</ul>
+<pre><code class="language-php">$csv-&gt;exclude(['password', 'token']);
+</code></pre>
+<h3 id="chaining-transformations">Chaining Transformations<a class="headerlink" href="#chaining-transformations" title="Permanent link">&para;</a></h3>
+<ul>
+<li>All methods are chainable:</li>
+</ul>
+<pre><code class="language-php">$csv-&gt;map(['user_id' =&gt; 'id'])
+    -&gt;casts(['id' =&gt; 'int'])
+    -&gt;exclude(['password'])
+    -&gt;write('users.csv', $data, ['user_id', 'name']);
+</code></pre>
+<hr />
+<h2 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h2>
+<h3 id="row-validation-with-error-handling-modes">Row Validation (with error handling modes)<a class="headerlink" href="#row-validation-with-error-handling-modes" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Provide a closure:</strong> Return <code>true</code>, <code>false</code>, string, or array of errors.</li>
+<li><strong>Modes:</strong></li>
+<li><code>'skip'</code> (default): skip invalid rows</li>
+<li><code>'collect'</code>: include all rows, collect errors</li>
+<li><code>'fail'</code>: throw on first invalid row</li>
+</ul>
+<pre><code class="language-php">$csv-&gt;validate(function($row) {
+    if ($row['age'] &lt; 18) return 'Must be 18 or older';
+    return true;
+});
+
+$csv-&gt;validate(function($row) {
+    $errors = [];
+    if (!is_numeric($row['salary'])) $errors[] = 'Salary must be numeric';
+    if ($row['salary'] &lt; 0) $errors[] = 'Salary cannot be negative';
+    return $errors;
+}, 'collect');
+</code></pre>
+<ul>
+<li><strong>With Lightpack Validator:</strong></li>
+</ul>
+<pre><code class="language-php">use Lightpack\Validation\Validator;
+
+$csv-&gt;validate(function($row) {
+    $validator = new Validator();
+    $validator-&gt;field('email')-&gt;required()-&gt;email();
+    $validator-&gt;setInput($row);
+    $result = $validator-&gt;validate();
+    return $result-&gt;passes() ? true : $result-&gt;getErrors();
+}, 'collect');
+</code></pre>
+<ul>
+<li><strong>Get errors:</strong></li>
+</ul>
+<pre><code class="language-php">$errors = $csv-&gt;getErrors();
+</code></pre>
+<hr />
+<h2 id="row-limits-and-processing-control">Row Limits and Processing Control<a class="headerlink" href="#row-limits-and-processing-control" title="Permanent link">&para;</a></h2>
+<h3 id="maximum-rows-hard-limit">Maximum Rows (hard limit)<a class="headerlink" href="#maximum-rows-hard-limit" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Throws if file exceeds limit:</strong></li>
+</ul>
+<pre><code class="language-php">$csv-&gt;max(1000)-&gt;read('large.csv');
+</code></pre>
+<h3 id="processing-limit-soft-limit">Processing Limit (soft limit)<a class="headerlink" href="#processing-limit-soft-limit" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Only process first N rows:</strong></li>
+</ul>
+<pre><code class="language-php">$csv-&gt;limit(500)-&gt;read('large.csv');
+</code></pre>
+<hr />
+<h2 id="streaming-output">Streaming Output<a class="headerlink" href="#streaming-output" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Stream large datasets directly to output (e.g., HTTP response):</strong></li>
+<li><strong>Headers are written only once; column order is cached.</strong></li>
+</ul>
+<pre><code class="language-php">$csv-&gt;map(['Name' =&gt; 'name', 'Email' =&gt; 'email']);
+
+// First stream call writes headers
+$csv-&gt;stream([
+    ['name' =&gt; 'John', 'email' =&gt; 'john@example.com'],
+], ['Name', 'Email']);
+
+// Subsequent calls append rows (no headers)
+$csv-&gt;stream([
+    ['name' =&gt; 'Jane', 'email' =&gt; 'jane@example.com'],
+]);
+</code></pre>
+<hr />
+<h2 id="header-order-and-consistency">Header Order and Consistency<a class="headerlink" href="#header-order-and-consistency" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Specify header order for write/stream:</strong></li>
+</ul>
+<pre><code class="language-php">$csv-&gt;map([
+    'User ID' =&gt; 'id',
+    'Full Name' =&gt; 'name',
+    'Email Address' =&gt; 'email',
+    'Age' =&gt; 'age',
+]);
+
+$csv-&gt;write('users.csv', $data, [
+    'Email Address', // first column
+    'Age',           // second
+    'Full Name',     // third
+    'User ID',       // last
+]);
+</code></pre>
+<ul>
+<li><strong>Order is preserved on subsequent stream calls.</strong></li>
+</ul>
+<hr />
+<h2 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Throws <code>RuntimeException</code> for:</strong></li>
+<li>Unreadable files</li>
+<li>Unwritable directories</li>
+<li>Exceeding <code>max()</code></li>
+<li>Invalid arguments (e.g., negative limits)</li>
+<li><strong>Validation errors:</strong></li>
+<li>Collected via <code>getErrors()</code> if <code>'collect'</code> mode</li>
+<li>Skipped or thrown otherwise</li>
+</ul>
+<hr />
+<h2 id="advanced-usage-tips">Advanced Usage &amp; Tips<a class="headerlink" href="#advanced-usage-tips" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Generators and cursors:</strong> Use generators for both reading and writing to handle huge files efficiently.</li>
+<li><strong>Custom delimiter, enclosure, escape:</strong></li>
+</ul>
+<pre><code class="language-php">$csv-&gt;setDelimiter(';')
+    -&gt;setEnclosure(&quot;'&quot;)
+    -&gt;setEscape('\\');
+</code></pre>
+<ul>
+<li><strong>Streaming to HTTP:</strong> Use <code>php://output</code> as the file path in <code>write()</code> for direct HTTP output, or use <code>stream()</code> for chunked output.</li>
+<li><strong>Chaining:</strong> All configuration and transformation methods are chainable.</li>
+<li><strong>Header caching:</strong> Once headers are set (by write or stream), order is preserved for all subsequent rows.</li>
+</ul>
+<hr />
+<h2 id="practical-examples">Practical Examples<a class="headerlink" href="#practical-examples" title="Permanent link">&para;</a></h2>
+<h3 id="export-with-transformations-and-column-order">Export with Transformations and Column Order<a class="headerlink" href="#export-with-transformations-and-column-order" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">$data = [
+    ['id' =&gt; 1, 'name' =&gt; 'JOHN', 'age' =&gt; 25],
+    ['id' =&gt; 2, 'name' =&gt; 'JANE', 'age' =&gt; 30],
+];
+
+$csv-&gt;map([
+    'user_id' =&gt; 'id',
+    'user_name' =&gt; 'name',
+])
+-&gt;casts(['age' =&gt; 'int'])
+-&gt;write('users.csv', $data, ['user_id', 'user_name', 'age']);
+// Output columns: user_id,user_name,age
+</code></pre>
+<h3 id="import-validate-and-collect-errors">Import, Validate, and Collect Errors<a class="headerlink" href="#import-validate-and-collect-errors" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">$csv-&gt;validate(function($row) {
+    $errors = [];
+    if ($row['quantity'] &lt;= 0) $errors[] = 'Quantity must be positive';
+    if ($row['price'] &lt;= 0) $errors[] = 'Price must be positive';
+    return $errors;
+}, 'collect')
+-&gt;casts([
+    'quantity' =&gt; 'int',
+    'price' =&gt; 'float',
+])
+-&gt;read('orders.csv');
+
+foreach ($csv-&gt;getErrors() as $error) {
+    Log::error($error);
+}
+</code></pre>
+<hr />
+<h3 id="generate-reports">Generate Reports<a class="headerlink" href="#generate-reports" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">$csv = new Csv();
+
+// Get sales data
+$sales = ProductSale::query
+    -&gt;select('product_id', 'quantity', 'price', 'created_at')
+    -&gt;all()
+    -&gt;toArray();
+
+// Generate sales report
+$csv-&gt;map([
+        'created_at' =&gt; fn($date) =&gt; date('Y-m-d', strtotime($date)),
+        'total' =&gt; fn($row) =&gt; $row['quantity'] * $row['price']
+    ])
+    -&gt;casts([
+        'quantity' =&gt; 'int',
+        'price' =&gt; 'float',
+        'total' =&gt; 'float'
+    ])
+    -&gt;write('sales_report.csv', $sales);
+</code></pre>
+<h2 id="etl-extract-transform-load-operations">ETL (Extract, Transform, Load) Operations<a class="headerlink" href="#etl-extract-transform-load-operations" title="Permanent link">&para;</a></h2>
+<p>The CSV utility class is powerful enough to handle ETL operations, making it perfect for data pipeline processing.</p>
+<h3 id="basic-etl-example">Basic ETL Example<a class="headerlink" href="#basic-etl-example" title="Permanent link">&para;</a></h3>
+<pre><code class="language-php">use Lightpack\Utils\Csv;
+
+$csv = new Csv();
+
+// Extract: Get users from database
+$users = User::query()
+    -&gt;where('status', 'active')
+    -&gt;all()
+    -&gt;toArray();
+
+// Transform: Clean and format data
+$csv-&gt;map([
+        // Format dates
+        'created_at' =&gt; fn($date) =&gt; date('Y-m-d', strtotime($date)),
+        // Calculate full name
+        'full_name' =&gt; fn($row) =&gt; $row['first_name'] . ' ' . $row['last_name'],
+        // Format currency
+        'salary' =&gt; fn($amount) =&gt; number_format($amount, 2)
+    ])
+    -&gt;casts([
+        'id' =&gt; 'int',
+        'age' =&gt; 'int',
+        'is_active' =&gt; 'bool'
+    ])
+    -&gt;except(['password', 'remember_token'])
+    -&gt;validate(function($row) {
+        $errors = [];
+        if ($row['age'] &lt; 18) $errors[] = 'Must be adult';
+        if ($row['salary'] &lt; 0) $errors[] = 'Invalid salary';
+        return $errors;
+    }, 'skip');
+
+// Load: Export to CSV
+$csv-&gt;write('processed_users.csv', $users);
+</code></pre>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate"], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.50899def.min.js"></script>
+      
+    
+  </body>
+</html>
