@@ -10,12 +10,7 @@
     color: #ef5350;
 }
 
-/* Code block background and border radius */
-.md-typeset pre > code {
-    background: #f7f7f8;
-    border-radius: 8px;
-    font-size: 1em;
-}
+/* Removed custom code block background and border radius to allow theme highlighting */
 
 /* Custom badge style */
 .badge {

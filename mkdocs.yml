@@ -58,31 +58,32 @@ nav:
       - Queue: queue.md
       - Schedule: schedule.md
       - Filters: filters.md
-      - Events: events.md
-      - Caching: caching.md
-      - Logging: logging.md
-      - Providers: providers.md
-      - Containers: containers.md
-      - CORS: cors.md
-      - HTTP Client: http-client.md
-      - Console: console.md
-      - Testing: testing.md
-      - Secrets: secrets.md
-      - Settings: settings.md
-      - Tags: tags.md
-      - Taxonomies: taxonomies.md
-      - Faker: faker.md
-      - Audit: audit.md
-      - RBAC: rbac.md
-      - Captcha: captcha.md
-      - Webhook: webhook.md
-      - AI: ai-service.md
-      - Cable: cable.md
-      - Uploads: uploads.md
-      - Social Auth: social-auth.md
-      - SMS: sms.md
-      - MFA: mfa.md
-      - Storage: storage.md
+  - Highlight Test: test-highlight.md
+  - Events: events.md
+  - Caching: caching.md
+  - Logging: logging.md
+  - Providers: providers.md
+  - Containers: containers.md
+  - CORS: cors.md
+  - HTTP Client: http-client.md
+  - Console: console.md
+  - Testing: testing.md
+  - Secrets: secrets.md
+  - Settings: settings.md
+  - Tags: tags.md
+  - Taxonomies: taxonomies.md
+  - Faker: faker.md
+  - Audit: audit.md
+  - RBAC: rbac.md
+  - Captcha: captcha.md
+  - Webhook: webhook.md
+  - AI: ai-service.md
+  - Cable: cable.md
+  - Uploads: uploads.md
+  - Social Auth: social-auth.md
+  - SMS: sms.md
+  - MFA: mfa.md
+  - Storage: storage.md
 # Theme
 theme:
   name: material
@@ -109,17 +110,16 @@ theme:
     text: Roboto
     code: Fira Mono
   language: en
-  highlightjs: true
-  highlight_theme: material
-  custom_dir: docs/stylesheets
-  extra_css:
-    - stylesheets/extra.css
+  highlight: github
+  # extra_css:
+  #   - stylesheets/extra.css
 # Edit on GitHub
 repo_url: https://github.com/lightpack/docs
 repo_name: lightpack/docs
 edit_uri: edit/main/docs/
 # Extra config for TOC and sidebar
 markdown_extensions:
+
   - toc:
       permalink: true
   - tables
