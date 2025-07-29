@@ -1,4 +1,4 @@
-site_name: Lightpack Documentation
+site_name: Lightpack
 nav:
   - Getting Started:
       - Quick Install: install.md
@@ -58,37 +58,36 @@ nav:
       - Queue: queue.md
       - Schedule: schedule.md
       - Filters: filters.md
-  - Highlight Test: test-highlight.md
-  - Events: events.md
-  - Caching: caching.md
-  - Logging: logging.md
-  - Providers: providers.md
-  - Containers: containers.md
-  - CORS: cors.md
-  - HTTP Client: http-client.md
-  - Console: console.md
-  - Testing: testing.md
-  - Secrets: secrets.md
-  - Settings: settings.md
-  - Tags: tags.md
-  - Taxonomies: taxonomies.md
-  - Faker: faker.md
-  - Audit: audit.md
-  - RBAC: rbac.md
-  - Captcha: captcha.md
-  - Webhook: webhook.md
-  - AI: ai-service.md
-  - Cable: cable.md
-  - Uploads: uploads.md
-  - Social Auth: social-auth.md
-  - SMS: sms.md
-  - MFA: mfa.md
-  - Storage: storage.md
+      - Events: events.md
+      - Caching: caching.md
+      - Logging: logging.md
+      - Providers: providers.md
+      - Containers: containers.md
+      - CORS: cors.md
+      - HTTP Client: http-client.md
+      - Console: console.md
+      - Testing: testing.md
+      - Secrets: secrets.md
+      - Settings: settings.md
+      - Tags: tags.md
+      - Taxonomies: taxonomies.md
+      - Faker: faker.md
+      - Audit: audit.md
+      - RBAC: rbac.md
+      - Captcha: captcha.md
+      - Webhook: webhook.md
+      - AI: ai-service.md
+      - Cable: cable.md
+      - Uploads: uploads.md
+      - Social Auth: social-auth.md
+      - SMS: sms.md
+      - MFA: mfa.md
+      - Storage: storage.md
 # Theme
 theme:
   name: material
-  logo: _media/logo.png  # Place your logo image here
-  favicon: _media/logo.png
+  logo: _media/logo-white.svg  # Place your logo image here
+  favicon: _media/logo.ico
   palette:
     - scheme: default
       primary: red
