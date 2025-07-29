@@ -33,12 +33,12 @@ nav:
   # Security
       # - XSS: more-pages.md
       # - CSRF: custom-navbar.md
-      - Authentication:
-          - Introduction: authentication.md
-          - API Access Tokens: api-access-tokens.md
-          - Configuration: auth-configuration.md
-          - Extending Auth: custom-auth.md
-          - Route Filters: auth-filters.md
+  - Authentication:
+      - Introduction: authentication.md
+      - API Access Tokens: api-access-tokens.md
+      - Configuration: auth-configuration.md
+      - Extending Auth: custom-auth.md
+      - Route Filters: auth-filters.md
   - Utilities:
       - Password: password.md
       - Crypto: encryption-decryption-utils.md
@@ -103,7 +103,6 @@ theme:
         icon: material/weather-sunny
         name: Switch to light mode
   features:
-    - navigation.tabs
     - navigation.sections
     - toc.integrate
   font:
