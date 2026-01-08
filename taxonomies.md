@@ -43,37 +43,31 @@ class Post extends Model {
 ### taxonomies()
 Returns the model's taxonomies. Can be accessed as a property or method.
 ```php
-// Property access (recommended)
 $taxonomies = $post->taxonomies;
-
-// Method access for query customization
-$pivot = $post->taxonomies();
-$taxonomies = $pivot->all();
 ```
 
-### attachTaxonomies()
-Attach one or more taxonomy nodes by ID:
+### Pivot Operations
+
+Use the pivot methods to manage taxonomy associations:
+
 ```php
-$post->attachTaxonomies([1, 2, 3]);
+// Attach taxonomies by ID
+$post->taxonomies()->attach([1, 2, 3]);
+
+// Detach taxonomies by ID
+$post->taxonomies()->detach([2]);
+
+// Sync taxonomies (replace all with given IDs)
+$post->taxonomies()->sync([1, 3]);
 ```
 
-### detachTaxonomies()
-Detach one or more taxonomy nodes by ID:
-```php
-$post->detachTaxonomies([2]);
-```
+### filters()
 
-### syncTaxonomies()
-Replace all taxonomies on the model with the given IDs:
-```php
-$post->syncTaxonomies([3]);
-```
-
-### scopeTaxonomies()
 Query scope to filter models by taxonomy IDs:
+
 ```php
 // All posts with taxonomy 1 or 2
-$posts = Post::query()->taxonomies([1, 2])->all();
+$posts = Post::filters(['taxonomies' => [1, 2]])->all();
 ```
 
 ---

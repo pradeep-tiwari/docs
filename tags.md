@@ -40,7 +40,7 @@ class Post extends Model {
 
 ## TagsTrait API
 
-### tags
+### tags()
 
 Returns the model's tags. Can be accessed as a property or method.
 
@@ -48,30 +48,19 @@ Returns the model's tags. Can be accessed as a property or method.
 $tags = $post->tags;
 ```
 
-### attachTags
+### Pivot Operations
 
-Attach one or more tags to the model.
+Use the pivot methods to manage tag associations:
 
 ```php
 // Attach tags by ID
-$post->attachTags([1, 2, 3]); 
-```
+$post->tags()->attach([1, 2, 3]);
 
-### detachTags
+// Detach tags by ID
+$post->tags()->detach([2]);
 
-Detach one or more tags from the model.
-
-```php
-// Remove tag with ID 2
-$post->detachTags([2]); 
-```
-
-### syncTags
-
-Replace all tags on the model with the given IDs.
-
-```php
-$post->syncTags([3]); // Only tag 3 remains
+// Sync tags (replace all with given IDs)
+$post->tags()->sync([1, 3]);
 ```
 
 ### filters()
