@@ -8,7 +8,7 @@ Lightpack’s Tags system provides framework-native way to add tagging support t
 
 The Tags system uses two tables:
 - `tags`: Stores tag definitions (`id`, `name`, `slug`, timestamps).
-- `tag_models`: Pivot table connecting tags to models (`tag_id`, `model_id`, `model_type`).
+- `tag_morphs`: Pivot table connecting tags to models (`tag_id`, `morph_id`, `morph_type`).
 
 Create schema migration file:
 
@@ -42,11 +42,10 @@ class Post extends Model {
 
 ### tags
 
-Returns a pivot query for the model’s tags.
+Returns the model's tags. Can be accessed as a property or method.
 
 ```php
-// Get all Tag objects for this post
-$post->tags()->all(); 
+$tags = $post->tags;
 ```
 
 ### attachTags
@@ -89,7 +88,7 @@ $posts = Post::filters(['tags' => [1, 2]])->all();
 ## Edge Cases & Behavior
 - **Duplicate attaches:** Attaching a tag already present is safe and has no effect.
 - **Detaching non-existent tags:** Detaching a tag not present does nothing (no error).
-- **Type isolation:** Only tags for the correct model type are returned (see `model_type` in pivot).
+- **Type isolation:** Only tags for the correct model type are returned (see `morph_type` in pivot).
 - **Syncing:** Removes all tags not in the new list, attaches any new ones.
 - **Filtering:** `scopeTags` matches any of the provided tag IDs (logical OR).
 
