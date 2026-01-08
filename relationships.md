@@ -526,7 +526,7 @@ $avatar = $user->avatar;
 
 #### Morph Many
 
-If you want each **Post**, **Photo**, or **Video** to have many comments, use the `morphMany()` method to fetch related comments model collection.
+For a polymorphic one-to-many relationship, such as each **Post**, **Photo**, or **Video** having many **Comments**, use the `morphMany()` method to fetch related comments model collection.
 
 ```php
 class Post extends Model
