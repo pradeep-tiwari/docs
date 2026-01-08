@@ -593,6 +593,8 @@ $parent = $comment->parent; // Could be a Post, Photo, or Video instance
 
 #### Morph To Many
 
+![Polymorphic Many-to-Many Relationship](_media/orm/orm-polymorphic-many-to-many.svg)
+
 A polymorphic many-to-many relationship lets you share a single pivot table across multiple parent models. For example, both **Posts** and **Videos** can have **Tags**, but instead of creating separate `post_tag` and `video_tag` tables, you use one `tag_morphs` table that works for both.
 
 **Why use this?**
