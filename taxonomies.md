@@ -8,7 +8,7 @@ Lightpack’s Taxonomies system provides a robust, hierarchical, and framework-n
 
 The Taxonomies system requires two tables:
 - `taxonomies`: Stores taxonomy nodes (id, name, slug, type, parent_id, sort_order, meta, timestamps).
-- `taxonomy_models`: Pivot table connecting taxonomies to any model (taxonomy_id, model_id, model_type).
+- `taxonomy_morphs`: Pivot table connecting taxonomies to any model (taxonomy_id, morph_id, morph_type).
 
 Create schema migration file:
 
@@ -41,9 +41,14 @@ class Post extends Model {
 ## TaxonomyTrait API
 
 ### taxonomies()
-Returns a pivot query for the model’s taxonomies.
+Returns the model's taxonomies. Can be accessed as a property or method.
 ```php
-$post->taxonomies()->all(); // Get all taxonomy nodes for this post
+// Property access (recommended)
+$taxonomies = $post->taxonomies;
+
+// Method access for query customization
+$pivot = $post->taxonomies();
+$taxonomies = $pivot->all();
 ```
 
 ### attachTaxonomies()
@@ -64,11 +69,11 @@ Replace all taxonomies on the model with the given IDs:
 $post->syncTaxonomies([3]);
 ```
 
-### filters()
+### scopeTaxonomies()
 Query scope to filter models by taxonomy IDs:
 ```php
 // All posts with taxonomy 1 or 2
-$posts = Post::filters(['taxonomies' => [1, 2]])->all();
+$posts = Post::query()->taxonomies([1, 2])->all();
 ```
 
 ---
@@ -241,7 +246,7 @@ Taxonomy::bulkMove([3, 4], 5); // Move nodes 3 and 4 under node 5
 
 - **Duplicate attaches:** Attaching a taxonomy already present is safe and has no effect.
 - **Detaching non-existent taxonomies:** Detaching a taxonomy not present does nothing (no error).
-- **Type isolation:** Only taxonomies for the correct model type are returned (see `model_type` in pivot).
+- **Type isolation:** Only taxonomies for the correct model type are returned (see `morph_type` in pivot).
 - **Syncing:** Removes all taxonomies not in the new list, attaches any new ones.
 - **Filtering:** `scopeTaxonomies` matches any of the provided taxonomy IDs (logical OR).
 - **Cycle prevention:** `moveTo()` and `bulkMove()` prevent cycles (cannot move under self or descendant).
