@@ -165,27 +165,17 @@ class SendMail
 
 ### Rate Limiting
 
-Rate limiting controls how many jobs of a specific type can execute within a time window. This is useful for:
-- **API rate limits:** Respect third-party API limits (e.g., 100 requests per hour)
-- **Resource protection:** Prevent overwhelming external services
-- **Cost control:** Limit expensive operations (SMS, email services with usage-based pricing)
-- **Compliance:** Meet service-level agreements or terms of service
+Rate limiting controls how many jobs can execute within a time window. Use this when jobs arrive **unpredictably** and you need to respect external service limits.
 
-**How it works:**
-When a job hits its rate limit, it's automatically released back to the queue and delayed until the rate limit window expires. The worker continues processing other jobs in the meantime.
-
-#### Basic Rate Limiting
-
-Implement the `rateLimit()` method in your job class:
+Lightpack supports rate limiting out of the box. Implement the `rateLimit()` method in your job class:
 
 ```php
-use Lightpack\Jobs\Job;
-
 class SendEmailJob extends Job
 {
     public function rateLimit(): ?array
     {
-        return ['limit' => 10, 'seconds' => 1]; // 10 emails per second
+        // 10 emails per second
+        return ['limit' => 10, 'seconds' => 1];
     }
     
     public function run()
@@ -294,54 +284,82 @@ class SendEmailJob extends Job
 }
 ```
 
-#### Few Example Scenarios
+#### Real-World Rate Limiting Examples
 
-**Example 1: Ticketing API (10 tickets per hour)**
+**Example 1: User Verification Emails (unpredictable, API-limited)**
 ```php
-class CreateTicketJob extends Job
+class SendVerificationEmailJob extends Job
 {
     public function rateLimit(): ?array
     {
-        return ['limit' => 10, 'hours' => 1];
+        // Email provider allows 100 emails per minute
+        return ['limit' => 100, 'minutes' => 1];
+    }
+    
+    public function run()
+    {
+        // Users sign up unpredictably throughout the day
+        // Rate limiting ensures we never exceed API limits
     }
 }
 ```
 
-**Example 2: Sending SMS (1 per second)**
+**Example 2: SMS OTP (user-triggered, cost control)**
 ```php
-class SendSmsJob extends Job
+class SendOtpSmsJob extends Job
 {
     public function rateLimit(): ?array
     {
-        return ['limit' => 1, 'seconds' => 1];
+        // SMS provider allows 10 per second
+        return ['limit' => 10, 'seconds' => 1];
+    }
+    
+    public function run()
+    {
+        // Users request OTP codes unpredictably
+        // Rate limiting prevents exceeding SMS provider limits
     }
 }
 ```
 
-**Example 3: Payment Processing (100 per second)**
+**Example 3: Webhook Delivery (event-driven, external service)**
 ```php
-class ProcessPaymentJob extends Job
+class DeliverWebhookJob extends Job
 {
     public function rateLimit(): ?array
     {
-        return ['limit' => 100, 'seconds' => 1];
-    }
-}
-```
-
-**Example 4: Daily newsletter (1 per user per day)**
-```php
-class SendNewsletterJob extends Job
-{
-    public function rateLimit(): ?array
-    {
-        $userId = $this->payload['user_id'];
+        $webhookUrl = $this->payload['webhook_url'];
         
+        // Limit per webhook endpoint to avoid overwhelming recipient
         return [
-            'limit' => 1,
-            'days' => 1,
-            'key' => 'newsletter:user:' . $userId
+            'limit' => 50,
+            'minutes' => 1,
+            'key' => 'webhook:' . md5($webhookUrl)
         ];
+    }
+    
+    public function run()
+    {
+        // Events trigger webhooks unpredictably
+        // Rate limiting protects recipient servers
+    }
+}
+```
+
+**Example 4: Third-Party API Calls (strict API limits)**
+```php
+class FetchDataFromApiJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        // External API allows 1000 requests per hour
+        return ['limit' => 1000, 'hours' => 1];
+    }
+    
+    public function run()
+    {
+        // Various parts of app trigger API calls
+        // Rate limiting ensures we stay within quota
     }
 }
 ```
@@ -411,19 +429,92 @@ class SendEmailJob extends Job
 - Consider if rate limiting is the right solution for your use case
 
 **When Rate Limiting Isn't Ideal:**
-- **Known batch processing:** Use manual scheduling with delays instead
-- **Daily quotas:** Pre-check quota before dispatching
-- **Unpredictable bursts:** Rate limiting works well here
+- **Known batch processing:** Use manual delays instead (see below)
+- **Daily quotas:** Pre-check quota before dispatching to avoid wasted attempts
+- **Scheduled tasks:** Use cron + delays for predictable workloads
 
-**Alternative for Batch Jobs:**
+
+#### When to Use Rate Limiting vs Manual Delays
+
+Rate limiting is not always the best solution. Below are some scenarios to help you decide when to use rate limiting and when to use manual delays.
+
+**Use Rate Limiting When:**
+- ✅ Jobs arrive **unpredictably** (user signups, webhook events, form submissions)
+- ✅ You **don't control** when jobs are dispatched
+- ✅ External API has **strict limits** you must respect
+- ✅ Need **per-user or per-tenant** throttling
+
+**Use Manual Delays (`delay()` method) When:**
+- ✅ You **know the volume** upfront (batch processing, cron jobs)
+- ✅ You **control dispatch timing** (scheduled tasks)
+- ✅ Want to **spread load** evenly over time
+
+**Example Decision:**
 ```php
-// Instead of rate limiting 100 emails
-for ($i = 0; $i < 100; $i++) {
-    (new SendEmailJob)
-        ->delay('+' . ($i * 0.5) . ' seconds')
-        ->dispatch($emails[$i]); // Stagger by 0.5s
+// ❌ BAD: Batch processing 1000 emails with rate limiting
+for ($i = 0; $i < 1000; $i++) {
+    (new SendEmailJob)->dispatch($emails[$i]);
+    // Rate limiting will cause many to fail after max attempts
 }
+
+// ✅ GOOD: Batch processing with manual delays
+for ($i = 0; $i < 1000; $i++) {
+    (new SendEmailJob)
+        ->delay('+' . ($i * 2) . ' seconds') // 2 seconds apart
+        ->dispatch($emails[$i]);
+}
+
+// ✅ GOOD: User-triggered emails with rate limiting
+class SendVerificationEmailJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        return ['limit' => 100, 'minutes' => 1]; // API limit
+    }
+}
+// Users trigger this unpredictably - rate limiting handles it
 ```
+
+#### Batch Processing with Manual Delays
+
+For batch processing where you know the volume upfront, use the `delay()` method instead of rate limiting:
+
+**Calculating Delays:**
+```
+If API allows X requests per Y seconds:
+Delay between jobs = Y / X seconds
+
+Examples:
+- 100 per minute → 60/100 = 0.6 seconds apart
+- 10 per second → 1/10 = 0.1 seconds apart
+- 1000 per hour → 3600/1000 = 3.6 seconds apart
+```
+
+**Implementation:**
+```php
+// Example: Email provider allows 100 emails per minute
+// Calculation: 60 seconds / 100 emails = 0.6 seconds per email
+
+$delayPerEmail = 60 / 100; // 0.6 seconds
+
+for ($i = 0; $i < 1000; $i++) {
+    (new SendEmailJob)
+        ->delay('+' . ($i * $delayPerEmail) . ' seconds')
+        ->dispatch($emails[$i]);
+}
+
+// Job 0: dispatches immediately
+// Job 1: dispatches after 0.6 seconds
+// Job 2: dispatches after 1.2 seconds
+// Job 3: dispatches after 1.8 seconds
+// ... and so on
+```
+
+**Why This is Better for Batch Processing:**
+- ✅ No attempts counter wasted on rate limiting
+- ✅ Predictable execution timeline
+- ✅ Efficient - jobs execute exactly when scheduled
+- ✅ No risk of jobs failing due to rate limit cycles
 
 ## Processing Jobs
 
