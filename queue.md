@@ -348,16 +348,21 @@ Rate limiting depends on Lightpack's Cache system. You should configure your cac
 
 #### Important: Rate Limiting and Attempts Counter
 
-**Rate-limited jobs do NOT increment the attempts counter.** This is a critical design decision that differs from job failures:
+**Rate-limited jobs DO increment the attempts counter.** This is an important design decision:
 
-- **Rate limiting** = Waiting for API quota/slots (not a failure)
-- **Job failure** = Exception thrown during execution (counts as attempt)
+- **Rate limiting** = Waiting for API quota/slots → **increments attempts**
+- **Job failure** = Exception thrown during execution → **increments attempts**
+
+**Why both increment attempts:**
+- Prevents infinite loops if jobs are perpetually rate-limited
+- Natural protection against misconfigured rate limits
+- Jobs eventually fail rather than cycling forever
 
 **Example:**
 ```php
 class SendEmailJob extends Job
 {
-    protected $attempts = 3;
+    protected $attempts = 10; // Set higher for rate-limited jobs
     
     public function rateLimit(): ?array
     {
@@ -372,22 +377,34 @@ class SendEmailJob extends Job
 ```
 
 **Scenario:**
-- Dispatch 10 emails
-- Jobs 1-2 execute immediately
-- Jobs 3-10 are rate-limited and released
-- After 1 second, jobs 3-4 execute
-- **Attempts counter stays at 0** for all rate-limited releases
-- If a job throws an exception, **then** attempts increments
-
-**Why this matters:**
-- Jobs can be rate-limited indefinitely without failing
-- Attempts counter only tracks actual execution failures
-- No risk of jobs failing permanently due to rate limiting alone
+- Dispatch 10 emails with `$attempts = 3`
+- Jobs 1-2 execute immediately (attempts: 0)
+- Jobs 3-10 are rate-limited and released (attempts: 1)
+- After 1 second, jobs 3-4 execute (attempts: 1)
+- Jobs 5-10 rate-limited again (attempts: 2)
+- After 1 second, jobs 5-6 execute (attempts: 2)
+- Jobs 7-10 rate-limited again (attempts: 3)
+- **Jobs 7-10 fail permanently** (max attempts reached)
 
 **Best Practices:**
-- Set `$attempts` based on expected failures, not rate limiting
-- Use higher `$attempts` values if jobs might fail during execution
-- Monitor rate-limited jobs in production to tune limits
+- **Set higher `$attempts` for rate-limited jobs** (e.g., 10-20 instead of 3)
+- Calculate: `$attempts = (expected_rate_limit_cycles + expected_failures + buffer)`
+- Monitor rate-limited jobs to tune limits appropriately
+- Consider if rate limiting is the right solution for your use case
+
+**When Rate Limiting Isn't Ideal:**
+- **Known batch processing:** Use manual scheduling with delays instead
+- **Daily quotas:** Pre-check quota before dispatching
+- **Unpredictable bursts:** Rate limiting works well here
+
+**Alternative for Batch Jobs:**
+```php
+// Instead of rate limiting 100 emails
+for ($i = 0; $i < 100; $i++) {
+    (new SendEmailJob)->dispatch($email)
+        ->delay('+' . ($i * 0.5) . ' seconds'); // Stagger by 0.5s
+}
+```
 
 ## Processing Jobs
 
