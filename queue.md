@@ -163,11 +163,15 @@ class SendMail
 }
 ```
 
-### Rate Limiting
+## Rate Limiting
 
 Rate limiting controls how many jobs can execute within a time window. Use this when jobs arrive **unpredictably** and you need to respect external service limits.
 
-Lightpack supports rate limiting out of the box. Implement the `rateLimit()` method in your job class:
+Lightpack supports rate limiting out of the box. Implement the `rateLimit()` method in your job class to enable rate limiting.
+
+> Rate limiting depends on Lightpack's Cache system. You should configure your cache driver in `.env`. Learn more about cache drivers in the [Caching](caching.md) section.
+
+### Setting Rate Limit
 
 ```php
 class SendEmailJob extends Job
@@ -185,7 +189,7 @@ class SendEmailJob extends Job
 }
 ```
 
-#### Supported Time Units
+### Supported Time Units
 
 For better readability, you can use multiple time units:
 
@@ -217,7 +221,7 @@ public function rateLimit(): ?array
 
 **Important:** You must specify a time unit. Omitting it will throw an `InvalidArgumentException`.
 
-#### Per-User Rate Limiting
+### Using Custom Key
 
 Use custom keys to rate limit per user, tenant, or any other dimension:
 
@@ -244,27 +248,7 @@ class SendPaymentReminderJob extends Job
 
 This ensures each user can receive max 3 payment reminders per hour, independently.
 
-#### Per-Tenant Rate Limiting
-
-For multi-tenant applications:
-
-```php
-class GenerateReportJob extends Job
-{
-    public function rateLimit(): ?array
-    {
-        $tenantId = $this->payload['tenant_id'];
-        
-        return [
-            'limit' => 50,
-            'hours' => 1,
-            'key' => 'reports:tenant:' . $tenantId
-        ];
-    }
-}
-```
-
-#### Conditional Rate Limiting
+### Conditional Rate Limiting
 
 Skip rate limiting based on conditions:
 
@@ -284,107 +268,14 @@ class SendEmailJob extends Job
 }
 ```
 
-#### Real-World Rate Limiting Examples
+### Additional Notes
 
-**Example 1: User Verification Emails (unpredictable, API-limited)**
-```php
-class SendVerificationEmailJob extends Job
-{
-    public function rateLimit(): ?array
-    {
-        // Email provider allows 100 emails per minute
-        return ['limit' => 100, 'minutes' => 1];
-    }
-    
-    public function run()
-    {
-        // Users sign up unpredictably throughout the day
-        // Rate limiting ensures we never exceed API limits
-    }
-}
-```
+It is important to understand few of the nuances of rate limiting. Below we document some detailed explanations to help you make informed decisions.
 
-**Example 2: SMS OTP (user-triggered, cost control)**
-```php
-class SendOtpSmsJob extends Job
-{
-    public function rateLimit(): ?array
-    {
-        // SMS provider allows 10 per second
-        return ['limit' => 10, 'seconds' => 1];
-    }
-    
-    public function run()
-    {
-        // Users request OTP codes unpredictably
-        // Rate limiting prevents exceeding SMS provider limits
-    }
-}
-```
 
-**Example 3: Webhook Delivery (event-driven, external service)**
-```php
-class DeliverWebhookJob extends Job
-{
-    public function rateLimit(): ?array
-    {
-        $webhookUrl = $this->payload['webhook_url'];
-        
-        // Limit per webhook endpoint to avoid overwhelming recipient
-        return [
-            'limit' => 50,
-            'minutes' => 1,
-            'key' => 'webhook:' . md5($webhookUrl)
-        ];
-    }
-    
-    public function run()
-    {
-        // Events trigger webhooks unpredictably
-        // Rate limiting protects recipient servers
-    }
-}
-```
+#### Rate Limiting and Attempts Counter
 
-**Example 4: Third-Party API Calls (strict API limits)**
-```php
-class FetchDataFromApiJob extends Job
-{
-    public function rateLimit(): ?array
-    {
-        // External API allows 1000 requests per hour
-        return ['limit' => 1000, 'hours' => 1];
-    }
-    
-    public function run()
-    {
-        // Various parts of app trigger API calls
-        // Rate limiting ensures we stay within quota
-    }
-}
-```
-
-#### Cache Driver Requirements
-
-Rate limiting depends on Lightpack's Cache system. You should configure your cache driver in `.env`. Learn more about cache drivers in the [Caching](caching.md) section.
-
-#### How Rate Limiting Works Internally
-
-1. Worker checks if job is rate limited before execution
-2. If limit exceeded, job is released back to queue with delay equal to the rate limit window
-3. Worker continues processing other jobs
-4. After the window expires, the job becomes available again
-5. No worker resources are wasted waiting
-
-**Why this is better than sleep():**
-- Worker doesn't block - continues processing other jobs
-- Efficient resource usage
-- Automatic retry scheduling
-- Works across multiple worker processes
-
-#### Important: Rate Limiting and Attempts Counter
-
-**Rate-limited jobs DO increment the attempts counter.** This is an important design decision:
+Rate-limited jobs DO increment the attempts counter. This is an important design decision:
 
 - **Rate limiting** = Waiting for API quota/slots → **increments attempts**
 - **Job failure** = Exception thrown during execution → **increments attempts**
@@ -427,12 +318,6 @@ class SendEmailJob extends Job
 - Calculate: `$attempts = (expected_rate_limit_cycles + expected_failures + buffer)`
 - Monitor rate-limited jobs to tune limits appropriately
 - Consider if rate limiting is the right solution for your use case
-
-**When Rate Limiting Isn't Ideal:**
-- **Known batch processing:** Use manual delays instead (see below)
-- **Daily quotas:** Pre-check quota before dispatching to avoid wasted attempts
-- **Scheduled tasks:** Use cron + delays for predictable workloads
-
 
 #### When to Use Rate Limiting vs Manual Delays
 
@@ -515,6 +400,86 @@ for ($i = 0; $i < 1000; $i++) {
 - ✅ Predictable execution timeline
 - ✅ Efficient - jobs execute exactly when scheduled
 - ✅ No risk of jobs failing due to rate limit cycles
+
+#### Real-World Rate Limiting Examples
+
+**Example 1: User Verification Emails (unpredictable, API-limited)**
+```php
+class SendVerificationEmailJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        // Email provider allows 100 emails per minute
+        return ['limit' => 100, 'minutes' => 1];
+    }
+    
+    public function run()
+    {
+        // Users sign up unpredictably throughout the day
+        // Rate limiting ensures we never exceed API limits
+    }
+}
+```
+
+**Example 2: SMS OTP (user-triggered, cost control)**
+```php
+class SendOtpSmsJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        // SMS provider allows 10 per second
+        return ['limit' => 10, 'seconds' => 1];
+    }
+    
+    public function run()
+    {
+        // Users request OTP codes unpredictably
+        // Rate limiting prevents exceeding SMS provider limits
+    }
+}
+```
+
+**Example 3: Webhook Delivery (event-driven, external service)**
+```php
+class DeliverWebhookJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        $webhookUrl = $this->payload['webhook_url'];
+        
+        // Limit per webhook endpoint to avoid overwhelming recipient
+        return [
+            'limit' => 50,
+            'minutes' => 1,
+            'key' => 'webhook:' . md5($webhookUrl)
+        ];
+    }
+    
+    public function run()
+    {
+        // Events trigger webhooks unpredictably
+        // Rate limiting protects recipient servers
+    }
+}
+```
+
+**Example 4: Third-Party API Calls (strict API limits)**
+```php
+class FetchDataFromApiJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        // External API allows 1000 requests per hour
+        return ['limit' => 1000, 'hours' => 1];
+    }
+    
+    public function run()
+    {
+        // Various parts of app trigger API calls
+        // Rate limiting ensures we stay within quota
+    }
+}
+```
 
 ## Processing Jobs
 
