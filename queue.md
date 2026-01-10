@@ -262,7 +262,7 @@ class SendEmailJob extends Job
             return null;
         }
         
-        // otherwise limit to 10 atte per minute
+        // otherwise limit to 10 attempts per minute
         return ['limit' => 10, 'minutes' => 1];
     }
 }
