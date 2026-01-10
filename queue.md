@@ -1,6 +1,6 @@
 # Lightpack Background Jobs: Complete Guide
 
-Ideally, a time consuming job should be performed behind the scenes out of the main HTTP request context. For example, sending email to a user blocks the application untill the processing finishes and this may provide a bad experience to your application users. 
+Ideally, a time consuming job should be performed behind the scenes out of the main HTTP request context. For example, sending email to a user blocks the application until the processing finishes and this may provide a bad experience to your application users. 
 
 What if you could perform time consuming tasks, such as sending emails, in the background without blocking the actual request? 
 
@@ -145,9 +145,211 @@ class SendMail
 }
 ```
 
+### Rate Limiting
+
+Rate limiting controls how many jobs of a specific type can execute within a time window. This is useful for:
+- **API rate limits:** Respect third-party API limits (e.g., 100 requests per hour)
+- **Resource protection:** Prevent overwhelming external services
+- **Cost control:** Limit expensive operations (SMS, email services with usage-based pricing)
+- **Compliance:** Meet service-level agreements or terms of service
+
+**How it works:**
+When a job hits its rate limit, it's automatically released back to the queue and delayed until the rate limit window expires. The worker continues processing other jobs in the meantime.
+
+#### Basic Rate Limiting
+
+Implement the `rateLimit()` method in your job class:
+
+```php
+use Lightpack\Jobs\Job;
+
+class SendEmailJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        return ['limit' => 10, 'seconds' => 1]; // 10 emails per second
+    }
+    
+    public function run()
+    {
+        // Send email logic
+    }
+}
+```
+
+#### Supported Time Units
+
+For better readability, you can use multiple time units:
+
+```php
+// Seconds (for high-frequency operations)
+public function rateLimit(): ?array
+{
+    return ['limit' => 2, 'seconds' => 1]; // 2 per second
+}
+
+// Minutes (common for API calls)
+public function rateLimit(): ?array
+{
+    return ['limit' => 6, 'minutes' => 5]; // 6 login attempts per 5 minutes
+}
+
+// Hours (for moderate limits)
+public function rateLimit(): ?array
+{
+    return ['limit' => 100, 'hours' => 1]; // 100 API calls per hour
+}
+
+// Days (for daily quotas)
+public function rateLimit(): ?array
+{
+    return ['limit' => 1, 'days' => 1]; // 1 newsletter per day
+}
+```
+
+**Important:** You must specify a time unit. Omitting it will throw an `InvalidArgumentException`.
+
+#### Per-User Rate Limiting
+
+Use custom keys to rate limit per user, tenant, or any other dimension:
+
+```php
+class SendPaymentReminderJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        $userId = $this->payload['user_id'];
+        
+        return [
+            'limit' => 3,
+            'hours' => 1,
+            'key' => 'payment-reminder:user:' . $userId
+        ];
+    }
+    
+    public function run()
+    {
+        // Send payment reminder to specific user
+    }
+}
+```
+
+This ensures each user can receive max 3 payment reminders per hour, independently.
+
+#### Per-Tenant Rate Limiting
+
+For multi-tenant applications:
+
+```php
+class GenerateReportJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        $tenantId = $this->payload['tenant_id'];
+        
+        return [
+            'limit' => 50,
+            'hours' => 1,
+            'key' => 'reports:tenant:' . $tenantId
+        ];
+    }
+}
+```
+
+#### Conditional Rate Limiting
+
+Skip rate limiting based on conditions:
+
+```php
+class SendEmailJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        // No rate limit for admin users
+        if ($this->payload['is_admin'] ?? false) {
+            return null;
+        }
+        
+        // otherwise limit to 10 atte per minute
+        return ['limit' => 10, 'minutes' => 1];
+    }
+}
+```
+
+#### Few Example Scenarios
+
+**Example 1: Ticketing API (10 tickets per hour)**
+```php
+class CreateTicketJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        return ['limit' => 10, 'hours' => 1];
+    }
+}
+```
+
+**Example 2: Sending SMS (1 per second to avoid spam)**
+```php
+class SendSmsJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        return ['limit' => 1, 'seconds' => 1];
+    }
+}
+```
+
+**Example 3: Payment Processing (100 per second)**
+```php
+class ProcessPaymentJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        return ['limit' => 100, 'seconds' => 1];
+    }
+}
+```
+
+**Example 4: Daily newsletter (1 per user per day)**
+```php
+class SendNewsletterJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        $userId = $this->payload['user_id'];
+        
+        return [
+            'limit' => 1,
+            'days' => 1,
+            'key' => 'newsletter:user:' . $userId
+        ];
+    }
+}
+```
+
+#### Cache Driver Requirements
+
+Rate limiting depends on Lightpack's Cache system. You should configure your cache driver in `.env`. Learn more about cache drivers in the [Caching](caching.md) section.
+
+#### How Rate Limiting Works Internally
+
+1. Worker checks if job is rate limited before execution
+2. If limit exceeded, job is released back to queue with delay equal to the rate limit window
+3. Worker continues processing other jobs
+4. After the window expires, the job becomes available again
+5. No worker resources are wasted waiting
+
+**Why this is better than sleep():**
+- No need to sleep
+- Worker doesn't block - continues processing other jobs
+- Efficient resource usage
+- Automatic retry scheduling
+- Works across multiple worker processes
+
 ## Processing Jobs
 
-Once you have dispatched your job its time to run them. Fire this command from the terminal in your project root:
+Once you have dispatched your job it's time to run them. Fire this command from the terminal in your project root:
 
 ```terminal
 php console process:jobs
@@ -199,7 +401,7 @@ The framework will call these methods automatically if they exist.
 
 ## Production
 
-In  **production** environment, you should run and monitor job processing by using a process monitoring solution like **supervisor**.
+In **production** environment, you should run and monitor job processing by using a process monitoring solution like **supervisor**.
 
 First, you will have to install `supervisor`:
 
