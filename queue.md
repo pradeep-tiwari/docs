@@ -114,14 +114,32 @@ class SendMail
 
 ### Delay
 
-You can delay job processing by a specified amount of time by setting the `$delay` property:
+You can delay job processing by a specified amount of time in two ways:
 
+**Option 1: Property-based (class-level default)**
 ```php
-class SendMail
+class SendMail extends Job
 {
     protected $delay = '+30 seconds';
 }
+
+(new SendMail)->dispatch($payload); // Will be delayed by 30 seconds
 ```
+
+**Option 2: Method-based (runtime, per-instance)**
+```php
+// Delay a specific job instance
+(new SendMail)->delay('+1 hour')->dispatch($payload);
+
+// Dynamic delays for batch processing
+for ($i = 0; $i < 100; $i++) {
+    (new SendMail)
+        ->delay('+' . ($i * 5) . ' seconds')
+        ->dispatch($emails[$i]);
+}
+```
+
+The `delay()` method accepts any `strtotime()` compatible string (e.g., `'+30 seconds'`, `'+1 hour'`, `'+2 days'`).
 
 ### Attempts
 
@@ -401,8 +419,9 @@ class SendEmailJob extends Job
 ```php
 // Instead of rate limiting 100 emails
 for ($i = 0; $i < 100; $i++) {
-    (new SendEmailJob)->dispatch($email)
-        ->delay('+' . ($i * 0.5) . ' seconds'); // Stagger by 0.5s
+    (new SendEmailJob)
+        ->delay('+' . ($i * 0.5) . ' seconds')
+        ->dispatch($emails[$i]); // Stagger by 0.5s
 }
 ```
 
