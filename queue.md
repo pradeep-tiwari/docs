@@ -307,7 +307,7 @@ class CreateTicketJob extends Job
 }
 ```
 
-**Example 2: Sending SMS (1 per second to avoid spam)**
+**Example 2: Sending SMS (1 per second)**
 ```php
 class SendSmsJob extends Job
 {
