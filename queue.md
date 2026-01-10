@@ -314,8 +314,7 @@ class SendEmailJob extends Job
 - **Jobs 7-10 fail permanently** (max attempts reached)
 
 **Best Practices:**
-- **Set higher `$attempts` for rate-limited jobs** (e.g., 10-20 instead of 3)
-- Calculate: `$attempts = (expected_rate_limit_cycles + expected_failures + buffer)`
+- Set higher `$attempts` for rate-limited jobs (e.g., 10-20 instead of 3)
 - Monitor rate-limited jobs to tune limits appropriately
 - Consider if rate limiting is the right solution for your use case
 
