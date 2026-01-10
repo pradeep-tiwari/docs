@@ -341,11 +341,53 @@ Rate limiting depends on Lightpack's Cache system. You should configure your cac
 5. No worker resources are wasted waiting
 
 **Why this is better than sleep():**
-- No need to sleep
 - Worker doesn't block - continues processing other jobs
 - Efficient resource usage
 - Automatic retry scheduling
 - Works across multiple worker processes
+
+#### Important: Rate Limiting and Attempts Counter
+
+**Rate-limited jobs do NOT increment the attempts counter.** This is a critical design decision that differs from job failures:
+
+- **Rate limiting** = Waiting for API quota/slots (not a failure)
+- **Job failure** = Exception thrown during execution (counts as attempt)
+
+**Example:**
+```php
+class SendEmailJob extends Job
+{
+    protected $attempts = 3;
+    
+    public function rateLimit(): ?array
+    {
+        return ['limit' => 2, 'seconds' => 1];
+    }
+    
+    public function run()
+    {
+        // Send email
+    }
+}
+```
+
+**Scenario:**
+- Dispatch 10 emails
+- Jobs 1-2 execute immediately
+- Jobs 3-10 are rate-limited and released
+- After 1 second, jobs 3-4 execute
+- **Attempts counter stays at 0** for all rate-limited releases
+- If a job throws an exception, **then** attempts increments
+
+**Why this matters:**
+- Jobs can be rate-limited indefinitely without failing
+- Attempts counter only tracks actual execution failures
+- No risk of jobs failing permanently due to rate limiting alone
+
+**Best Practices:**
+- Set `$attempts` based on expected failures, not rate limiting
+- Use higher `$attempts` values if jobs might fail during execution
+- Monitor rate-limited jobs in production to tune limits
 
 ## Processing Jobs
 
