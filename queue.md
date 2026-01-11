@@ -268,6 +268,62 @@ class SendEmailJob extends Job
 }
 ```
 
+### Jitter: Preventing Thundering Herd
+
+When multiple jobs are rate-limited simultaneously, they may all retry at the same time, causing a spike in queue processing. Lightpack automatically adds **jitter** (random delay variation) to prevent this "thundering herd" problem.
+
+**Default Behavior:**
+- 20% jitter is added automatically to all rate-limited job delays
+- Example: 60-second window → jobs retry between 60-72 seconds
+- Spreads retry load across time instead of all at once
+
+**How It Works:**
+```php
+class SendEmailJob extends Job
+{
+    public function rateLimit(): ?array
+    {
+        return ['limit' => 14, 'seconds' => 1];
+        // Jobs retry after 1.0-1.2 seconds (20% jitter)
+    }
+}
+```
+
+**Disabling Jitter:**
+```php
+public function rateLimit(): ?array
+{
+    return [
+        'limit' => 14,
+        'seconds' => 1,
+        'jitter' => 0, // No jitter - exact 1 second delay
+    ];
+}
+```
+
+**Custom Jitter:**
+```php
+public function rateLimit(): ?array
+{
+    return [
+        'limit' => 14,
+        'seconds' => 1,
+        'jitter' => 0.5, // 50% jitter - retry between 1.0-1.5 seconds
+    ];
+}
+```
+
+**When Jitter Helps:**
+- ✅ Multiple workers processing jobs
+- ✅ High-concurrency scenarios (many jobs rate-limited at once)
+- ✅ Prevents queue spikes
+- ✅ Smoother resource utilization
+
+**When to Disable Jitter:**
+- ❌ Single worker setups (no thundering herd possible)
+- ❌ Testing/debugging (need deterministic timing)
+- ❌ Time-sensitive jobs (need exact retry timing)
+
 ### Additional Notes
 
 It is important to understand few of the nuances of rate limiting. Below we document some detailed explanations to help you make informed decisions.
