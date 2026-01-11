@@ -181,15 +181,27 @@ php console db:seed
 
 ### Jobs & Scheduling
 
-#### process:jobs
+#### jobs:run
 Run the background job worker to process queued jobs.
 
 ```cli
-php console process:jobs
+php console jobs:run
 ```
 - `--sleep=N` : Polling interval in seconds (default: 5).
 - `--queue=emails,notifications` : Comma-separated list of queues (default: `default`).
 - `--cooldown=N` : Exit after this many seconds of inactivity (default: run forever).
+
+#### jobs:retry
+Retry failed jobs that have exhausted all retry attempts.
+
+```cli
+# Retry all failed jobs
+php console jobs:retry
+
+# Retry a specific failed job by ID
+php console jobs:retry 123
+php console jobs:retry job_abc123xyz
+```
 
 #### schedule:events
 Run all scheduled tasks (for cron integration).

@@ -541,7 +541,7 @@ class FetchDataFromApiJob extends Job
 Once you have dispatched your job it's time to run them. Fire this command from the terminal in your project root:
 
 ```terminal
-php console process:jobs
+php console jobs:run
 ```
 
 This will hang your terminal prompt and will wait for any jobs to process. If a job is processed successfully or failed, you should see a terminal message accordingly.
@@ -560,7 +560,7 @@ Cooldown is the **total runtime** (not idle time). After running for the specifi
 Example:
 ```cli
 # Worker runs for 10 minutes of total runtime, then stops (Supervisor will restart it)
-php console process:jobs --sleep=2 --queue=emails,default --cooldown=600
+php console jobs:run --sleep=2 --queue=emails,default --cooldown=600
 ```
 
 ### Signal Handling
@@ -588,6 +588,33 @@ class SendMail extends Job {
 
 The framework will call these methods automatically if they exist.
 
+## Retrying Failed Jobs
+
+When jobs fail after exhausting all retry attempts, they are marked as **failed** in the queue. You can retry these failed jobs using the `jobs:retry` command.
+
+### Retry All Failed Jobs
+
+```cli
+php console jobs:retry
+```
+
+This will reset all failed jobs and queue them for processing again.
+
+### Retry a Specific Failed Job
+
+```cli
+php console jobs:retry <job_id>
+```
+
+Example:
+```cli
+# For database engine (numeric IDs)
+php console jobs:retry 123
+
+# For Redis engine (string IDs)
+php console jobs:retry job_abc123xyz
+```
+
 ## Production
 
 In **production** environment, you should run and monitor job processing by using a process monitoring solution like **supervisor**.
@@ -605,7 +632,7 @@ Create a file named `lightpack-worker.conf` in `/etc/supervisor/conf.d` director
 ```text
 [program:lightpack-worker]
 process_name=%(program_name)s_%(process_num)02d
-command=php /var/www/lightpack-app/console process:jobs --cooldown=3600
+command=php /var/www/lightpack-app/console jobs:run --cooldown=3600
 autostart=true
 autorestart=true
 stopasgroup=true
