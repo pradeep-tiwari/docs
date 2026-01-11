@@ -201,7 +201,13 @@ php console jobs:retry
 # Retry a specific failed job by ID
 php console jobs:retry 123
 php console jobs:retry job_abc123xyz
+
+# Retry all failed jobs from a specific queue
+php console jobs:retry --queue=emails
 ```
+
+**Options:**
+- `--queue=<name>` : Retry only failed jobs from the specified queue.
 
 #### schedule:events
 Run all scheduled tasks (for cron integration).

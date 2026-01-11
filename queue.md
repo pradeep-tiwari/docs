@@ -615,6 +615,21 @@ php console jobs:retry 123
 php console jobs:retry job_abc123xyz
 ```
 
+### Retry Failed Jobs from a Specific Queue
+
+```cli
+php console jobs:retry --queue=<queue_name>
+```
+
+Example:
+```cli
+# Retry all failed jobs from the 'emails' queue
+php console jobs:retry --queue=emails
+
+# Retry all failed jobs from the 'notifications' queue
+php console jobs:retry --queue=notifications
+```
+
 ## Production
 
 In **production** environment, you should run and monitor job processing by using a process monitoring solution like **supervisor**.
