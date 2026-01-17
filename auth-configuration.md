@@ -18,8 +18,8 @@ return [
         ],
 
         'routes' => [
-            'login' => 'login',
-            'home' => 'dashboard',
+            'guest' => 'login',
+            'authenticated' => 'dashboard',
         ],
     ],
 ];
@@ -69,32 +69,32 @@ Sets the duration (in minutes) for how long the remember-me cookie remains valid
 
 The `routes` section configures which named routes the auth filters should redirect to. This allows you to customize redirect behavior without modifying framework code.
 
-### routes.login
+### routes.guest
 
 The **named route** for your login page. The `AuthFilter` redirects unauthenticated users here.
 
 ```php
-'login' => 'login', // Route name, not URL
+'guest' => 'login', // Route name, not URL
 ```
 
 Make sure you have a corresponding route defined:
 
 ```php
-$router->get('/login', [AuthController::class, 'showLogin'])->name('login');
+route()->get('/login', [AuthController::class, 'showLogin'])->name('login');
 ```
 
-### routes.home
+### routes.authenticated
 
 The **named route** where authenticated users are redirected. The `GuestFilter` uses this when logged-in users try to access guest-only pages (like login or registration).
 
 ```php
-'home' => 'dashboard', // Route name, not URL
+'authenticated' => 'dashboard', // Route name, not URL
 ```
 
 Make sure you have a corresponding route defined:
 
 ```php
-$router->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+route()->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 ```
 
 ---

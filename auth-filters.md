@@ -76,20 +76,20 @@ route()->group(['filters' => 'guest'], function() {
 2. If **logged in**: Redirects to the home page
 3. If **not logged in**: Allows the request to proceed
 
-### Configuring Home Route
+### Configuring Authenticated Route
 
-The `GuestFilter` uses the `routes.home` config to determine where to redirect authenticated users:
+The `GuestFilter` uses the `routes.authenticated` config to determine where to redirect authenticated users:
 
 ```php
 'routes' => [
-    'home' => 'dashboard',  // Redirect here when already authenticated
+    'authenticated' => 'dashboard',  // Redirect here when already authenticated
 ],
 ```
 
 Make sure you have a corresponding named route:
 
 ```php
-$router->get('/dashboard', DashboardController::class, 'index')->name('dashboard');
+route()->get('/dashboard', DashboardController::class, 'index')->name('dashboard');
 ```
 
 ## Per-Route Filters
