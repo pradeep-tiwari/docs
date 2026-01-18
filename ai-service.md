@@ -5,7 +5,7 @@ A unified, explicit, and extensible interface for text generation, summarization
 - **Purpose:** Seamlessly add AI/ML-powered text generation, embeddings, and semantic search to any Lightpack project.
 - **Where to Use:** Blog/content generation, summarization, Q&A, code generation, structured data extraction, semantic search, RAG applications, content recommendations, and more.
 
-**Lightpack AI** exposes four methods:
+**Lightpack AI** exposes four core methods:
 
 ```php
 ai()->ask();      // Simple question-answer
@@ -13,6 +13,16 @@ ai()->task();     // Structured data extraction
 ai()->embed();    // Text to vector embeddings
 ai()->similar();  // Semantic similarity search
 ```
+
+**Plus AI Agents** for building intelligent assistants:
+
+```php
+agent()->tool('search', fn($q) => /* ... */);  // Register tools
+agent()->ask("question");                       // Agent decides which tools to use
+agent()->conversation('session_id');            // Multi-turn conversations with memory
+```
+
+> See [AI Agents](agents.md) for building database-powered AI assistants.
 
 ## Supported Providers
 
