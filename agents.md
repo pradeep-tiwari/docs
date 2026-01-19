@@ -23,7 +23,11 @@ $agent->tool('search_products', function($query) {
 }, 'Search product catalog semantically');
 
 // Ask anything - agent decides which tools to use
-$answer = $agent->ask("Show me laptops good for programming");
+$result = $agent->ask("Show me laptops good for programming");
+
+echo $result->answer();  // Get the answer
+print_r($result->toolsUsed());  // See which tools were used
+print_r($result->toolResults());  // Access raw tool results
 ```
 
 ## Core Concepts
@@ -95,6 +99,32 @@ $agent->tool('search_docs', $docSearchFn);
 $answer = $agent->ask("Where is my order for the Dell laptop?");
 ```
 
+### Tool Parameters
+
+Tools can accept structured parameters instead of raw query strings:
+
+```php
+$agent->tool('search_products', function($params) {
+    return db()->table('products')
+        ->where('category', '=', $params['category'])
+        ->where('price', '<=', $params['max_price'])
+        ->all();
+}, 'Search products by category and price', [
+    'category' => ['string', 'Product category (e.g., laptops, phones)'],
+    'max_price' => ['number', 'Maximum price in dollars']
+]);
+
+// AI extracts parameters from natural language
+$result = $agent->ask("Find laptops under $1000");
+// AI calls: search_products(['category' => 'laptops', 'max_price' => 1000])
+```
+
+**Benefits:**
+- More precise tool execution
+- Type safety
+- Better validation
+- Clearer intent
+
 ### Tool Descriptions
 
 Provide clear descriptions to help the agent choose correctly:
@@ -107,6 +137,104 @@ $agent->tool('search_transactions', function($query) {
 $agent->tool('calculate_budget', function($query) {
     // Implementation
 }, 'Calculate spending totals grouped by category');
+```
+
+## Agent Configuration
+
+### Temperature Control
+
+Control response creativity (0.0 = deterministic, 1.0 = creative):
+
+```php
+$agent = agent()
+    ->temperature(0.2)  // More focused, deterministic
+    ->tool('search', $searchFn);
+
+// Or for creative responses
+$agent = agent()
+    ->temperature(0.8)  // More creative, varied
+    ->tool('generate_ideas', $ideasFn);
+```
+
+### System Prompt
+
+Set agent personality and behavior:
+
+```php
+$agent = agent()
+    ->system('You are a helpful product expert. Be concise and focus on technical specifications.')
+    ->tool('search_products', $searchFn);
+
+$result = $agent->ask("Tell me about this laptop");
+// Agent responds in concise, technical style
+```
+
+### Method Chaining
+
+All configuration methods support chaining:
+
+```php
+$result = agent()
+    ->system('You are a financial advisor')
+    ->temperature(0.3)
+    ->tool('search_transactions', $searchFn)
+    ->tool('calculate_budget', $budgetFn)
+    ->ask('How much did I spend on groceries?');
+```
+
+## Working with Results
+
+### AgentResult Object
+
+The `ask()` method returns an `AgentResult` object with rich metadata:
+
+```php
+$result = $agent->ask("Find laptops under $1000");
+
+// Get the answer
+echo $result->answer();
+
+// See which tools were used
+print_r($result->toolsUsed());  // ['search_products', 'check_stock']
+
+// Check if specific tool was used
+if ($result->usedTool('search_products')) {
+    echo "Searched products";
+}
+
+// Access individual tool results
+$products = $result->toolResult('search_products');
+print_r($products);
+
+// Get all tool results
+$allResults = $result->toolResults();
+
+// See AI's reasoning
+echo $result->reasoning();  // "Need to search products and check availability"
+
+// Convert to array (useful for JSON responses)
+return response()->json($result->toArray());
+
+// Use as string (implicit __toString)
+echo $result;  // Outputs the answer
+```
+
+### Controller Example
+
+```php
+public function ask()
+{
+    $result = agent()
+        ->tool('search_products', $searchFn)
+        ->ask(request()->input('question'));
+    
+    return response()->json([
+        'answer' => $result->answer(),
+        'tools_used' => $result->toolsUsed(),
+        'products' => $result->toolResult('search_products'),
+        'reasoning' => $result->reasoning()
+    ]);
+}
 ```
 
 ## Conversations
@@ -603,8 +731,4 @@ Delete conversation from cache.
 
 **Returns:** Conversation instance
 
-## See Also
-
-- [AI Service](ai-service.md) - Core AI functionality
-- [Vector Search](vector-search.md) - Semantic search
-- [RAG Applications](rag.md) - Building knowledge bases
+---
