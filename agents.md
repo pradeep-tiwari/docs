@@ -2,6 +2,20 @@
 
 Turn your database into an intelligent AI assistant in just a few lines of code. Agents combine AI reasoning with custom tools to answer questions, perform tasks, and maintain conversations.
 
+## Provider Compatibility
+
+| Feature | OpenAI | Gemini | Mistral | Anthropic | Groq |
+|---------|--------|--------|---------|-----------|------|
+| **Basic Agents** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Tool Parameters** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Temperature Control** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **System Prompts** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Conversations** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Embedding-based Tools** | ✅ | ✅ | ✅ | ❌ | ❌ |
+| **RAG/Semantic Search** | ✅ | ✅ | ✅ | ❌ | ❌ |
+
+**Important:** Anthropic and Groq do not support embeddings. If your agent tools use `ai()->embed()` or semantic search, use OpenAI, Gemini, or Mistral instead.
+
 ## Quick Start
 
 ```php
@@ -10,7 +24,7 @@ $agent = agent();
 
 // Add tools (just functions!)
 $agent->tool('search_products', function($query) {
-    $embedding = ai()->embed($query);
+    $embedding = ai()->embed($query);  // Requires OpenAI, Gemini, or Mistral
     $products = db()->table('product_embeddings')->all();
     
     $items = array_map(fn($e) => [
@@ -50,6 +64,8 @@ Tools are simple functions that agents can call. They can:
 - Fetch external data
 - Execute business logic
 - Anything you can code!
+
+**Provider Note:** Tools that use `ai()->embed()` for semantic search require OpenAI, Gemini, or Mistral. Simple database queries work with all providers.
 
 ```php
 $agent->tool('calculate_budget', function($query) {
