@@ -142,7 +142,7 @@ $result = ai()->task()
 
 ---
 
-### Tool Calling
+### tool()
 
 **Use for:** Giving AI access to external functions, APIs, or data sources.
 
@@ -251,10 +251,20 @@ $result = ai()->task()
 
 **3. Invokable Tool Classes**
 
+For complex tools, use invokable classes instead of closures. This keeps your code organized and allows the tool to define its own description and parameters.
+
+**How it works:**
+- Implement `__invoke()` to handle the tool logic
+- Add static `description()` method to describe what the tool does
+- Add static `params()` method to define the parameter schema
+- Pass the class name (or instance) to `->tool()`
+
+The framework automatically extracts `description()` and `params()` from the class, so you don't need to repeat them when registering the tool.
+
 ```php
 class SearchProducts
 {
-    public function __invoke(array $params, ToolContext $context): array
+    public function __invoke(array $params, $context): array
     {
         return db()->table('products')
             ->where('category', '=', $params['category'])
@@ -276,9 +286,9 @@ class SearchProducts
     }
 }
 
-// Usage
+// Usage - description and params are auto-extracted
 $result = ai()->task()
-    ->tool('search', SearchProducts::class)  // Auto-extracts description and params
+    ->tool('search', SearchProducts::class)
     ->prompt('Find laptops under $1000')
     ->run();
 ```
