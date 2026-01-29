@@ -253,18 +253,22 @@ $result = ai()->task()
 
 For complex tools, use invokable classes instead of closures. This keeps your code organized and allows the tool to define its own description and parameters.
 
-**How it works:**
-- Implement `__invoke()` to handle the tool logic
-- Add static `description()` method to describe what the tool does
-- Add static `params()` method to define the parameter schema
-- Pass the class name (or instance) to `->tool()`
+**Scaffold a tool class:**
+```bash
+php console create:tool SearchProducts
+```
+
+This creates `app/Tools/SearchProducts.php` with the `ToolInterface` already implemented.
 
 The framework automatically extracts `description()` and `params()` from the class, so you don't need to repeat them when registering the tool.
 
 ```php
-class SearchProducts
+use Lightpack\AI\Tools\ToolContext;
+use Lightpack\AI\Tools\ToolInterface;
+
+class SearchProducts implements ToolInterface
 {
-    public function __invoke(array $params, $context): array
+    public function __invoke(array $params, ToolContext $context): mixed
     {
         return db()->table('products')
             ->where('category', '=', $params['category'])
