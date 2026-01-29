@@ -99,7 +99,7 @@ if ($result['success']) {
 - `cache(bool)` - Enable caching
 - `cacheTtl(int)` - Cache duration in seconds
 - `tool(name, fn, description, params)` - Register a tool
-- `metadata(array)` - Pass context data to tools
+- `context(array)` - Pass context data to tools
 - `run()` - Execute and return `['success', 'data', 'errors', 'raw']`
 
 ---
@@ -221,15 +221,15 @@ $result = ai()->task()
 // AI should choose 'get_weather' (not 'get_forecast')
 ```
 
-**2. Tool with Context (Metadata)**
+**2. Tool with Context**
 
-Sometimes your tools need access to application context that shouldn't come from the AI (like the current user ID, tenant ID, or session data). Use `metadata()` to pass this context safely to your tools.
+Sometimes your tools need access to application context that shouldn't come from the AI (like the current user ID, tenant ID, or session data). Use `context()` to pass this context safely to your tools.
 
-The AI **cannot see or modify** metadata - it's passed directly from your application to the tool function. This prevents the AI from impersonating users or accessing unauthorized data and keeps app context separate from AI reasoning.
+The AI **cannot see or modify** context data - it's passed directly from your application to the tool function. This prevents the AI from impersonating users or accessing unauthorized data and keeps app context separate from AI reasoning.
 
 ```php
 $result = ai()->task()
-    ->metadata(['user_id' => auth()->user()->id])
+    ->context(['user_id' => auth()->user()->id])
     
     ->tool('get_orders', function($params, $context) {
         // Get user ID from metadata (not from AI!)
@@ -322,7 +322,7 @@ $result = ai()->task()
 - AI decides which tool to call (or none) based on the question
 - Tools receive validated parameters (type-checked and coerced)
 - Tool results are passed back to AI to generate natural language answer
-- Use `metadata()` to pass app context (user ID, tenant ID, etc.) to tools
+- Use `context()` to pass app context (user ID, tenant ID, etc.) to tools
 - Tools can be closures, invokable objects, or class strings
 
 ---
@@ -752,7 +752,7 @@ $result = ai()->task()
 
 **Tool Security:**
 - Validate and sanitize tool parameters
-- Use `metadata()` for user context (don't trust AI-generated user IDs)
+- Use `context()` for user context (don't trust AI-generated user IDs)
 - Limit tool access to necessary data only
 - Never expose sensitive operations as tools
 - Log all tool executions for audit trails
