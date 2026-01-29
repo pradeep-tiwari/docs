@@ -5,11 +5,11 @@ A unified, explicit, and extensible interface for text generation, summarization
 - **Purpose:** Seamlessly add AI/ML-powered text generation, embeddings, and semantic search to any Lightpack project.
 - **Where to Use:** Blog/content generation, summarization, Q&A, code generation, structured data extraction, semantic search, RAG applications, content recommendations, and more.
 
-**Lightpack AI** exposes four methods:
+**Lightpack AI** exposes four core methods:
 
 ```php
 ai()->ask();      // Simple question-answer
-ai()->task();     // Structured data extraction
+ai()->task();     // Structured data extraction with tools
 ai()->embed();    // Text to vector embeddings
 ai()->similar();  // Semantic similarity search
 ```
@@ -37,18 +37,17 @@ php console create:config --support=ai
 
 ## Usage
 
-Lightpack AI provides four methods for different use cases:
-
 | Method | Use When | Returns |
 |--------|----------|---------|
 | `ask()` | Simple questions, plain text answers | String |
-| `task()` | Structured data extraction with validation | Array with `success`, `data`, `errors` |
+| `task()` | Structured data extraction, tool calling | Array with `success`, `data`, `errors`, `raw` |
 | `embed()` | Convert text to vector embeddings | Array of floats (single) or array of arrays (batch) |
 | `similar()` | Find semantically similar items | Array of matches with similarity scores |
 
 **Quick Decision Guide:**
 - Need a quick answer? → `ask()`
-- Need JSON with specific fields? → `task()`
+- Need JSON with specific fields? → `task()` with `expect()`
+- Need to call external functions/APIs? → `task()` with `tool()`
 - Need semantic search? → `embed()` + `similar()`
 
 ---
@@ -92,9 +91,15 @@ if ($result['success']) {
 - `expect(array)` - Define JSON schema with types
 - `required(...fields)` - Mark fields as required
 - `expectArray(key)` - Expect array of objects
+- `message(role, content)` - Add message to conversation history
 - `system(string)` - Set system prompt
 - `model(string)` - Override model
+- `temperature(float)` - Set randomness (0.0-2.0)
+- `maxTokens(int)` - Limit response length
 - `cache(bool)` - Enable caching
+- `cacheTtl(int)` - Cache duration in seconds
+- `tool(name, fn, description, params)` - Register a tool
+- `metadata(array)` - Pass context data to tools
 - `run()` - Execute and return `['success', 'data', 'errors', 'raw']`
 
 ---
@@ -124,6 +129,187 @@ $result = ai()->task()
     ->message('user', 'How do I reset my password?')
     ->run();
 ```
+
+**3. Control Temperature and Tokens**
+
+```php
+$result = ai()->task()
+    ->prompt('Generate 3 product names')
+    ->temperature(0.9)  // More creative (0.0 = deterministic, 2.0 = very random)
+    ->maxTokens(100)    // Limit response length
+    ->run();
+```
+
+---
+
+### Tool Calling
+
+**Use for:** Giving AI access to external functions, APIs, or data sources.
+
+Tools allow AI to call PHP functions to fetch data, perform calculations, or interact with your application. The AI decides which tool to call based on the user's question.
+
+**Basic Example:**
+
+```php
+$result = ai()->task()
+    ->tool('search_products', function($params) {
+        return db()->table('products')
+            ->where('name', 'LIKE', "%{$params['query']}%")
+            ->limit(5)
+            ->all();
+    }, 'Search products by name', ['query' => 'string'])
+    ->prompt('Find laptops')
+    ->run();
+
+if ($result['success']) {
+    echo $result['raw'];  // AI's natural language answer
+    print_r($result['tools_used']);    // ['search_products']
+    print_r($result['tool_results']);  // ['search_products' => [...]]
+}
+```
+
+**Tool Definition:**
+
+```php
+->tool(
+    string $name,           // Tool identifier
+    mixed $fn,              // Closure, invokable object, or class string
+    ?string $description,   // What the tool does (helps AI decide)
+    array $params           // Parameter schema: ['param' => 'type']
+)
+```
+
+**Supported parameter types:**
+- `'string'` - Text
+- `'int'` - Integer
+- `'number'` - Float/decimal
+- `'bool'` - Boolean
+- `'array'` - Array
+
+**Parameter schema formats:**
+
+```php
+// Simple: just type
+['query' => 'string', 'limit' => 'int']
+
+// With description (helps AI understand)
+['query' => ['string', 'Search term'], 'limit' => ['int', 'Max results']]
+
+// List format (defaults to string)
+['query', 'category']  // Both become 'string' type
+```
+
+---
+
+#### Tool Examples
+
+**1. Multiple Tools**
+
+```php
+$result = ai()->task()
+    ->tool('get_weather', function($params) {
+        return http()->get("api.weather.com/{$params['city']}");
+    }, 'Get current weather', ['city' => 'string'])
+    
+    ->tool('get_forecast', function($params) {
+        return http()->get("api.weather.com/forecast/{$params['city']}");
+    }, 'Get 7-day forecast', ['city' => 'string'])
+    
+    ->prompt('What is the weather in Paris?')
+    ->run();
+
+// AI should choose 'get_weather' (not 'get_forecast')
+```
+
+**2. Tool with Context (Metadata)**
+
+Sometimes your tools need access to application context that shouldn't come from the AI (like the current user ID, tenant ID, or session data). Use `metadata()` to pass this context safely to your tools.
+
+The AI **cannot see or modify** metadata - it's passed directly from your application to the tool function. This prevents the AI from impersonating users or accessing unauthorized data and keeps app context separate from AI reasoning.
+
+```php
+$result = ai()->task()
+    ->metadata(['user_id' => auth()->user()->id])
+    
+    ->tool('get_orders', function($params, $context) {
+        // Get user ID from metadata (not from AI!)
+        $userId = $context->get('user_id');
+        
+        return db()->table('orders')
+            ->where('user_id', '=', $userId)
+            ->limit($params['limit'])
+            ->all();
+    }, 'Get user orders', ['limit' => 'int'])
+    
+    ->prompt('Show my last 5 orders')
+    ->run();
+```
+
+**Context methods:**
+- `$context->get('key', $default)` - Get metadata value
+- `$context->has('key')` - Check if key exists
+
+**3. Invokable Tool Classes**
+
+```php
+class SearchProducts
+{
+    public function __invoke(array $params, ToolContext $context): array
+    {
+        return db()->table('products')
+            ->where('category', '=', $params['category'])
+            ->where('price', '<=', $params['max_price'])
+            ->all();
+    }
+    
+    public static function description(): string
+    {
+        return 'Search products by category and price';
+    }
+    
+    public static function params(): array
+    {
+        return [
+            'category' => ['string', 'Product category'],
+            'max_price' => ['number', 'Maximum price']
+        ];
+    }
+}
+
+// Usage
+$result = ai()->task()
+    ->tool('search', SearchProducts::class)  // Auto-extracts description and params
+    ->prompt('Find laptops under $1000')
+    ->run();
+```
+
+**4. Tool Result Format**
+
+```php
+$result = ai()->task()
+    ->tool('calculate', fn($p) => $p['a'] + $p['b'])
+    ->prompt('What is 5 + 3?')
+    ->run();
+
+[
+    'success' => true,
+    'data' => null,                    // Only set when using expect()
+    'raw' => 'The answer is 8',        // AI's natural language response
+    'errors' => [],
+    'tools_used' => ['calculate'],     // Which tools were called
+    'tool_results' => [
+        'calculate' => 8               // Raw tool output
+    ]
+]
+```
+
+**Key Points:**
+- AI calls **ONE tool per request** (single-shot, not multi-step)
+- AI decides which tool to call (or none) based on the question
+- Tools receive validated parameters (type-checked and coerced)
+- Tool results are passed back to AI to generate natural language answer
+- Use `metadata()` to pass app context (user ID, tenant ID, etc.) to tools
+- Tools can be closures, invokable objects, or class strings
 
 ---
 
@@ -451,31 +637,116 @@ interface VectorSearchInterface
 
 ## Caching
 
-- **Caching is opt-in** (disabled by default) to preserve AI response variability.
-- Enable caching for deterministic tasks (data extraction, classification) or cost optimization:
+Lightpack AI supports **provider-level caching** (delegated to AI provider) for response optimization.
+
+**Enable caching:**
 
 ```php
 ai()->task()
     ->prompt('Extract email from: john@example.com')
-    ->cache(true)     // enables cache for this run
-    ->cacheTtl(3600)  // cache for 1 hour (optional, uses config default)
+    ->cache(true)     // Enable provider-level caching
+    ->cacheTtl(3600)  // Cache duration in seconds (default: 3600)
     ->run();
 ```
 
-- **When to cache:** Deterministic tasks with `temperature: 0`, expensive structured data extraction, repeated queries.
-- **When NOT to cache:** Creative writing, real-time data, personalized responses.
+**How it works:**
+- Cache parameters (`cache`, `cache_ttl`) are passed to the AI provider
+- Provider handles caching based on request parameters (model, messages, temperature, etc.)
+- Cache key is generated from: `model`, `messages`, `temperature`, `max_tokens`, `system`
+- Cached responses are returned instantly without API calls
+
+**When to cache:**
+- ✅ Deterministic tasks (`temperature: 0`)
+- ✅ Expensive structured data extraction
+- ✅ Repeated identical queries
+- ✅ Classification/categorization tasks
+
+**When NOT to cache:**
+- ❌ Creative writing (`temperature > 0.7`)
+- ❌ Real-time data queries
+- ❌ Personalized responses
+- ❌ Tool-based tasks (tool results may change)
+
+**Note:** Not all providers support caching. Check provider documentation for details.
 
 ## Error Handling
 
-- Transport/API call related errors throw exceptions.
-- Validation errors (missing required fields, schema mismatch) are in `$result['errors']`.
-- Always check `$result['success']` when using `TaskBuilder`.
+**Exception-based errors (thrown):**
+- API connection failures
+- Invalid API keys
+- Network timeouts
+- Provider-specific errors
+
+**Validation errors (in result):**
+- Missing required fields
+- Schema type mismatches
+- Tool parameter validation failures
+- Tool execution errors
+
+**Always check `success` flag:**
+
+```php
+$result = ai()->task()
+    ->expect(['name' => 'string'])
+    ->required('name')
+    ->prompt('Extract name from: John Doe')
+    ->run();
+
+if ($result['success']) {
+    echo $result['data']['name'];
+} else {
+    // Handle validation errors
+    foreach ($result['errors'] as $error) {
+        logger()->error('AI validation error: ' . $error);
+    }
+}
+```
+
+**Tool execution errors:**
+
+```php
+$result = ai()->task()
+    ->tool('search', function($params) {
+        throw new \Exception('Database connection failed');
+    })
+    ->prompt('Search products')
+    ->run();
+
+// $result['success'] = false
+// $result['errors'] = ['Tool execution failed: Database connection failed']
+```
 
 ## Security & Best Practices
 
-- **Never commit API keys to version control.**
-- **Limit max_tokens and temperature for cost and predictability.**
-- **Log and monitor AI errors for production apps.**
-- **Use schema/required fields for structured data extraction.**
+**API Keys:**
+- ✅ Store in environment variables or secure config
+- ❌ Never commit to version control
+- ✅ Use different keys for dev/staging/production
+
+**Cost Control:**
+- Set `maxTokens()` to limit response length
+- Use `temperature(0.0)` for deterministic tasks (cheaper)
+- Enable caching for repeated queries
+- Monitor token usage via provider dashboards
+
+**Production Readiness:**
+- Always check `$result['success']` before using data
+- Log AI errors and validation failures
+- Set reasonable timeouts (default: 10s)
+- Use `required()` fields for critical data extraction
+- Validate tool results before using in application
+
+**Tool Security:**
+- Validate and sanitize tool parameters
+- Use `metadata()` for user context (don't trust AI-generated user IDs)
+- Limit tool access to necessary data only
+- Never expose sensitive operations as tools
+- Log all tool executions for audit trails
+
+**Data Privacy:**
+- Be aware: AI provider sees all prompts and responses
+- Don't send PII unless necessary and compliant
+- Consider data retention policies of AI providers
+- Use anonymization where possible
 
 ---
