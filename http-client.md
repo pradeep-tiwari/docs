@@ -32,6 +32,8 @@ Lightpack provide a lightweight **HTTP client** for making API requests.
 | `body()`               | Get raw response body                                 |
 | `status()`             | Get HTTP status code                                  |
 | `error()`              | Get transport error message, if any                   |
+| `responseHeaders()`    | Get all response headers as array                     |
+| `responseHeader($name)`| Get specific response header (case-insensitive)       |
 | `ok()`                 | 2xx status                                            |
 | `failed()`             | Transport or HTTP error                               |
 | `clientError()`        | 4xx status                                            |
@@ -171,6 +173,31 @@ $text = $response->body();  // Raw body
 $status = $response->status(); // HTTP status code
 ```
 
+### Accessing Response Headers
+```php
+// Get all headers
+$headers = $response->responseHeaders();
+
+// Get specific header (case-insensitive)
+$contentType = $response->responseHeader('Content-Type');
+$rateLimit = $response->responseHeader('X-RateLimit-Remaining');
+$server = $response->responseHeader('server');
+```
+
+**Common use cases:**
+```php
+// Check rate limiting
+if ($response->responseHeader('X-RateLimit-Remaining') < 10) {
+    // Slow down requests
+}
+
+// Get pagination info
+$nextPage = $response->responseHeader('X-Next-Page');
+
+// Check cache headers
+$cacheControl = $response->responseHeader('Cache-Control');
+```
+
 ---
 
 ## Downloading Files
@@ -213,6 +240,10 @@ $response = $http
 
 if ($response->ok()) {
     $profile = $response->json();
+    
+    // Check response headers
+    $rateLimit = $response->responseHeader('X-RateLimit-Remaining');
+    $contentType = $response->responseHeader('Content-Type');
 } elseif ($response->failed()) {
     // Handle error
     $error = $response->error();
