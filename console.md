@@ -129,6 +129,13 @@ Generate a new request class in `app/Requests`.
 php console create:request RegisterRequest
 ```
 
+#### create:tool
+Generate a new AI tool class in `app/Tools`.
+
+```cli
+php console create:tool SearchProducts
+```
+
 ---
 
 ### File Storage
