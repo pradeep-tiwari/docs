@@ -266,6 +266,210 @@ This creates `app/Tools/SearchProducts.php` with the `ToolInterface` already imp
 
 ---
 
+### embed()
+
+**Use for:** Converting text into vector embeddings for semantic search, similarity matching, or RAG applications.
+
+```php
+// Single text
+$embedding = ai()->embed('wireless headphones');
+// Returns: [0.123, -0.456, 0.789, ...] (768-1536 floats)
+
+// Batch processing (efficient - single API call)
+$texts = [
+    'Product A description',
+    'Product B description',
+    'Product C description'
+];
+$embeddings = ai()->embed($texts);
+
+// Use batch results - CRITICAL: maintains same order as input!
+foreach ($texts as $i => $text) {
+    echo "Text: {$text}\n";
+    echo "Embedding: " . json_encode($embeddings[$i]) . "\n";
+}
+```
+
+**Method signature:**
+```php
+ai()->embed(
+    string|array $input,  // Required: Single text or array of texts
+    array $options = []   // Optional: Provider-specific options
+): array
+```
+
+**Options parameter:**
+```php
+$options = [
+    'model' => 'text-embedding-3-small',  // Override default model
+    // Provider-specific options vary
+];
+```
+
+**Returns:**
+- **Single input:** `array` of floats (e.g., 768 or 1536 dimensions)
+- **Batch input:** `array` of arrays (one embedding per input text, **same order as input**)
+
+**Key points:**
+- Returns array of floats (vector representation of text)
+- Batch processing uses single API call (cost-efficient)
+- Batch results maintain same order as input array
+- Store embeddings in database for reuse
+- Dimensions vary by provider (768 for Gemini, 1536 for OpenAI)
+- Not all providers support embeddings (see provider table above)
+- Options parameter allows model override and provider-specific settings
+
+---
+
+### similar()
+
+**Use for:** Finding semantically similar items.
+
+```php
+$queryEmbedding = ai()->embed('laptop for programming');
+
+$results = ai()->similar($queryEmbedding, $products);
+
+foreach ($results as $result) {
+    echo $result['id'];         // Product ID
+    echo $result['similarity']; // 0.0-1.0 score
+    echo $result['item'];       // Original item data
+}
+```
+
+**Method signature:**
+```php
+ai()->similar(
+    array $queryEmbedding,  // Required: Query vector
+    mixed $target,          // Required: Array of items (in-memory) or collection name (vector DB)
+    int $limit = 5,         // Optional: Max results (default: 5)
+    float $threshold = 0.0  // Optional: Min similarity score (default: 0.0)
+): array
+```
+
+**Returns:**
+```php
+[
+    [
+        'id' => mixed,           // Item identifier
+        'similarity' => float,   // Score 0.0-1.0
+        'item' => array          // Original item data
+    ],
+    // ... more results
+]
+```
+
+**Key points:**
+- Returns exact matches (100% recall, not approximate)
+- Works in-memory by default (fast for < 5K items)
+- Scores range from 0.0 (different) to 1.0 (identical)
+- Results sorted by similarity (highest first)
+- **Threshold defaults to 0.0** (returns all results) - set to 0.6-0.8 for quality filtering
+- Extensible via `setVectorSearch()` for custom implementations
+
+**Threshold recommendations:**
+- `0.0` (default) - Return all results, let user decide
+- `0.6-0.7` - Moderate similarity (related items)
+- `0.8-0.9` - High similarity (very similar items)
+- `0.95+` - Near-identical items
+
+---
+
+#### Example Recipes 1: Storing Embeddings
+
+**1. Store Product Embeddings**
+
+```php
+// In your model
+class Product extends Model
+{
+    protected $casts = [
+        'embedding' => 'array'
+    ];
+}
+
+// store the embeddings for the product
+$product->embedding = ai()->embed($product->description);
+$product->save();
+```
+
+**2. Semantic Product Search**
+
+```php
+// fetch products with their embeddings
+$items = Product::query()
+    ->select('id', 'embedding')
+    ->whereNotNull('embedding')
+    ->all()
+    ->map(fn($p) => [
+        'id' => $p->id,
+        'embedding' => $p->embedding
+    ]);
+
+// semantic search for similar products
+$query = 'best laptop for programming';
+$queryEmbedding = ai()->embed($query);
+$results = ai()->similar($queryEmbedding, $items, limit: 10);
+
+// process results
+foreach ($results as $result) {
+    // Product ID: $result['id'];
+}
+```
+
+---
+
+#### Example Recipes 2: Filtering and RAG
+
+**1. Filter by Similarity Threshold**
+
+```php
+// Only return matches with 70%+ similarity
+$results = ai()->similar($queryEmbedding, $items, limit: 10, threshold: 0.7);
+```
+
+**2. RAG (Retrieval Augmented Generation)**
+
+```php
+// Find relevant docs
+$userQuestion = 'How do I reset my password?';
+$queryEmbedding = ai()->embed($userQuestion);
+$relevant = ai()->similar($queryEmbedding, $docs, limit: 3);
+
+// Build context
+$context = implode("\n\n", array_column($relevant, 'item'));
+
+// Ask AI with context
+$answer = ai()->task()
+    ->system("Answer based on this documentation:\n\n{$context}")
+    ->prompt($userQuestion)
+    ->run();
+```
+
+**3. Content Recommendations**
+
+```php
+$articles = Article::query()
+    ->select('id', 'embedding')
+    ->whereNotNull('embedding')
+    ->all()
+    ->map(fn($a) => [
+        'id' => $a->id,
+        'embedding' => $a->embedding
+    ]);
+
+// "Users who read this also read..."
+$similar = ai()->similar($article->embedding, $articles, limit: 5);
+```
+
+---
+
+### Embedding Provider Notes
+
+**Important:** Embeddings are NOT cross-compatible. Always use the same provider for embedding and searching.
+
+---
+
 ## Agent Mode: Multi-Turn Problem Solving
 
 **Use for:** Complex tasks that require multiple steps, tool calls, or reasoning cycles.
@@ -737,210 +941,6 @@ $result = ai()->task()
 - Tool results are passed back to AI to generate natural language answer
 - Use `context()` to pass app context (user ID, tenant ID, etc.) to tools
 - Tools can be closures, invokable objects, or class strings
-
----
-
-### embed()
-
-**Use for:** Converting text into vector embeddings for semantic search, similarity matching, or RAG applications.
-
-```php
-// Single text
-$embedding = ai()->embed('wireless headphones');
-// Returns: [0.123, -0.456, 0.789, ...] (768-1536 floats)
-
-// Batch processing (efficient - single API call)
-$texts = [
-    'Product A description',
-    'Product B description',
-    'Product C description'
-];
-$embeddings = ai()->embed($texts);
-
-// Use batch results - CRITICAL: maintains same order as input!
-foreach ($texts as $i => $text) {
-    echo "Text: {$text}\n";
-    echo "Embedding: " . json_encode($embeddings[$i]) . "\n";
-}
-```
-
-**Method signature:**
-```php
-ai()->embed(
-    string|array $input,  // Required: Single text or array of texts
-    array $options = []   // Optional: Provider-specific options
-): array
-```
-
-**Options parameter:**
-```php
-$options = [
-    'model' => 'text-embedding-3-small',  // Override default model
-    // Provider-specific options vary
-];
-```
-
-**Returns:**
-- **Single input:** `array` of floats (e.g., 768 or 1536 dimensions)
-- **Batch input:** `array` of arrays (one embedding per input text, **same order as input**)
-
-**Key points:**
-- Returns array of floats (vector representation of text)
-- Batch processing uses single API call (cost-efficient)
-- Batch results maintain same order as input array
-- Store embeddings in database for reuse
-- Dimensions vary by provider (768 for Gemini, 1536 for OpenAI)
-- Not all providers support embeddings (see provider table above)
-- Options parameter allows model override and provider-specific settings
-
----
-
-### similar()
-
-**Use for:** Finding semantically similar items.
-
-```php
-$queryEmbedding = ai()->embed('laptop for programming');
-
-$results = ai()->similar($queryEmbedding, $products);
-
-foreach ($results as $result) {
-    echo $result['id'];         // Product ID
-    echo $result['similarity']; // 0.0-1.0 score
-    echo $result['item'];       // Original item data
-}
-```
-
-**Method signature:**
-```php
-ai()->similar(
-    array $queryEmbedding,  // Required: Query vector
-    mixed $target,          // Required: Array of items (in-memory) or collection name (vector DB)
-    int $limit = 5,         // Optional: Max results (default: 5)
-    float $threshold = 0.0  // Optional: Min similarity score (default: 0.0)
-): array
-```
-
-**Returns:**
-```php
-[
-    [
-        'id' => mixed,           // Item identifier
-        'similarity' => float,   // Score 0.0-1.0
-        'item' => array          // Original item data
-    ],
-    // ... more results
-]
-```
-
-**Key points:**
-- Returns exact matches (100% recall, not approximate)
-- Works in-memory by default (fast for < 5K items)
-- Scores range from 0.0 (different) to 1.0 (identical)
-- Results sorted by similarity (highest first)
-- **Threshold defaults to 0.0** (returns all results) - set to 0.6-0.8 for quality filtering
-- Extensible via `setVectorSearch()` for custom implementations
-
-**Threshold recommendations:**
-- `0.0` (default) - Return all results, let user decide
-- `0.6-0.7` - Moderate similarity (related items)
-- `0.8-0.9` - High similarity (very similar items)
-- `0.95+` - Near-identical items
-
----
-
-#### Example Recipes 1: Storing Embeddings
-
-**1. Store Product Embeddings**
-
-```php
-// In your model
-class Product extends Model
-{
-    protected $casts = [
-        'embedding' => 'array'
-    ];
-}
-
-// store the embeddings for the product
-$product->embedding = ai()->embed($product->description);
-$product->save();
-```
-
-**2. Semantic Product Search**
-
-```php
-// fetch products with their embeddings
-$items = Product::query()
-    ->select('id', 'embedding')
-    ->whereNotNull('embedding')
-    ->all()
-    ->map(fn($p) => [
-        'id' => $p->id,
-        'embedding' => $p->embedding
-    ]);
-
-// semantic search for similar products
-$query = 'best laptop for programming';
-$queryEmbedding = ai()->embed($query);
-$results = ai()->similar($queryEmbedding, $items, limit: 10);
-
-// process results
-foreach ($results as $result) {
-    // Product ID: $result['id'];
-}
-```
-
----
-
-#### Example Recipes 2: Filtering and RAG
-
-**1. Filter by Similarity Threshold**
-
-```php
-// Only return matches with 70%+ similarity
-$results = ai()->similar($queryEmbedding, $items, limit: 10, threshold: 0.7);
-```
-
-**2. RAG (Retrieval Augmented Generation)**
-
-```php
-// Find relevant docs
-$userQuestion = 'How do I reset my password?';
-$queryEmbedding = ai()->embed($userQuestion);
-$relevant = ai()->similar($queryEmbedding, $docs, limit: 3);
-
-// Build context
-$context = implode("\n\n", array_column($relevant, 'item'));
-
-// Ask AI with context
-$answer = ai()->task()
-    ->system("Answer based on this documentation:\n\n{$context}")
-    ->prompt($userQuestion)
-    ->run();
-```
-
-**3. Content Recommendations**
-
-```php
-$articles = Article::query()
-    ->select('id', 'embedding')
-    ->whereNotNull('embedding')
-    ->all()
-    ->map(fn($a) => [
-        'id' => $a->id,
-        'embedding' => $a->embedding
-    ]);
-
-// "Users who read this also read..."
-$similar = ai()->similar($article->embedding, $articles, limit: 5);
-```
-
----
-
-### Embedding Provider Notes
-
-**Important:** Embeddings are NOT cross-compatible. Always use the same provider for embedding and searching.
 
 ---
 
