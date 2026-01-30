@@ -334,10 +334,10 @@ Lightpack provides the `Args` helper class for clean argument parsing:
 
 ```php
 use Lightpack\Console\Args;
-use Lightpack\Console\ICommand;
+use Lightpack\Console\CommandInterface;
 use Lightpack\Console\Output;
 
-class MyCommand implements ICommand
+class MyCommand implements CommandInterface
 {
     public function run(array $arguments = [])
     {
