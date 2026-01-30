@@ -101,7 +101,6 @@ if ($result['success']) {
 - `cache(bool)` - Enable caching
 - `cacheTtl(int)` - Cache duration in seconds
 - `tool(name, fn, description, params)` - Register a tool
-- `context(array)` - Pass context data to tools
 - `loop(int)` - Enable multi-turn agent mode (default: 10 turns)
 - `goal(string)` - Set explicit goal for agent to achieve
 - `run()` - Execute and return `['success', 'data', 'errors', 'raw']`
@@ -225,35 +224,7 @@ $result = ai()->task()
 // AI should choose 'get_weather' (not 'get_forecast')
 ```
 
-**2. Tool with Context**
-
-Sometimes your tools need access to application context that shouldn't come from the AI (like the current user ID, tenant ID, or session data). Use `context()` to pass this context safely to your tools.
-
-The AI **cannot see or modify** context data - it's passed directly from your application to the tool function. This prevents the AI from impersonating users or accessing unauthorized data and keeps app context separate from AI reasoning.
-
-```php
-$result = ai()->task()
-    ->context(['user_id' => auth()->user()->id])
-    
-    ->tool('get_orders', function($params, $context) {
-        // Get user ID from metadata (not from AI!)
-        $userId = $context->get('user_id');
-        
-        return db()->table('orders')
-            ->where('user_id', '=', $userId)
-            ->limit($params['limit'])
-            ->all();
-    }, 'Get user orders', ['limit' => 'int'])
-    
-    ->prompt('Show my last 5 orders')
-    ->run();
-```
-
-**Context methods:**
-- `$context->get('key', $default)` - Get metadata value
-- `$context->has('key')` - Check if key exists
-
-**3. Invokable Tool Classes**
+**2. Invokable Tool Classes**
 
 For complex tools, use invokable classes instead of closures. This keeps your code organized and allows the tool to define its own description and parameters.
 
@@ -616,12 +587,9 @@ if ($result['goal_achieved']) {
 
 ```php
 $result = ai()->task()
-    ->context(['user_id' => $userId])  // Pass user context
-    
-    ->tool('get_order_status', function($params, $context) {
+    ->tool('get_order_status', function($params) {
         return db()->table('orders')
             ->where('id', '=', $params['order_id'])
-            ->where('user_id', '=', $context->get('user_id'))
             ->first();
     })
     
@@ -880,12 +848,11 @@ ai()->task()
 The framework automatically extracts `description()` and `params()` from the class, so you don't need to repeat them when registering the tool.
 
 ```php
-use Lightpack\AI\Tools\ToolContext;
 use Lightpack\AI\Tools\ToolInterface;
 
 class SearchProducts implements ToolInterface
 {
-    public function __invoke(array $params, ToolContext $context): mixed
+    public function __invoke(array $params): mixed
     {
         return db()->table('products')
             ->where('category', '=', $params['category'])
@@ -939,7 +906,6 @@ $result = ai()->task()
 - AI decides which tool to call (or none) based on the question
 - Tools receive validated parameters (type-checked and coerced)
 - Tool results are passed back to AI to generate natural language answer
-- Use `context()` to pass app context (user ID, tenant ID, etc.) to tools
 - Tools can be closures, invokable objects, or class strings
 
 ---
@@ -1165,7 +1131,7 @@ $result = ai()->task()
 
 **Tool Security:**
 - Validate and sanitize tool parameters
-- Use `context()` for user context (don't trust AI-generated user IDs)
+- Don't trust AI-generated user IDs - get them from auth/session
 - Limit tool access to necessary data only
 - Never expose sensitive operations as tools
 - Log all tool executions for audit trails
