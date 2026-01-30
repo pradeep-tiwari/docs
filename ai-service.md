@@ -47,7 +47,9 @@ php console create:config --support=ai
 **Quick Decision Guide:**
 - Need a quick answer? → `ask()`
 - Need JSON with specific fields? → `task()` with `expect()`
-- Need to call external functions/APIs? → `task()` with `tool()`
+- Need to call ONE function/API? → `task()` with `tool()`
+- Need to chain MULTIPLE tools? → `task()` with `tool()` + `loop()`
+- Need AI to solve complex problems? → `task()` with `loop()` + `goal()`
 - Need semantic search? → `embed()` + `similar()`
 
 ---
@@ -100,6 +102,8 @@ if ($result['success']) {
 - `cacheTtl(int)` - Cache duration in seconds
 - `tool(name, fn, description, params)` - Register a tool
 - `context(array)` - Pass context data to tools
+- `loop(int)` - Enable multi-turn agent mode (default: 10 turns)
+- `goal(string)` - Set explicit goal for agent to achieve
 - `run()` - Execute and return `['success', 'data', 'errors', 'raw']`
 
 ---
@@ -259,6 +263,415 @@ php console create:tool SearchProducts
 ```
 
 This creates `app/Tools/SearchProducts.php` with the `ToolInterface` already implemented.
+
+---
+
+## Agent Mode: Multi-Turn Problem Solving
+
+**Use for:** Complex tasks that require multiple steps, tool calls, or reasoning cycles.
+
+### What is Agent Mode?
+
+Agent mode allows AI to work through problems step-by-step across multiple "turns" until it achieves the goal. Each turn, the agent can:
+- Call a tool to get data
+- Analyze the results
+- Decide what to do next
+- Stop when the goal is achieved
+
+**Think of it like this:**
+- **Single-turn (default):** AI does ONE thing and stops
+- **Agent mode:** AI does MULTIPLE things until problem solved
+
+### When to Use Agent Mode
+
+| Scenario | Single-Turn | Agent Mode |
+|----------|-------------|------------|
+| "What's the weather?" | ✅ One API call | ❌ Overkill |
+| "Find cheapest flight" | ❌ Returns 50 options | ✅ Searches → filters → compares → picks best |
+| "Debug this error" | ❌ Shows error | ✅ Reads logs → traces code → finds root cause |
+| "Analyze sales trends" | ❌ Dumps data | ✅ Queries → analyzes → identifies patterns |
+
+### Basic Agent Example
+
+**Without Agent Mode (Single-Turn):**
+```php
+$result = ai()->task()
+    ->tool('search_products', $searchFn)
+    ->prompt('Find laptops under $1000')
+    ->run();
+
+// Returns: 50 laptops
+// Problem: User has to manually filter through them
+```
+
+**With Agent Mode (Multi-Turn):**
+```php
+$result = ai()->task()
+    ->tool('search_products', $searchFn)
+    ->tool('filter_by_price', $filterFn)
+    ->tool('check_reviews', $reviewFn)
+    ->tool('compare_specs', $compareFn)
+    ->loop(5)  // Allow up to 5 thinking cycles
+    ->goal('Find the BEST laptop under $1000')
+    ->prompt('Find the best laptop under $1000')
+    ->run();
+
+// Agent automatically:
+// Turn 1: search_products() → 50 laptops
+// Turn 2: filter_by_price(max: 1000) → 12 laptops
+// Turn 3: check_reviews(min_rating: 4) → 5 laptops
+// Turn 4: compare_specs() → picks top 2
+// Turn 5: Returns: "I recommend the Dell XPS 13 because..."
+```
+
+### Agent Mode Methods
+
+#### loop(int $maxTurns = 10)
+
+Enable multi-turn mode with a maximum number of attempts.
+
+```php
+->loop(5)   // Allow up to 5 turns
+->loop(10)  // Allow up to 10 turns (default)
+->loop(20)  // For complex research tasks
+```
+
+**How to choose the number:**
+- **Simple tasks (2-3 turns):** Quick operations like "get data → format"
+- **Medium tasks (5-10 turns):** Multi-step processes like "search → filter → compare"
+- **Complex tasks (10-20 turns):** Deep analysis like "research → analyze → synthesize"
+- **Research tasks (20-50 turns):** Comprehensive investigations
+
+**Safety:** Agent automatically stops when:
+- ✅ Goal is achieved
+- ✅ No more tools needed (got final answer)
+- ✅ Max turns reached (prevents infinite loops)
+
+#### goal(string $goal)
+
+Set an explicit objective for the agent to work toward.
+
+```php
+->goal('Find the root cause of the bug')
+->goal('Identify what is driving sales growth')
+->goal('Create a complete market analysis')
+```
+
+**With goal:** Agent knows when to stop (when goal achieved)
+**Without goal:** Agent stops when no more tools are needed
+
+### Real-World Examples
+
+#### Example 1: E-Commerce Product Finder
+
+**Problem:** User wants the best option, not just a list.
+
+```php
+$result = ai()->task()
+    ->tool('search_products', function($params) {
+        return db()->table('products')
+            ->where('category', '=', $params['category'])
+            ->all();
+    })
+    ->tool('filter_by_price', function($params) {
+        return db()->table('products')
+            ->where('price', '<=', $params['max_price'])
+            ->all();
+    })
+    ->tool('get_reviews', function($params) {
+        return db()->table('reviews')
+            ->where('product_id', '=', $params['product_id'])
+            ->avg('rating');
+    })
+    ->loop(7)
+    ->goal('Find the best value laptop for programming')
+    ->prompt('I need a laptop for coding, budget $1200')
+    ->run();
+
+if ($result['goal_achieved']) {
+    echo $result['raw'];  // "I recommend the ThinkPad X1 Carbon..."
+    
+    // See what the agent did
+    foreach ($result['agent_memory'] as $turn) {
+        echo "Turn {$turn['turn']}: {$turn['content']}\n";
+    }
+}
+```
+
+**What the agent does:**
+1. Searches laptops category
+2. Filters by price ≤ $1200
+3. Checks reviews for top options
+4. Compares specs (RAM, CPU, storage)
+5. Picks best value
+6. Explains recommendation
+
+#### Example 2: Customer Support Automation
+
+**Problem:** Resolve issues without human intervention.
+
+```php
+$result = ai()->task()
+    ->context(['user_id' => $userId])  // Pass user context
+    
+    ->tool('get_order_status', function($params, $context) {
+        return db()->table('orders')
+            ->where('id', '=', $params['order_id'])
+            ->where('user_id', '=', $context->get('user_id'))
+            ->first();
+    })
+    
+    ->tool('track_shipment', function($params) {
+        return http()->get("shipping-api.com/track/{$params['tracking_number']}");
+    })
+    
+    ->tool('estimate_delivery', function($params) {
+        return http()->get("shipping-api.com/estimate/{$params['tracking_number']}");
+    })
+    
+    ->loop(5)
+    ->goal('Tell customer exactly when their order will arrive')
+    ->prompt("Where is my order #12345?")
+    ->run();
+
+// Agent automatically:
+// Turn 1: get_order_status(12345) → tracking: ABC123
+// Turn 2: track_shipment(ABC123) → location: "Memphis, TN"
+// Turn 3: estimate_delivery(ABC123) → "Jan 31, 2pm-5pm"
+// Returns: "Your order is in Memphis and will arrive tomorrow between 2-5pm"
+```
+
+#### Example 3: Data Analysis Assistant
+
+**Problem:** Need insights, not just raw data.
+
+```php
+$result = ai()->task()
+    ->tool('query_sales_data', function($params) {
+        return db()->table('sales')
+            ->where('date', '>=', $params['start_date'])
+            ->where('date', '<=', $params['end_date'])
+            ->all();
+    })
+    
+    ->tool('calculate_trends', function($params) {
+        // Calculate month-over-month growth
+        return analytics()->trends($params['data']);
+    })
+    
+    ->tool('find_outliers', function($params) {
+        // Identify unusual spikes or drops
+        return analytics()->outliers($params['data']);
+    })
+    
+    ->loop(10)
+    ->goal('Identify what is driving sales growth')
+    ->prompt('Why did sales increase 23% last quarter?')
+    ->run();
+
+// Agent automatically:
+// Turn 1: query_sales_data(last_quarter) → 10,000 rows
+// Turn 2: calculate_trends() → "23% growth in Q4"
+// Turn 3: find_outliers() → "Product X spiked 300%"
+// Turn 4: query_sales_data(product_X) → detailed data
+// Turn 5: Returns: "Product X drove growth due to viral TikTok video in November"
+```
+
+#### Example 4: Research Assistant
+
+**Problem:** Gather and synthesize information from multiple sources.
+
+```php
+$result = ai()->task()
+    ->tool('search_web', function($params) {
+        return http()->get("search-api.com?q={$params['query']}");
+    })
+    
+    ->tool('scrape_article', function($params) {
+        return http()->get($params['url'])->body();
+    })
+    
+    ->tool('summarize_text', function($params) {
+        return ai()->task()
+            ->prompt("Summarize: {$params['text']}")
+            ->run()['raw'];
+    })
+    
+    ->loop(15)
+    ->goal('Create comprehensive report on AI trends in 2026')
+    ->prompt('Research AI trends in 2026 and create a report')
+    ->run();
+
+// Agent automatically:
+// Turn 1-3: Searches multiple sources
+// Turn 4-8: Scrapes and reads articles
+// Turn 9-12: Summarizes key findings
+// Turn 13-15: Synthesizes into coherent report
+```
+
+### Agent Memory
+
+Every turn is stored in memory, allowing the agent to build context:
+
+```php
+$result = ai()->task()
+    ->tool('get_data', $fn)
+    ->tool('analyze', $fn)
+    ->loop(5)
+    ->prompt('Analyze user behavior')
+    ->run();
+
+// Access memory
+foreach ($result['agent_memory'] as $turn) {
+    echo "Turn {$turn['turn']}: ";
+    echo "Role: {$turn['role']}\n";
+    echo "Content: {$turn['content']}\n";
+    echo "Tools used: " . implode(', ', $turn['tools_used'] ?? []) . "\n\n";
+}
+```
+
+**Memory structure:**
+```php
+[
+    ['role' => 'user', 'content' => 'Analyze user behavior', 'turn' => 0],
+    ['role' => 'assistant', 'content' => '...', 'tools_used' => ['get_data'], 'turn' => 1],
+    ['role' => 'assistant', 'content' => '...', 'tools_used' => ['analyze'], 'turn' => 2],
+    // ...
+]
+```
+
+### Agent Response Format
+
+Agent mode returns additional fields:
+
+```php
+[
+    'success' => true,
+    'data' => null,  // Or structured data if expect() was used
+    'raw' => 'The final answer...',
+    'errors' => [],
+    
+    // Agent-specific fields
+    'goal_achieved' => true,
+    'agent_turns' => 3,  // How many turns it took
+    'agent_memory' => [...],  // Full conversation history
+    'tools_used' => ['search', 'filter', 'compare'],
+    'tool_results' => ['search' => [...], 'filter' => [...], ...]
+]
+```
+
+### Best Practices
+
+**1. Start with fewer turns, increase if needed:**
+```php
+// Start conservative
+->loop(3)
+
+// If agent hits max turns without completing, increase
+->loop(7)
+```
+
+**2. Use explicit goals for complex tasks:**
+```php
+// Vague (agent might not know when to stop)
+->prompt('Research competitors')
+
+// Clear (agent knows the objective)
+->goal('Create competitive analysis with pricing, features, and market position')
+->prompt('Research our top 3 competitors')
+```
+
+**3. Provide focused tools:**
+```php
+// Too broad (agent might get confused)
+->tool('do_everything', $fn)
+
+// Focused (agent can reason better)
+->tool('search_products', $searchFn)
+->tool('filter_results', $filterFn)
+->tool('get_details', $detailsFn)
+```
+
+**4. Check goal achievement:**
+```php
+if ($result['goal_achieved']) {
+    // Task completed successfully
+    log()->info("Agent completed in {$result['agent_turns']} turns");
+} else {
+    // Hit max turns or failed
+    log()->warning("Agent did not complete goal", $result['errors']);
+}
+```
+
+**5. Monitor turn usage:**
+```php
+// Log for optimization
+log()->info("Agent used {$result['agent_turns']} of {$maxTurns} turns");
+
+// If consistently hitting max, increase limit or simplify task
+if ($result['agent_turns'] >= $maxTurns) {
+    // Consider: more turns, simpler goal, or better tools
+}
+```
+
+### Common Patterns
+
+#### Pattern 1: Search → Filter → Select
+```php
+ai()->task()
+    ->tool('search', $searchFn)
+    ->tool('filter', $filterFn)
+    ->tool('select_best', $selectFn)
+    ->loop(5)
+    ->goal('Find best option')
+    ->run();
+```
+
+#### Pattern 2: Gather → Analyze → Report
+```php
+ai()->task()
+    ->tool('fetch_data', $fetchFn)
+    ->tool('analyze_data', $analyzeFn)
+    ->tool('generate_report', $reportFn)
+    ->loop(10)
+    ->goal('Create analysis report')
+    ->run();
+```
+
+#### Pattern 3: Diagnose → Fix → Verify
+```php
+ai()->task()
+    ->tool('check_logs', $logsFn)
+    ->tool('trace_error', $traceFn)
+    ->tool('verify_fix', $verifyFn)
+    ->loop(7)
+    ->goal('Find and fix the bug')
+    ->run();
+```
+
+### Troubleshooting
+
+**Agent hits max turns without completing:**
+- Increase `loop()` number
+- Simplify the goal
+- Add more specific tools
+- Check if tools are returning useful data
+
+**Agent stops too early:**
+- Set explicit `goal()`
+- Make goal more specific
+- Ensure tools return actionable data
+
+**Agent calls wrong tools:**
+- Improve tool descriptions
+- Make parameter schemas clearer
+- Reduce number of similar tools
+
+**Agent is too slow:**
+- Reduce `loop()` number
+- Optimize tool execution time
+- Cache expensive operations
+- Use faster AI model
 
 The framework automatically extracts `description()` and `params()` from the class, so you don't need to repeat them when registering the tool.
 
