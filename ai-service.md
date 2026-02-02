@@ -40,13 +40,14 @@ php console create:config --support=ai
 | Method | Use When | Returns |
 |--------|----------|---------|
 | `ask()` | Simple questions, plain text answers | String |
-| `task()` | Structured data extraction, tool calling | Array with `success`, `data`, `errors`, `raw` |
+| `task()` | Structured data extraction, tool calling, streaming | Array with `success`, `data`, `errors`, `raw` |
 | `embed()` | Convert text to vector embeddings | Array of floats (single) or array of arrays (batch) |
 | `similar()` | Find semantically similar items | Array of matches with similarity scores |
 
 **Quick Decision Guide:**
 - Need a quick answer? → `ask()`
 - Need JSON with specific fields? → `task()` with `expect()`
+- Need real-time streaming output? → `task()` with `stream()`
 - Need to call ONE function/API? → `task()` with `tool()`
 - Need to chain MULTIPLE tools? → `task()` with `tool()` + `loop()`
 - Need AI to solve complex problems? → `task()` with `loop()` + `goal()`
@@ -104,6 +105,7 @@ if ($result['success']) {
 - `tool(name, fn, description, params)` - Register a tool
 - `loop(int)` - Enable multi-turn agent mode (default: 10 turns)
 - `goal(string)` - Set explicit goal for agent to achieve
+- `stream(callback)` - Stream response in real-time
 - `run()` - Execute and return `['success', 'data', 'errors', 'raw']`
 
 ---
@@ -247,6 +249,81 @@ php console create:tool SearchProducts
 ```
 
 This creates `app/Tools/SearchProducts.php` with the `ToolInterface` already implemented.
+
+---
+
+### stream()
+
+**Use for:** Real-time streaming of AI responses as they're generated.
+
+Streaming allows you to display AI output progressively as it's being generated, rather than waiting for the complete response. This creates a better user experience for long-form content.
+
+**Basic Example:**
+
+```php
+ai()->task()
+    ->prompt('Write a blog post about PHP frameworks')
+    ->stream(function($chunk) {
+        echo $chunk;
+        flush();
+    });
+```
+
+**Method signature:**
+```php
+ai()->task()
+    ->stream(callable $onChunk): void
+```
+
+**Callback signature:**
+```php
+function(string $chunk): void
+```
+
+**Key points:**
+- Callback receives text chunks as they arrive from the AI provider
+- No return value - output is handled via callback
+- **Incompatible with:** `expect()`, `expectArray()`, `tool()`, `loop()`
+- **Compatible with:** `prompt()`, `system()`, `temperature()`, `maxTokens()`, `model()`
+- All providers support streaming (OpenAI, Anthropic, Groq, Mistral, Gemini)
+
+**Validation Errors:**
+
+Streaming throws exceptions if used with incompatible features:
+
+```php
+// ❌ ERROR: Cannot use streaming with schema extraction
+ai()->task()
+    ->prompt('Extract data')
+    ->expect(['name' => 'string'])
+    ->stream($callback);
+// Throws: "Streaming is not supported with schema extraction"
+
+// ❌ ERROR: Cannot use streaming with tools
+ai()->task()
+    ->tool('search', $fn)
+    ->prompt('Search products')
+    ->stream($callback);
+// Throws: "Streaming is not supported with tools"
+
+// ❌ ERROR: Cannot use streaming with agent mode
+ai()->task()
+    ->loop(5)
+    ->prompt('Research topic')
+    ->stream($callback);
+// Throws: "Streaming is not supported in agent mode"
+```
+
+**When to Use Streaming:**
+
+| Use Case | Streaming | Regular (`run()`) |
+|----------|-----------|-------------------|
+| Long blog posts | ✅ Better UX | ❌ User waits |
+| Chat interfaces | ✅ Real-time feel | ❌ Delayed response |
+| Code generation | ✅ Progressive display | ❌ All at once |
+| Data extraction | ❌ Need structured output | ✅ Use `expect()` |
+| Tool calling | ❌ Need function results | ✅ Use `tool()` |
+| Multi-step tasks | ❌ Need agent mode | ✅ Use `loop()` |
 
 ---
 
