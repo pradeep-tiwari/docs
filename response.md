@@ -292,7 +292,74 @@ response()->streamCsv(function() {
 
 **Default filename:** If you don't provide a filename, it defaults to `'export.csv'`.
 
-### 5. Streaming Gotchas and Best Practices
+### 5. Server-Sent Events (`sse()`)
+
+Use `sse()` for real-time, one-way communication from server to client. Ideal for live updates, notifications, progress tracking, chat messages, or any scenario where the server needs to push data to the browser continuously.
+
+**Example: Live countdown**
+```php
+public function countdown()
+{
+    return response()->sse(function($stream) {
+        for ($i = 10; $i >= 1; $i--) {
+            $stream->push('count', ['number' => $i]);
+            sleep(1);
+        }
+        $stream->push('done');
+    });
+}
+```
+
+**What it does:**
+- Sets `Content-Type: text/event-stream`
+- Sets `Cache-Control: no-cache`
+- Sets `Connection: keep-alive`
+- Sets `X-Accel-Buffering: no`
+- Provides `$stream` object with `push()` method
+
+**Stream object method:**
+```php
+$stream->push(string $event, array $data = [])
+```
+- `$event`: Event name (e.g., 'message', 'update', 'done')
+- `$data`: Associative array of data to send
+
+**Frontend Integration:**
+
+```html
+<div id="output"></div>
+
+<script>
+const eventSource = new EventSource('/countdown');
+
+eventSource.addEventListener('message', (e) => {
+    const data = JSON.parse(e.data);
+    
+    if (data.event === 'count') {
+        document.getElementById('output').textContent = data.number;
+    } else if (data.event === 'done') {
+        eventSource.close();
+    }
+});
+
+eventSource.addEventListener('error', (e) => {
+    console.error('Connection error');
+    eventSource.close();
+});
+</script>
+```
+
+**Event Format:**
+
+Each event is sent as:
+```
+data: {"event":"count","number":10}
+
+```
+
+The browser receives JSON with `event` key plus your custom data.
+
+### 6. Streaming Gotchas and Best Practices
 
 - **Headers:** All headers must be set before returning the response. Once output starts, headers cannot be changed.
 - **Buffering:** Use `flush()` or `ob_flush()` to push output.
