@@ -256,11 +256,85 @@ This creates `app/Tools/SearchProducts.php` with the `ToolInterface` already imp
 
 **Use for:** Real-time streaming of AI responses as they're generated.
 
-Streaming allows you to display AI output progressively as it's being generated, rather than waiting for the complete response. This creates a better user experience for long-form content.
+Streaming allows you to display AI output progressively as it's being generated, rather than waiting for the complete response. This creates a better user experience for long-form content like essays, blog posts, or chat interfaces.
 
-**Basic Example:**
+The `stream()` method has **two modes**:
+
+1. **HTTP/SSE Mode** (default) - Returns `Response` for Server-Sent Events
+2. **Callback Mode** - Accepts callback for CLI scripts and testing
+
+---
+
+#### HTTP/SSE Mode (Primary Use Case)
+
+**Use in controllers** to stream AI responses to the browser using Server-Sent Events (SSE).
+
+**Controller Example:**
 
 ```php
+public function stream()
+{
+    return ai()->task()
+        ->prompt('Write a blog post about PHP frameworks')
+        ->stream();
+}
+```
+
+- Returns a `Response` object configured for SSE streaming
+- Sets SSE headers automatically (`Content-Type: text/event-stream`, etc.)
+- Streams events in format: `data: {"event":"chunk","text":"..."}\n\n`
+- Sends `done` event when complete
+
+**Frontend Integration:**
+
+```html
+<div id="output"></div>
+
+<script>
+const eventSource = new EventSource('/stream');
+const output = document.getElementById('output');
+
+eventSource.addEventListener('message', (e) => {
+    const data = JSON.parse(e.data);
+    
+    if (data.event === 'chunk') {
+        output.textContent += data.text;
+    } else if (data.event === 'done') {
+        eventSource.close();
+        console.log('Stream complete');
+    }
+});
+
+eventSource.addEventListener('error', (e) => {
+    console.error('Stream error:', e);
+    eventSource.close();
+});
+</script>
+```
+
+**SSE Event Format:**
+
+```javascript
+// Chunk event
+data: {"event":"chunk","text":"Hello "}
+
+// Chunk event
+data: {"event":"chunk","text":"world!"}
+
+// Done event
+data: {"event":"done"}
+```
+
+---
+
+#### Callback Mode (CLI/Testing)
+
+**Use in CLI scripts, background jobs, or tests** where you need direct access to chunks.
+
+**CLI Example:**
+
+```php
+// console command or script
 ai()->task()
     ->prompt('Write a blog post about PHP frameworks')
     ->stream(function($chunk) {
@@ -269,25 +343,29 @@ ai()->task()
     });
 ```
 
-**Method signature:**
-```php
-ai()->task()
-    ->stream(callable $onChunk): void
-```
+#### When to Use Which Mode
 
-**Callback signature:**
-```php
-function(string $chunk): void
-```
+| Scenario | Mode | Example |
+|----------|------|---------|
+| Web controller | HTTP/SSE | `return ai()->task()->stream();` |
+| Chat interface | HTTP/SSE | Real-time browser updates |
+| CLI command | Callback | `stream(fn($chunk) => echo $chunk)` |
+| Background job | Callback | Process chunks without HTTP |
+| Unit tests | Callback | Capture chunks for assertions |
 
-**Key points:**
-- Callback receives text chunks as they arrive from the AI provider
-- No return value - output is handled via callback
+---
+
+#### Key Points
+
 - **Incompatible with:** `expect()`, `expectArray()`, `tool()`, `loop()`
 - **Compatible with:** `prompt()`, `system()`, `temperature()`, `maxTokens()`, `model()`
 - All providers support streaming (OpenAI, Anthropic, Groq, Mistral, Gemini)
+- HTTP mode uses Server-Sent Events (SSE) standard
+- Callback mode is synchronous - blocks until complete
 
-**Validation Errors:**
+---
+
+#### Validation Errors
 
 Streaming throws exceptions if used with incompatible features:
 
@@ -296,25 +374,27 @@ Streaming throws exceptions if used with incompatible features:
 ai()->task()
     ->prompt('Extract data')
     ->expect(['name' => 'string'])
-    ->stream($callback);
+    ->stream();
 // Throws: "Streaming is not supported with schema extraction"
 
 // ❌ ERROR: Cannot use streaming with tools
 ai()->task()
     ->tool('search', $fn)
     ->prompt('Search products')
-    ->stream($callback);
+    ->stream();
 // Throws: "Streaming is not supported with tools"
 
 // ❌ ERROR: Cannot use streaming with agent mode
 ai()->task()
     ->loop(5)
     ->prompt('Research topic')
-    ->stream($callback);
+    ->stream();
 // Throws: "Streaming is not supported in agent mode"
 ```
 
-**When to Use Streaming:**
+---
+
+#### When to Use Streaming
 
 | Use Case | Streaming | Regular (`run()`) |
 |----------|-----------|-------------------|
