@@ -292,7 +292,7 @@ response()->streamCsv(function() {
 
 **Default filename:** If you don't provide a filename, it defaults to `'export.csv'`.
 
-### 5. Server-Sent Events (`sse()`)
+### 5. Server-Sent Events
 
 Use `sse()` for real-time, one-way communication from server to client. Ideal for live updates, notifications, progress tracking, chat messages, or any scenario where the server needs to push data to the browser continuously.
 
@@ -358,15 +358,6 @@ data: {"event":"count","number":10}
 ```
 
 The browser receives JSON with `event` key plus your custom data.
-
-### 6. Streaming Gotchas and Best Practices
-
-- **Headers:** All headers must be set before returning the response. Once output starts, headers cannot be changed.
-- **Buffering:** Use `flush()` or `ob_flush()` to push output.
-- **Connection Handling:** If the client disconnects, the stream callback should handle it (see `connection_status()` in PHP).
-- **Error Handling:** For file streams, exceptions are thrown if the file is missing. For custom streams, handle errors in your callback.
-- **Memory Usage:** Streaming is essential for large files or datasets—never read large files into memory with `setBody()` or `download()`.
-- **Chaining:** All streaming methods are chainable with other response configuration methods.
 
 ---
 
