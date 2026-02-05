@@ -645,18 +645,27 @@ Lightpack AI supports multimodal inputs, allowing you to combine text prompts wi
 
 #### Image Analysis
 
+**Analyze an image from file path (recommended):**
+
+```php
+$result = ai()->task()
+    ->text('What items are in this receipt and what is the total?')
+    ->attachImage('receipt.jpg')  // Auto-detects MIME type and encodes
+    ->run();
+
+echo $result['raw'];  // "The receipt contains: Coffee $4.50, Sandwich $8.99. Total: $13.49"
+```
+
 **Analyze an image from base64:**
 
 ```php
-// Read image file
+// Manual encoding (use attachImage() instead for convenience)
 $imageData = base64_encode(file_get_contents('receipt.jpg'));
 
 $result = ai()->task()
     ->text('What items are in this receipt and what is the total?')
     ->image($imageData, 'image/jpeg')
     ->run();
-
-echo $result['raw'];  // "The receipt contains: Coffee $4.50, Sandwich $8.99. Total: $13.49"
 ```
 
 **Analyze an image from URL:**
@@ -673,7 +682,7 @@ $result = ai()->task()
 ```php
 $result = ai()->task()
     ->text('Extract the business card information')
-    ->image($imageData, 'image/png')
+    ->attachImage('business-card.png')
     ->expect(['name' => 'string', 'email' => 'string', 'phone' => 'string', 'company' => 'string'])
     ->required('name', 'email')
     ->run();
@@ -687,18 +696,27 @@ if ($result['success']) {
 
 #### Document Analysis
 
-**Analyze a PDF document:**
+**Analyze a PDF document from file path (recommended):**
 
 ```php
-// Read PDF file
+$result = ai()->task()
+    ->text('Summarize this invoice and extract key details')
+    ->attachDocument('invoice.pdf')  // Auto-detects MIME type and encodes
+    ->run();
+
+echo $result['raw'];
+```
+
+**Analyze a PDF from base64:**
+
+```php
+// Manual encoding (use attachDocument() instead for convenience)
 $pdfData = base64_encode(file_get_contents('invoice.pdf'));
 
 $result = ai()->task()
     ->text('Summarize this invoice and extract key details')
     ->document($pdfData, 'application/pdf')
     ->run();
-
-echo $result['raw'];
 ```
 
 **Extract structured data from documents:**
@@ -706,7 +724,7 @@ echo $result['raw'];
 ```php
 $result = ai()->task()
     ->text('Extract invoice details')
-    ->document($pdfData, 'application/pdf')
+    ->attachDocument('invoice.pdf')
     ->expect([
         'invoice_number' => 'string',
         'date' => 'string',
@@ -728,8 +746,8 @@ if ($result['success']) {
 ```php
 $result = ai()->task()
     ->text('Compare these two product images and list the differences')
-    ->image($image1Data, 'image/jpeg')
-    ->image($image2Data, 'image/jpeg')
+    ->attachImage('product-v1.jpg')
+    ->attachImage('product-v2.jpg')
     ->run();
 ```
 
