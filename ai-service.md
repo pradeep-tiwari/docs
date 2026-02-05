@@ -737,13 +737,6 @@ $result = ai()->task()
 - **Images:** `image/jpeg`, `image/png`, `image/gif`, `image/webp`
 - **Documents:** `application/pdf` (OpenAI, Anthropic, Gemini)
 
-**Provider-specific notes:**
-- **OpenAI:** Supports PDFs via GPT-4o models
-- **Anthropic:** Native PDF support in Claude Sonnet
-- **Gemini:** Supports all document formats natively
-- **Groq:** Vision support via `llama-3.2-11b-vision-preview` or `llama-3.2-90b-vision-preview`
-- **Mistral:** No vision/document support currently
-
 ---
 
 ## Agent Mode: Multi-Turn Problem Solving
