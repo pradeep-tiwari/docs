@@ -75,7 +75,8 @@ This extends your User model capabilities with methods:
    - User scans QR with authenticator app.
 
 2. **SMS/Email:**  
-   - Ensure user’s phone/email is set.
+   - Ensure user's phone/email is set.
+   - SMS requires the `$user->phone` field.
    - Set `$user->mfa_method = 'sms'` or `'email'`, `$user->save();`
 
 3. **Backup Codes:**  
@@ -216,14 +217,16 @@ class PushDriver implements MfaInterface {
 }
 ```
 
-Register in config:
+Register at runtime (e.g., in a service provider):
 
 ```php
-'factors' => [
-    'push' => App\Mfa\Drivers\PushDriver::class,
-    // ...other factors
-]
+$manager = app('mfa.manager');
+$manager->register('push', function ($container) {
+    return new \App\Mfa\Drivers\PushDriver;
+});
 ```
+
+You can also override a built-in driver by registering the same name.
 
 ---
 
@@ -232,7 +235,7 @@ Register in config:
 - **All secrets/codes are hashed or encrypted.**
 - **Backup codes are one-time use.**
 - **TOTP uses secure, random secrets.**
-- **SMS/email codes are time-limited (implement expiry in your app logic).**
+- **SMS/email codes are time-limited via cache TTL (configured in `config/mfa.php`).**
 - **Always check return value of `validateMfa()`.**
 - **Never log or expose secrets/codes.**
 
@@ -254,7 +257,7 @@ Register in config:
 A: Clear all MFA fields on the user model.
 
 **Q: Can I require MFA for only some users?**  
-A: Use the `mfa_enabled` boolean field.
+A: Only users with a set `mfa_method` will be challenged. Leave it empty/null for users without MFA.
 
 **Q: How do I support multiple factors per user?**  
 A: Extend your user model and UI view to allow selection/switching.
