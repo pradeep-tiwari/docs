@@ -77,7 +77,7 @@ You can dynamically add new configuration values at runtime by calling the `set(
 config()->set('cache.driver', 'redis');
 ```
 
-<p class="tip">The <code>set()</code> method only sets the value if the key doesn't already exist. This prevents accidental overwrites.</p>
+<p class="tip">The <code>set()</code> method overwrites existing keys. Use <code>has()</code> first if you need to check before overwriting.</p>
 
 ## Checking configuration
 
