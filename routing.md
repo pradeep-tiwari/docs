@@ -120,7 +120,7 @@ Route with optional parameters
 
 ```php
 // Returns: /blog/tech/php-tips
-url()->route('blog.post', [
+route()->url('blog.post', [
     'category' => 'tech',
     'slug' => 'php-tips'
 ]); 
@@ -130,7 +130,7 @@ Route with query parameters:
 
 ```php
 // Returns: /search?q=php&page=1
-url()->route('search', [
+route()->url('search', [
     'q' => 'php',
     'page' => 1
 ]); 
