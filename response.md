@@ -385,6 +385,12 @@ public function login()
 ```
 - Sets status code 302 and `Location: /dashboard` header.
 - Works with both absolute and relative URLs.
+- Also accepts path segments and query params:
+
+```php
+return redirect()->to('users', ['sort' => 'asc', 'status' => 'active']);
+// Redirects to: /users?sort=asc&status=active
+```
 
 #### **redirect()->route($name, ...$params)**
 Redirect to a named route, passing route parameters as needed.
@@ -394,7 +400,7 @@ Redirect to a named route, passing route parameters as needed.
 public function update($userId)
 {
     // ... update logic ...
-    return redirect()->route('profile', $userId);
+    return redirect()->route('profile', ['id' => $userId]);
 }
 ```
 - Resolves the route name and parameters to a URL.
