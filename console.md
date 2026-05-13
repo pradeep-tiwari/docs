@@ -279,7 +279,11 @@ $this->output->error('An error occurred');
 $this->output->warning('This is a warning');
 $this->output->line('Plain text');
 $this->output->pad('Left', 'Right', 30, '.'); // Left................. Right
-$this->output->infoLabel('INFO'); // Colored label
+$this->output->infoLabel('INFO'); // Blue background label
+$this->output->successLabel('OK'); // Green background label
+$this->output->errorLabel('FAIL'); // Red background label
+$this->output->warningLabel('WARN'); // Yellow background label
+$this->output->newline(2); // Print 2 blank lines
 ```
 
 You can also instantiate `Output` directly when needed outside a command:
@@ -300,7 +304,13 @@ $name = $this->prompt->ask('What is your name?');
 $password = $this->prompt->secret('Enter password:');
 $agree = $this->prompt->confirm('Do you agree?', true); // [Y/n]
 $email = $this->prompt->askWithValidation('Email:', fn($v) => filter_var($v, FILTER_VALIDATE_EMAIL));
-$choice = $this->prompt->choice('Pick one:', ['a' => 'Apple', 'b' => 'Banana']);
+$choices = $this->prompt->choice('Pick one:', ['a' => 'Apple', 'b' => 'Banana']);
+$choice = $choices[0]; // 'a'
+
+// Allow multiple selections
+$choices = $this->prompt->choice('Pick fruits:', ['a' => 'Apple', 'b' => 'Banana'], true);
+// User enters: a, b
+// Returns: ['a', 'b']
 ```
 
 You can also instantiate `Prompt` directly when needed outside a command:
@@ -367,6 +377,9 @@ class MyCommand extends Command
         if ($this->args->has('force')) {           // --force
             $this->output->warning('Force mode enabled');
         }
+
+        // Access all parsed options
+        $opts = $this->args->options();            // ['table' => 'users', 'key' => 'id']
 
         // Access raw arguments
         $raw = $this->args->all();                 // Original array
