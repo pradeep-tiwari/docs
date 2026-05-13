@@ -5,7 +5,7 @@ Filters in Lightpack are reusable hooks that run before or after a controller ac
 ## How Filters Work
 
 - **Before filters** can halt the request and return a response before the controller action runs.
-- **After filters** can modify the response after the controller action runs.
+- **After filters** can modify the response after the controller action runs. Modify the passed `$response` and return it.
 - Filters can be attached to individual routes or route groups.
 
 ## Usage
@@ -31,7 +31,7 @@ route()->group(['filter' => ['csrf', 'auth']], function() {
 ### Halting or Modifying Requests
 
 - To halt a request early (e.g., unauthorized), return a `Response` from the filter’s `before()` method.
-- To modify the response, return a new `Response` from the filter’s `after()` method.
+- To modify the response, update the passed `$response` and return it from the filter’s `after()` method.
 
 ---
 
@@ -75,18 +75,19 @@ Lightpack provides many pre-defined filters that you can declare on your route d
 
 ### 1. `auth`
 **Purpose:** Restricts access to authenticated users (web or API).
-- **Web:** Redirects guests to login; stores intended URL for redirect after login.
+- **Web:** First attempts silent login via remember-me cookie (`auth()->recall()`). If that fails, redirects to login and stores the intended URL for redirect after login.
 - **API:** Returns 401 JSON if token is missing or invalid.
 - **Params:** `['web']` (default) or `['api']`.
 
 ### 2. `guest`
 **Purpose:** Restricts access to guests only.
-- Redirects logged-in users to a default location (usually dashboard).
+- Redirects logged-in users to `config('auth.routes.authenticated', 'dashboard')`.
 
 ### 3. `csrf`
 **Purpose:** Protects against CSRF attacks.
 - Checks for a valid CSRF token on POST, PUT, PATCH, DELETE.
-- Throws exceptions for missing or invalid tokens.
+- Throws `SessionExpiredException` if the session token is missing.
+- Throws `InvalidCsrfTokenException` if the submitted token does not match.
 - **Bypasses** in `APP_ENV=testing`.
 
 ### 4. `cors`
@@ -98,6 +99,7 @@ Lightpack provides many pre-defined filters that you can declare on your route d
 ### 5. `limit`
 **Purpose:** API rate limiting.
 - Limits requests per user or IP to a configurable max per time window.
+- Keys are resolved as `user:{id}:{path}` for authenticated users, or `ip:{ip}:{path}` for guests.
 - Throws 429 with rate limit headers if exceeded.
 - **Params:** `[maxRequests, minutes]`. Defaults from `config('limit.default')`.
 
@@ -107,12 +109,12 @@ Lightpack provides many pre-defined filters that you can declare on your route d
 
 ### 7. `verifyemail`
 **Purpose:** Restricts access to users with verified email addresses.
-- Redirects or returns 403 JSON if user’s email is not verified.
+- Redirects to the `verify.email` route (web) or returns 403 JSON (API) if the user’s email is not verified.
 
 ### 8. `mfa`
 **Purpose:** Enforces Multi-Factor Authentication.
-- If MFA is enforced or user has enabled MFA, triggers MFA flow and redirects to verification screen.
-- Skips if already passed in session.
+- If MFA is enforced or the user has enabled MFA, triggers the MFA flow and redirects to the `mfa.verify.show` route.
+- Skips if already verified in the current session (`session()->get('mfa_passed')`).
 
 ---
 
