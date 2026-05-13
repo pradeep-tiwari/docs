@@ -1,6 +1,6 @@
 # Moment Utility
 
-Lightpack’s `Moment` is a simple, expressive, and timezone-aware date/time utility for PHP. It is designed for clarity, practical use, and covers the most common date/time operations with a clean, chainable API.
+Lightpack's `Moment` is a simple, expressive, and timezone-aware date/time utility for PHP. It handles datetime operations with proper timezone support and covers the most common date/time operations with a clean, chainable API.
 
 ---
 
