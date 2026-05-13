@@ -90,6 +90,10 @@ request()->input('key');
 // Get a specific input value with a default
 request()->input('key', 'default');
 
+// Access nested input using dot notation
+request()->input('user.name');
+request()->input('order.items.0.id');
+
 // Get all input data as an array
 request()->input();
 ```
@@ -99,6 +103,9 @@ request()->input();
 ```php
 // Get a specific query parameter
 request()->query('status');
+
+// Get a specific query parameter with a default
+request()->query('status', 'active');
 
 // Get all query parameters as an array
 request()->query();
