@@ -9,7 +9,32 @@ Out of the box:
 - LinkedIn
 
 
-> In order to use the Google social auth feature, install the Google API Client package `composer require google/apiclient`
+## Environment Variables
+
+Add the following variables to your `.env` file based on the providers you use:
+
+```env
+APP_URL=https://your-app.com
+
+# Google
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# GitHub
+GITHUB_CLIENT_ID=your-github-client-id
+GITHUB_CLIENT_SECRET=your-github-client-secret
+
+# LinkedIn
+LINKEDIN_CLIENT_ID=your-linkedin-client-id
+LINKEDIN_CLIENT_SECRET=your-linkedin-client-secret
+```
+
+The `redirect_uri` for each provider is auto-generated from `APP_URL`:
+- `https://your-app.com/auth/google/callback`
+- `https://your-app.com/auth/github/callback`
+- `https://your-app.com/auth/linkedin/callback`
+
+Make sure to register these exact redirect URIs in your OAuth app settings.
 
 ## Configuration
 
@@ -38,13 +63,15 @@ php console migrate:up
 ### 1. Routes
 Define routes in your `routes/web.php` or `routes/api.php`:
 ```php
+use Lightpack\SocialAuth\Controllers\SocialAuthController;
+
 // Web
-$route->get('/auth/{provider}/redirect', SocialAuthController::class, 'redirect');
-$route->get('/auth/{provider}/callback', SocialAuthController::class, 'callback');
+route()->get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect']);
+route()->get('/auth/{provider}/callback', [SocialAuthController::class, 'callback']);
 
 // API (stateless)
-$route->get('/api/auth/{provider}/redirect', [SocialAuthController::class, 'redirect']);
-$route->get('/api/auth/{provider}/callback', [SocialAuthController::class, 'callback']);
+route()->get('/api/auth/{provider}/redirect', [SocialAuthController::class, 'redirect']);
+route()->get('/api/auth/{provider}/callback', [SocialAuthController::class, 'callback']);
 ```
 
 ### 2. Controller Usage
@@ -78,8 +105,23 @@ namespace App\SocialAuth\Providers;
 
 use Lightpack\SocialAuth\SocialAuthInterface;
 
-class MyProvider implements SocialAuthInterface {
-    // Implement the interface methods
+class MyProvider implements SocialAuthInterface
+{
+    public function getAuthUrl(array $params = []): string
+    {
+        // Build and return the OAuth authorization URL
+    }
+
+    public function getUser(string $code): array
+    {
+        // Exchange code for access token, fetch user profile
+        // Return: ['id' => ..., 'name' => ..., 'email' => ..., 'avatar' => ...]
+    }
+
+    public function stateless(): self
+    {
+        // Set stateless flag for API flows, return $this
+    }
 }
 ```
 

@@ -22,7 +22,6 @@ session()->flash()
 session()->regenerate()
 session()->destroy()
 session()->token()
-session()->hasInvalidToken()
 session()->hasInvalidAgent()
 session()->verifyAgent()
 session()->setUserAgent()
@@ -128,13 +127,23 @@ Generate or retrieve a CSRF token:
 $token = session()->token();
 ```
 
-Check if the CSRF token is invalid (e.g., after form submission):
+Inject the CSRF token in your form using the helper:
 
 ```php
-if(session()->hasInvalidToken()) {
-    // Block the request!
+echo csrf_input(); // <input type="hidden" name="_token" value="...">
+```
+
+Or in a filter or controller, validate the submitted token:
+
+```php
+$token = request()->input('_token');
+
+if (! $token || $token !== session()->token()) {
+    // Block the request - invalid CSRF token!
 }
 ```
+
+<p class="tip">Lightpack provides a built-in <code>csrf</code> filter that automatically validates CSRF tokens on POST, PUT, PATCH, and DELETE requests. Just attach <code>->filter('csrf')</code> to your routes instead of writing manual checks. Refer to the <a href="#/filters">filters documentation</a> for more details.</p>
 
 ### User Agent Validation
 
