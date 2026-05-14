@@ -14,7 +14,7 @@ $validator
     ->field('email')->required()->email()
     ->field('age')->int()->between(18, 100);
 
-$validator->validate($_POST);
+$validator->setInput($_POST)->validate();
 
 if ($validator->fails()) {
     $errors = $validator->getErrors();
@@ -26,7 +26,7 @@ if ($validator->fails()) {
 ## How Validation Works
 
 1. **Define fields and rules** using the fluent API.
-2. **Call `validate($input)`** to run validation.
+2. **Call `setInput($input)` then `validate()`** to run validation.
 3. **Check results** with `passes()`, `fails()`, `getErrors()`, or `getError('field')`.
 
 ---
@@ -46,7 +46,7 @@ Lightpack provides two helpers:
 
 ### old()
 
-`old(string $key, $default = '', bool $escape = true)`
+`old(string $key, string|array|null $default = '', bool $escape = true): string|array`
 
 **What it does:**
 Returns the previously submitted value for a form field, or a default if not present.
@@ -149,7 +149,7 @@ The `FormRequest` class in Lightpack provides a powerful, expressive, and reusab
 ### How It Works
 
 1. **Extend FormRequest:** Create your own request classes by extending `Lightpack\Http\FormRequest`.
-2. **Define Rules:** Implement the `rules()` method to return your validation rules.
+2. **Define Rules:** Implement the abstract `rules()` method to configure your validation rules.
    - **Rule Resolution:** Your `rules()` method is called via the container.
    - You can typehint dependencies you would like to get injected by the framework.
 3. **Automatic Bootstrapping:** Lightpack boots your FormRequest, runs validation, and handles errors or passes control to your controller.
@@ -264,7 +264,7 @@ protected function beforeRedirect()
 ### Numeric Rules
 - `numeric()` — Any number
 - `int()` / `float()` — Integer or float
-- `between($min, $max)` — Value range
+- `between($min, $max)` — Value range (also works for string length)
 - `min($n)` / `max($n)` — Value constraints
 
 ### Date/Time Rules
@@ -298,8 +298,8 @@ protected function beforeRedirect()
 - `fileSize($size)` — Max file size (e.g. '2M', '500K')
 - `fileType($types)` — Allowed MIME types
 - `fileExtension($exts)` — Allowed extensions
-- `files($min = null, $max = null)` — Multiple files
-- `image($options)` — Image validation (width, height, ratio)
+- `multipleFiles($min = null, $max = null)` — Multiple files
+- `image($options)` — Image validation (width, height)
 
 ### Password Strength Rules
 - `hasUppercase()` — Must contain at least one uppercase letter
@@ -309,8 +309,6 @@ protected function beforeRedirect()
 
 ### Custom & Advanced Rules
 - `custom($fn, $message)` — Custom closure for validation
-- `transform($fn)` — Preprocess value before validation
-- `nullable()` — Field can be null or empty
 
 ---
 
@@ -330,7 +328,7 @@ $input = [
     ]
 ];
 
-$validator->validate($input);
+$validator->setInput($input)->validate();
 ```
 
 **Wildcard Behavior:**
@@ -446,8 +444,7 @@ $validator->field('avatar')
         'min_width' => 100,
         'max_width' => 1000,
         'min_height' => 100,
-        'max_height' => 1000,
-        'ratio' => '1:1'
+        'max_height' => 1000
     ]);
 ```
 
@@ -455,7 +452,7 @@ Multiple files:
 
 ```php
 $validator->field('photos')
-    ->files(1, 5)
+    ->multipleFiles(1, 5)
     ->fileSize('2M')
     ->fileType(['image/jpeg', 'image/png']);
 ```
@@ -466,7 +463,6 @@ $validator->field('photos')
 
 - `getErrors()` — All errors as `[field => message]`
 - `getError('field')` — First error for a field
-- `getFieldErrors('field')` — All errors for a field
 
 ### Custom error messages
 
@@ -501,10 +497,9 @@ $validator
     ->field('username')->required()->string()->min(3)->max(50)->alphaNum()
     ->field('email')->required()->email()
     ->field('password')->required()->between(8, 32)->hasUppercase()->hasLowercase()->hasNumber()->hasSymbol()
-    ->field('avatar')->nullable()->image([
+    ->field('avatar')->image([
         'max_width' => 1000,
-        'max_height' => 1000,
-        'max_size' => '1M'
+        'max_height' => 1000
     ]);
 ```
 
