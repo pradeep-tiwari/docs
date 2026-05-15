@@ -323,6 +323,20 @@ $table->datetime('created_at')->current();
 - **Fulltext Index**
 - **Spatial Index**
 
+### Index Naming
+
+You can provide a custom name, or let the framework generate one based on the column name(s) and index type.
+
+| How defined | Default name | Example |
+|-------------|-------------|---------|
+| Chained on column: `->unique()` | `{column}_{type}` | `$table->varchar('email')->unique()` → `email_unique` |
+| Standalone single: `->unique('email')` | `{column}_{type}` | `$table->unique('email')` → `email_unique` |
+| Standalone composite: `->unique(['a','b'])` | `{col1}_{col2}_{type}` | `$table->unique(['first','last'])` → `first_last_unique` |
+| Composite too long (>60 chars) | `idx_{8charhash}` | `$table->unique(['very_long_name', ...])` → `idx_a1b2c3d4` |
+| Custom name provided | Your name | `$table->unique('email', 'u_email')` → `u_email` |
+
+<p class="tip"><b>Tip:</b> When dropping an index, pass the exact name shown in <code>SHOW INDEXES</code> or generated as above.</p>
+
 ---
 
 ### primary() 
