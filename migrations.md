@@ -60,7 +60,38 @@ php console migrate:down --all
 
 ## Defining Migrations
 
-The following documentation details about creating/modifying tables, columns, and indexes.
+All table operations take a closure that receives a `Table` object:
+
+```php
+$this->create('users', function(Table $table) {
+    // column definitions, indexes, foreign keys...
+});
+
+$this->alter('users')->add(function(Table $table) {
+    // add columns, indexes, foreign keys...
+});
+```
+
+### Complete Example
+
+```php
+public function up(): void
+{
+    $this->create('posts', function(Table $table) {
+        $table->id();
+        $table->varchar('title');
+        $table->varchar('slug')->unique();
+        $table->text('body')->nullable();
+        $table->foreignKey('user_id')->references('id')->on('users');
+        $table->timestamps();
+    });
+}
+
+public function down(): void
+{
+    $this->drop('posts');
+}
+```
 
 ### Create Table
 
@@ -141,6 +172,16 @@ public function up(): void
 }
 ```
 
+```php
+// Modify an enum column
+public function up(): void
+{
+    $this->alter('users')->modify(function(Table $table) {
+        $table->enum('status', ['active', 'inactive', 'banned']);
+    });
+}
+```
+
 #### Drop Existing Columns
 
 ```php
@@ -171,72 +212,104 @@ public function down(): void
 }
 ```
 
+#### Add/Drop Indexes
+
+When altering a table, add or remove indexes directly:
+
+```php
+// Add indexes
+$this->alter('users')->add(function(Table $table) {
+    $table->index('email');
+    $table->unique('phone');
+});
+
+// Drop indexes by name
+$this->alter('users')->dropIndex('email_index');
+$this->alter('users')->dropUnique('phone_unique');
+```
+
+#### Add Foreign Keys to Existing Tables
+
+```php
+// Add a foreign key to an existing table
+public function up(): void
+{
+    $this->alter('products')->add(function(Table $table) {
+        $table->foreignKey('category_id')->references('id')->on('categories');
+    });
+}
+
+// Add a column and foreign key together
+public function up(): void
+{
+    $this->alter('products')->add(function(Table $table) {
+        $table->column('category_id')->type('bigint')->attribute('unsigned');
+        $table->foreignKey('category_id')->references('id')->on('categories');
+    });
+}
+```
+
 ## Table Columns
 
-This documentation summarizes all available column types, their configuration options, and usage patterns.
+All column methods return a `Column` object for chaining configuration.
 
-### Numeric Columns
-- **id(string $name = 'id')**: BIGINT UNSIGNED AUTO_INCREMENT primary key
-- **int(string $name, int $length = 11)**: INT
-- **bigint(string $name)**: BIGINT
-- **smallint(string $name)**: SMALLINT
-- **tinyint(string $name)**: TINYINT
-- **decimal(string $name, int $precision = 10, int $scale = 2)**: DECIMAL(precision, scale)
+### Column Types
 
-### String/Text Columns
-- **varchar(string $name, int $length = 255)**: VARCHAR(length)
-- **char(string $name, int $length = 255)**: CHAR(length)
-- **text(string $name)**: TEXT
-- **tinytext(string $name)**: TINYTEXT
-- **mediumtext(string $name)**: MEDIUMTEXT
-- **longtext(string $name)**: LONGTEXT
-- **enum(string $name, array $values)**: ENUM(values)
-- **json(string $name)**: JSON
+| Type | Method | Notes |
+|------|--------|-------|
+| Auto PK | `id(string $name = 'id')` | BIGINT UNSIGNED AUTO_INCREMENT |
+| Integer | `int($name, $len=11)` | |
+| | `bigint($name)` | |
+| | `smallint($name)` | |
+| | `tinyint($name)` | |
+| | `boolean($name, $default=false)` | TINYINT(1) |
+| String | `varchar($name, $len=255)` | |
+| | `char($name, $len=255)` | |
+| | `text($name)` | |
+| | `tinytext($name)` | |
+| | `mediumtext($name)` | |
+| | `longtext($name)` | |
+| | `enum($name, $values)` | |
+| | `json($name)` | |
+| Date/Time | `date($name)` | |
+| | `time($name)` | |
+| | `datetime($name)` | |
+| | `timestamp($name)` | |
+| | `year($name)` | |
+| Timestamps | `createdAt()` | Default CURRENT_TIMESTAMP |
+| | `updatedAt()` | Nullable, ON UPDATE CURRENT_TIMESTAMP |
+| | `deletedAt()` | Nullable |
+| | `timestamps()` | Adds createdAt + updatedAt |
+| Special | `ipAddress($name='ip_address')` | VARCHAR(45) |
+| | `macAddress($name='mac_address')` | VARCHAR(17) |
+| | `morphs($name)` | Adds `{name}_id` + `{name}_type` |
+| Numeric | `decimal($name, $p=10, $s=2)` | |
 
-### Date/Time Columns
-- **date(string $name)**: DATE
-- **time(string $name)**: TIME
-- **datetime(string $name)**: DATETIME
-- **timestamp(string $name)**: TIMESTAMP
-- **year(string $name)**: YEAR
-- **createdAt()**: DATETIME, default CURRENT_TIMESTAMP
-- **updatedAt()**: DATETIME, nullable, ON UPDATE CURRENT_TIMESTAMP
-- **deletedAt()**: DATETIME, nullable
-- **timestamps()**: Adds both createdAt and updatedAt
+### Column Configuration
 
-### Boolean Columns
-- **boolean(string $name, bool $default = false)**: TINYINT(1) with default value 0 or 1
+Chain these after any column method:
 
-### Special Columns
-- **ipAddress(string $name = 'ip_address')**: VARCHAR(45) for IPv4/IPv6
-- **macAddress(string $name = 'mac_address')**: VARCHAR(17)
-- **morphs(string $name)**: Adds `{name}_id` (BIGINT UNSIGNED) and `{name}_type` (VARCHAR(255)) for polymorphic relations
-
----
-
-### Column Configuration (via Column object)
-All column methods return a `Column` object, allowing further configuration:
-- **type(string $type)**: Set SQL type manually
-- **length(int $length)**: Set length for applicable types
-- **default(bool|string $value)**: Set default value
-- **nullable(bool $nullable = true)**: Mark column as nullable
-- **attribute(string $attr)**: Add SQL attribute (e.g., UNSIGNED, ON UPDATE CURRENT_TIMESTAMP)
-- **unsigned()**: Fluent shortcut for UNSIGNED attribute
-- **current()**: Fluent shortcut for CURRENT_TIMESTAMP default
-- **increments()**: Set AUTO_INCREMENT and PRIMARY KEY
-- **primary(?string $indexName = null)**: Mark as primary key
-- **unique(?string $indexName = null)**: Add unique index
-- **index(?string $indexName = null)**: Add regular index
-- **fulltext(?string $indexName = null)**: Add fulltext index
-
-**Example:**
 ```php
 $table->varchar('username', 50)->unique()->nullable();
-$table->int('age')->default(0);
-$table->int('score')->unsigned();
+$table->int('age')->default(0)->unsigned();
 $table->decimal('balance', 12, 2)->attribute('UNSIGNED');
 $table->datetime('created_at')->current();
 ```
+
+| Method | Purpose |
+|--------|---------|
+| `type(string)` | Override SQL type |
+| `length(int)` | Set length |
+| `default(string\|bool)` | Set default value |
+| `nullable()` | Allow NULL |
+| `attribute(string)` | Add SQL attribute (UNSIGNED, etc.) |
+| `unsigned()` | Shortcut for UNSIGNED |
+| `current()` | Shortcut for CURRENT_TIMESTAMP default |
+| `increments()` | AUTO_INCREMENT + PRIMARY KEY |
+| `primary()` | Mark as primary key |
+| `unique(?string $name)` | Add unique index |
+| `index(?string $name)` | Add regular index |
+| `fulltext(?string $name)` | Add fulltext index |
 
 ---
 
@@ -249,6 +322,20 @@ $table->datetime('created_at')->current();
 - **Regular Index**
 - **Fulltext Index**
 - **Spatial Index**
+
+### Index Naming
+
+You can provide a custom name, or let the framework generate one based on the column name(s) and index type.
+
+| How defined | Default name | Example |
+|-------------|-------------|---------|
+| Chained on column: `->unique()` | `{column}_{type}` | `$table->varchar('email')->unique()` → `email_unique` |
+| Standalone single: `->unique('email')` | `{column}_{type}` | `$table->unique('email')` → `email_unique` |
+| Standalone composite: `->unique(['a','b'])` | `{col1}_{col2}_{type}` | `$table->unique(['first','last'])` → `first_last_unique` |
+| Composite too long (>60 chars) | `idx_{8charhash}` | `$table->unique(['very_long_name', ...])` → `idx_a1b2c3d4` |
+| Custom name provided | Your name | `$table->unique('email', 'u_email')` → `u_email` |
+
+<p class="tip"><b>Tip:</b> When dropping an index, pass the exact name shown in <code>SHOW INDEXES</code> or generated as above.</p>
 
 ---
 
@@ -426,17 +513,19 @@ $table->foreignKey('category_id')
 
 ### Dropping Foreign Keys
 
-To drop one or more foreign key constraints:
+To drop one or more foreign key constraints, pass the actual MySQL constraint names:
 
 ```php
 public function up(): void
 {
-    // Drop single foreign key
-    $this->alter('posts')->dropForeign('posts_user_id_foreign');
-    
+    // Drop single foreign key (MySQL auto-generates names like 'posts_ibfk_1')
+    $this->alter('posts')->dropForeign('posts_ibfk_1');
+
     // Drop multiple foreign keys
-    $this->alter('posts')->dropForeign('posts_user_id_foreign', 'posts_category_id_foreign');
+    $this->alter('posts')->dropForeign('posts_ibfk_1', 'posts_ibfk_2');
 }
 ```
+
+<p class="tip"><b>Tip:</b> Use `SHOW CREATE TABLE posts` or query `INFORMATION_SCHEMA.KEY_COLUMN_USAGE` to find the exact constraint names.</p>
 
 ---
