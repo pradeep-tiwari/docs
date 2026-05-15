@@ -141,6 +141,16 @@ public function up(): void
 }
 ```
 
+```php
+// Modify an enum column
+public function up(): void
+{
+    $this->alter('users')->modify(function(Table $table) {
+        $table->enum('status', ['active', 'inactive', 'banned']);
+    });
+}
+```
+
 #### Drop Existing Columns
 
 ```php
@@ -168,6 +178,27 @@ public function up(): void
 public function down(): void
 {
     $this->alter('users')->renameColumn('full_name', 'name');
+}
+```
+
+#### Add Foreign Keys to Existing Tables
+
+```php
+// Add a foreign key to an existing table
+public function up(): void
+{
+    $this->alter('products')->add(function(Table $table) {
+        $table->foreignKey('category_id')->references('id')->on('categories');
+    });
+}
+
+// Add a column and foreign key together
+public function up(): void
+{
+    $this->alter('products')->add(function(Table $table) {
+        $table->column('category_id')->type('bigint')->attribute('unsigned');
+        $table->foreignKey('category_id')->references('id')->on('categories');
+    });
 }
 ```
 
@@ -426,17 +457,19 @@ $table->foreignKey('category_id')
 
 ### Dropping Foreign Keys
 
-To drop one or more foreign key constraints:
+To drop one or more foreign key constraints, pass the actual MySQL constraint names:
 
 ```php
 public function up(): void
 {
-    // Drop single foreign key
-    $this->alter('posts')->dropForeign('posts_user_id_foreign');
-    
+    // Drop single foreign key (MySQL auto-generates names like 'posts_ibfk_1')
+    $this->alter('posts')->dropForeign('posts_ibfk_1');
+
     // Drop multiple foreign keys
-    $this->alter('posts')->dropForeign('posts_user_id_foreign', 'posts_category_id_foreign');
+    $this->alter('posts')->dropForeign('posts_ibfk_1', 'posts_ibfk_2');
 }
 ```
+
+<p class="tip"><b>Tip:</b> Use `SHOW CREATE TABLE posts` or query `INFORMATION_SCHEMA.KEY_COLUMN_USAGE` to find the exact constraint names.</p>
 
 ---
