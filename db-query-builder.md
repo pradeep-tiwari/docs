@@ -297,13 +297,17 @@ By default it will try to look for `page` query parameter from the URL string. B
 $rows = $products->paginate(10, 3);
 ```
 
-Now you can iterate the result as an array.
+Now you can iterate the paginated result directly using `foreach`, access items by index, or call `items()` to get the underlying array.
 
 ```php
 foreach($rows as $product) {
     $product->name;
     $product->color;
 }
+
+// Or access by index
+$product = $rows[0];
+$product->name;
 ```
 
 ## Count
