@@ -47,7 +47,6 @@ The following special values are automatically converted:
 ```bash
 APP_DEBUG=true      # Converted to boolean true
 APP_DEBUG=false     # Converted to boolean false
-CACHE_DRIVER=null   # Converted to null
 ```
 
 ### Variable interpolation
