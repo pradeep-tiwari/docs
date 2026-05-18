@@ -145,6 +145,31 @@ foreach($categories as $category) {
 }
 ```
 
+### Ordering by relation count
+
+You can combine `withCount()` with `orderBy()` to sort results by the number of related records:
+
+```php
+// Top 10 most booked hotels
+$hotels = Hotel::query()
+    ->withCount('bookings')
+    ->orderBy('bookings_count', 'desc')
+    ->limit(10)
+    ->all();
+```
+
+This works for constrained counts too:
+
+```php
+// Projects sorted by number of open tasks
+$projects = Project::query()
+    ->withCount(['tasks' => fn($q) => $q->where('status', 'open')])
+    ->orderBy('tasks_count', 'desc')
+    ->all();
+```
+
+> **Note:** `loadCount()` cannot be combined with `orderBy()`. Since `loadCount()` runs after the collection is already fetched, there is no query left to sort. Use `withCount()->orderBy()` if sorting by count is required.
+
 ### Aggregating associations
 
 Beyond counting, you can also eager load **sum**, **average**, **minimum**, and **maximum** values from related records. These work similarly to `withCount()` but target a specific numeric column on the relation.
