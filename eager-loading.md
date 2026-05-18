@@ -145,6 +145,52 @@ foreach($categories as $category) {
 }
 ```
 
+### Aggregating associations
+
+Beyond counting, you can also eager load **sum**, **average**, **minimum**, and **maximum** values from related records. These work similarly to `withCount()` but target a specific numeric column on the relation.
+
+```php
+// Sum of hours for all project tasks
+$projects = Project::query()->withSum('tasks', 'hours')->all();
+
+// Average rating for all hotel reviews
+$hotels = Hotel::query()->withAvg('reviews', 'rating')->all();
+
+// Minimum and maximum order amounts per customer
+$customers = Customer::query()
+    ->withMin('orders', 'amount')
+    ->withMax('orders', 'amount')
+    ->all();
+```
+
+> **How do you access the aggregate?**
+>
+> The ORM constructs the attribute name by joining the relation name, the aggregate type, and the column name: `{relation}_{type}_{column}`. For example, `withSum('tasks', 'hours')` produces `$project->tasks_sum_hours`.
+
+For example:
+
+```php
+$projects = Project::query()->withSum('tasks', 'hours')->all();
+
+foreach($projects as $project) {
+    echo $project->tasks_sum_hours; // e.g. 42
+}
+```
+
+You can load multiple aggregates on the same relation simultaneously:
+
+```php
+$hotels = Hotel::query()
+    ->withAvg('reviews', 'rating')
+    ->withAvg('reviews', 'reviewer_age')
+    ->all();
+
+foreach($hotels as $hotel) {
+    echo $hotel->reviews_avg_rating;      // 4.2
+    echo $hotel->reviews_avg_reviewer_age; // 34.5
+}
+```
+
 ---
 
 ### Quick Reference: Eager Loading Methods
@@ -153,17 +199,25 @@ foreach($categories as $category) {
 |---------------------------------------|---------------------|----------------------------------------------------|
 | `with()`                              | Related models      | `with('seo')`, `with('options')`                   |
 | `withCount()`                         | Count of relations  | `withCount('products')`                            |
+| `withSum()`                           | Sum of relation     | `withSum('orders', 'amount')`                       |
+| `withAvg()`                           | Average of relation | `withAvg('reviews', 'rating')`                      |
+| `withMin()`                           | Minimum of relation | `withMin('orders', 'amount')`                       |
+| `withMax()`                           | Maximum of relation | `withMax('orders', 'amount')`                       |
 | `load()` (on collection)              | Related models      | `$products->load('seo')`                           |
 | `loadCount()` (on collection)         | Count of relations  | `$products->loadCount('options')`                  |
+| `loadSum()` (on collection)           | Sum of relation     | `$products->loadSum('orders', 'amount')`            |
+| `loadAvg()` (on collection)           | Average of relation | `$products->loadAvg('reviews', 'rating')`           |
+| `loadMin()` (on collection)           | Minimum of relation | `$products->loadMin('orders', 'amount')`            |
+| `loadMax()` (on collection)           | Maximum of relation | `$products->loadMax('orders', 'amount')`            |
 
-- Use `with()` and `withCount()` when building your initial query.
-- Use `load()` and `loadCount()` to eager load associations on an **existing collection**.
+- Use `with*()` methods when building your initial query.
+- Use `load*()` methods to eager load associations on an **existing collection**.
 
 ---
 
 ### Eager Loading Callbacks: Filtering Related Data
 
-You can pass a callback to `with()`, `withCount()`, `load()`, or `loadCount()` to apply conditions to the eager loaded relationship. The callback receives the query builder for the related model, letting you add any filters you need.
+You can pass a callback to `with()`, `withCount()`, `withSum()`, `withAvg()`, `withMin()`, `withMax()`, `load()`, `loadCount()`, `loadSum()`, `loadAvg()`, `loadMin()`, or `loadMax()` to apply conditions to the eager loaded relationship. The callback receives the query builder for the related model, letting you add any filters you need.
 
 ```php
 $projects = Project::query()->with(['tasks' => function($q) {
@@ -239,12 +293,16 @@ $projects = Project::query()->with(['tasks' => function($q) {
 })->all();
 ```
 
-**Note:** You can apply the same constraints on `withCount()` method too:
+**Note:** You can apply the same constraints on `withCount()` and aggregate methods too:
 
 ```php
 $projects = Project::query()->withCount(['tasks' => function($q) {
     $q->where('status', '=', 'pending');
-})->all();
+}])->all();
+
+$projects = Project::query()->withSum(['tasks' => function($q) {
+    $q->where('status', '=', 'completed');
+}], 'hours')->all();
 ```
 
 ### Deferred eager loading
@@ -257,30 +315,35 @@ In such cases, you might be interested in **paginating** `products` and then eag
 $products = Product::query()->paginate(10);
 ```
 
-Once you have got the **products**, you can eager load its **associated** relations by calling `load()` and `loadCount()` methods on **products**.
+Once you have got the **products**, you can eager load its **associated** relations by calling `load()`, `loadCount()`, `loadSum()`, `loadAvg()`, `loadMin()`, or `loadMax()` methods on **products**.
 
 ```php
 $products->load('seo');
 $products->loadCount('options');
+$products->loadSum('orders', 'amount');
 ```
 
-This will automatically populate `seo` data along with `options` count for each product in `$products` collection.
+This will automatically populate `seo` data along with `options` count and `orders` sum for each product in `$products` collection.
 
 ```php
 foreach($products as $product) {
-    $product->seo; 
+    $product->seo;
     $product->options_count;
+    $product->orders_sum_amount;
 }
 ```
 
-**Note:** You can also chain `load()` and `loadCount()` methods together. For example:
+**Note:** You can also chain these methods together. For example:
 
 ```php
 $products = Product::query()->paginate(10);
-$products->load('seo')->loadCount('options');
+$products->load('seo')
+    ->loadCount('options')
+    ->loadSum('orders', 'amount')
+    ->loadAvg('reviews', 'rating');
 ```
 
-**Note:** All the capabilities that `with()` and `withCount()` methods have also applies to `load()` and `loadCount()` methods.
+**Note:** All the capabilities that `with*()` methods have also applies to `load*()` methods.
 
 For example, you can pass **callbacks** to restrict eager loading:
 
@@ -294,6 +357,12 @@ $products->load(['reviews' => function($q) {
 $products->loadCount(['reviews' => function($q) {
     $q->where('status', '=', 'approved');
 }]);
+```
+
+```php
+$products->loadSum(['orders' => function($q) {
+    $q->where('status', '=', 'completed');
+}], 'amount');
 ```
 
 ---

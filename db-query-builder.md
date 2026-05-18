@@ -654,8 +654,50 @@ $products->sum('price');
 $products->avg('rating');
 $products->min('created_at');
 $products->max('updated_at');
-$products->countBy('category'); // returns an array of objects with counts for each group
 ```
+
+### Grouped Aggregates
+
+When you need aggregate values grouped by a specific column, use the `*By` methods. These return an array of `stdClass` objects, one per group:
+
+```php
+$results = $products->sumBy('category', 'price');
+
+foreach ($results as $result) {
+    echo $result->category; // 1, 2, ...
+    echo $result->sum;      // 150, 300, ...
+}
+
+$results = $products->avgBy('category', 'rating');
+
+foreach ($results as $result) {
+    echo $result->category; // 1, 2, ...
+    echo $result->avg;      // 4.5, 3.2, ...
+}
+
+$results = $products->minBy('category', 'price');
+
+foreach ($results as $result) {
+    echo $result->category; // 1, 2, ...
+    echo $result->min;      // 10, 5, ...
+}
+
+$results = $products->maxBy('category', 'price');
+
+foreach ($results as $result) {
+    echo $result->category; // 1, 2, ...
+    echo $result->max;      // 99, 199, ...
+}
+
+$results = $products->countBy('category');
+
+foreach ($results as $result) {
+    echo $result->category; // 1, 2, ...
+    echo $result->num;      // 10, 5, ...
+}
+```
+
+> **Note:** `sumBy`, `avgBy`, `minBy`, and `maxBy` are used internally by the ORM for eager-loading relation aggregates (e.g., `withSum()`, `withAvg()`), but you can also call them directly for standalone grouped reports.
 
 ---
 
