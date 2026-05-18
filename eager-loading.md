@@ -191,6 +191,20 @@ foreach($hotels as $hotel) {
 }
 ```
 
+> **What if the relation has no records?**
+>
+> When a parent model has no related records, the aggregate attribute is set to a sensible default that matches SQL semantics:
+>
+> | Aggregate | Default value |
+> |-----------|---------------|
+> | `withSum()` | `0` |
+> | `withCount()` | `0` |
+> | `withAvg()` | `null` |
+> | `withMin()` | `null` |
+> | `withMax()` | `null` |
+>
+> For example, if a project has no tasks, `$project->tasks_sum_hours` will be `0`, while `$project->tasks_avg_hours` will be `null`. This ensures you can safely use the values in calculations without extra null checks for sums and counts.
+
 ---
 
 ### Quick Reference: Eager Loading Methods
