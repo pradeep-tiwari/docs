@@ -647,13 +647,17 @@ $products->chunk(1000, function($batch) {
 
 ## Aggregates
 
-You can use the following methods for aggregate queries:
+### Scalar Aggregates
+
+For a single aggregate value across all matching rows:
 
 ```php
-$products->sum('price');
-$products->avg('rating');
-$products->min('created_at');
-$products->max('updated_at');
+$products->sum('price');       // Total price of all products
+$products->avg('rating');      // Average rating
+$products->min('created_at');   // Oldest date
+$products->max('updated_at');  // Most recent date
+$products->count();            // Total row count
+$products->where('active', true)->count(); // Count with conditions
 ```
 
 ### Grouped Aggregates
@@ -698,6 +702,119 @@ foreach ($results as $result) {
 ```
 
 > **Note:** `sumBy`, `avgBy`, `minBy`, and `maxBy` are used internally by the ORM for eager-loading relation aggregates (e.g., `withSum()`, `withAvg()`), but you can also call them directly for standalone grouped reports.
+
+### Multiple Grouped Aggregates
+
+When you need **multiple aggregate values in a single grouped query**, use the `aggregate()` method. This is more efficient than running separate `*By` queries and lets you combine counts, sums, averages, and more in one result set.
+
+```php
+$results = $products->aggregate('category', [
+    'count' => '*',                // COUNT(*) AS count
+    'sum' => 'price',              // SUM(price) AS sum_price
+    'avg' => 'rating',             // AVG(rating) AS avg_rating
+    'min' => 'price',              // MIN(price) AS min_price
+    'max' => 'price',              // MAX(price) AS max_price
+])->all();
+
+foreach ($results as $row) {
+    echo $row->category;     // 1, 2, ...
+    echo $row->count;        // 10, 5, ...
+    echo $row->sum_price;    // 150.00, 300.00, ...
+    echo $row->avg_rating;   // 4.50, 3.20, ...
+    echo $row->min_price;    // 10.00, 5.00, ...
+    echo $row->max_price;    // 99.00, 199.00, ...
+}
+```
+
+#### Custom Aliases
+
+If the default `{function}_{column}` aliases don't suit your needs, use the explicit array format to define your own:
+
+```php
+$results = $products->aggregate('category', [
+    'total' => ['count', '*'],           // COUNT(*) AS total
+    'revenue' => ['sum', 'price'],        // SUM(price) AS revenue
+    'avg_score' => ['avg', 'rating'],     // AVG(rating) AS avg_score
+])->all();
+
+// Access via your custom names:
+foreach ($results as $row) {
+    echo $row->total;      // 10, 5, ...
+    echo $row->revenue;    // 150.00, 300.00, ...
+    echo $row->avg_score;  // 4.50, 3.20, ...
+}
+```
+
+#### Chaining with Having, Order By, and Limit
+
+`aggregate()` returns the query builder, so you can chain filters and sorting:
+
+```php
+// Only groups with more than 5 items, sorted by highest revenue
+$topCategories = $products->aggregate('category', [
+    'count' => '*',
+    'sum' => 'price',
+])->having('count', '>', 5)
+  ->orderBy('sum_price', 'DESC')
+  ->limit(10)
+  ->all();
+
+// Lowest-rated products per brand
+$worstBrands = $products->aggregate('brand_id', [
+    'count' => '*',
+    'avg' => 'rating',
+])->having('count', '>', 0)
+  ->orderBy('avg_rating', 'ASC')
+  ->limit(5)
+  ->all();
+```
+
+#### Getting a Single Group
+
+Use `one()` to fetch just the first group (useful with `orderBy` for "top" or "bottom" queries):
+
+```php
+// Best-performing category by revenue
+$best = $products->aggregate('category', [
+    'count' => '*',
+    'sum' => 'price',
+])->orderBy('sum_price', 'DESC')
+  ->one();
+
+echo $best->category;   // 7
+echo $best->count;      // 42
+echo $best->sum_price;  // 12500.00
+```
+
+#### Common Use Cases
+
+**Dashboard summary cards:**
+```php
+$monthly = Order::query()->aggregate('status', [
+    'count' => '*',
+    'sum' => 'total',
+])->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->all();
+```
+
+**Sales rep leaderboard:**
+```php
+$leaderboard = Deal::query()->aggregate('assigned_to', [
+    'count' => '*',
+    'sum' => 'value',
+    'avg' => 'value',
+])->orderBy('sum_value', 'DESC')->limit(10)->all();
+```
+
+**Inventory status by warehouse:**
+```php
+$status = Product::query()->aggregate('warehouse_id', [
+    'count' => '*',
+    'sum' => 'quantity',
+    'min' => 'quantity',
+])->having('sum_quantity', '<', 100)->all();
+```
+
+> **Tip:** Aliases are automatically generated as `{function}_{column}` (e.g., `sum_price`, `avg_rating`). `COUNT(*)` is special — it always gets the alias `count`. Use the explicit `[function, column]` format if you need different names.
 
 ---
 

@@ -230,6 +230,10 @@ foreach($hotels as $hotel) {
 >
 > For example, if a project has no tasks, `$project->tasks_sum_hours` will be `0`, while `$project->tasks_avg_hours` will be `null`. This ensures you can safely use the values in calculations without extra null checks for sums and counts.
 
+> **Standalone vs. Relation Aggregates**
+>
+> The methods above (`withCount`, `withSum`, etc.) compute aggregates **on related models** and attach them to each parent. If you need grouped aggregates **on the model's own columns** (e.g., `SUM(price) GROUP BY category` on the `products` table itself), use the query builder's `aggregate()` method instead. See [Multiple Grouped Aggregates](./db-query-builder.md#multiple-grouped-aggregates) in the Query Builder documentation.
+
 ---
 
 ### Quick Reference: Eager Loading Methods
