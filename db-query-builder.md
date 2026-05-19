@@ -662,43 +662,76 @@ $products->where('active', true)->count(); // Count with conditions
 
 ### Grouped Aggregates
 
-When you need aggregate values grouped by a specific column, use the `*By` methods. These return an array of `stdClass` objects, one per group:
+When you need aggregate values grouped by a specific column, use the `*By` methods. They set up the grouped aggregate query and return the builder for further chaining:
 
 ```php
-$results = $products->sumBy('category', 'price');
+$results = $products->sumBy('category', 'price')->all();
+
+foreach ($results as $result) {
+    echo $result->category;   // 1, 2, ...
+    echo $result->sum_price;  // 150, 300, ...
+}
+
+$results = $products->avgBy('category', 'rating')->all();
+
+foreach ($results as $result) {
+    echo $result->category;    // 1, 2, ...
+    echo $result->avg_rating;  // 4.5, 3.2, ...
+}
+
+$results = $products->minBy('category', 'price')->all();
+
+foreach ($results as $result) {
+    echo $result->category;   // 1, 2, ...
+    echo $result->min_price;  // 10, 5, ...
+}
+
+$results = $products->maxBy('category', 'price')->all();
+
+foreach ($results as $result) {
+    echo $result->category;   // 1, 2, ...
+    echo $result->max_price;  // 99, 199, ...
+}
+
+$results = $products->countBy('category')->all();
 
 foreach ($results as $result) {
     echo $result->category; // 1, 2, ...
-    echo $result->sum;      // 150, 300, ...
+    echo $result->count;  // 10, 5, ...
 }
+```
 
-$results = $products->avgBy('category', 'rating');
+> **Note:** Aliases follow the `{function}_{column}` pattern (e.g., `sum_price`, `avg_rating`, `min_price`, `max_price`). `countBy()` uses `count` since there is no column. You must call `->all()` or `->one()` at the end to execute the query.
 
-foreach ($results as $result) {
-    echo $result->category; // 1, 2, ...
-    echo $result->avg;      // 4.5, 3.2, ...
-}
+#### Filtering and Sorting Grouped Results
 
-$results = $products->minBy('category', 'price');
+Because `*By` methods are non-terminal, you can chain `having()`, `orderBy()`, and `limit()` just like with `aggregate()`:
 
-foreach ($results as $result) {
-    echo $result->category; // 1, 2, ...
-    echo $result->min;      // 10, 5, ...
-}
+```php
+// Top 5 categories by total revenue
+$topCategories = $products->sumBy('category', 'price')
+    ->having('sum_price', '>', 100)
+    ->orderBy('sum_price', 'DESC')
+    ->limit(5)
+    ->all();
 
-$results = $products->maxBy('category', 'price');
+// Categories with more than 10 items, ordered by count
+$popular = $products->countBy('category')
+    ->having('count', '>', 10)
+    ->orderBy('count', 'DESC')
+    ->all();
+```
 
-foreach ($results as $result) {
-    echo $result->category; // 1, 2, ...
-    echo $result->max;      // 99, 199, ...
-}
+You can also use `->one()` to get just the first group — useful for top/bottom queries:
 
-$results = $products->countBy('category');
+```php
+// Best-performing category by revenue
+$best = $products->sumBy('category', 'price')
+    ->orderBy('sum_price', 'DESC')
+    ->one();
 
-foreach ($results as $result) {
-    echo $result->category; // 1, 2, ...
-    echo $result->num;      // 10, 5, ...
-}
+echo $best->category;   // 7
+echo $best->sum_price;  // 12500.00
 ```
 
 > **Note:** `sumBy`, `avgBy`, `minBy`, and `maxBy` are used internally by the ORM for eager-loading relation aggregates (e.g., `withSum()`, `withAvg()`), but you can also call them directly for standalone grouped reports.
