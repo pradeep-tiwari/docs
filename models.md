@@ -532,6 +532,19 @@ $products = Product::query()->has('orders', '>=', 2, function($q) {
 });
 ```
 
+**`whereHas()` — constrained existence check**
+
+`whereHas()` is a convenience wrapper around `has()` for the common case where you want to check for existence with a condition but don't need an operator/count threshold. It reads more naturally when a callback is the primary focus:
+
+```php
+// Products that have at least one approved review
+$products = Product::query()->whereHas('reviews', function ($q) {
+    $q->where('status', '=', 'approved');
+})->all();
+```
+
+Use `whereHas()` when a constraint callback is your only concern. Use `has()` when you also need an operator and count threshold.
+
 ## Query Filters
 
 Query filters provide a clean way to filter database records using model scopes. They allow you to encapsulate common query constraints and apply them dynamically.
@@ -699,6 +712,30 @@ Lightpack Lucid models provide a set of protected lifecycle hook methods that al
 ---
 
 ### Practical Examples for Each Hook
+
+### beforeSave()
+Called before `save()`, regardless of whether it inserts or updates:
+```php
+protected function beforeSave()
+{
+    // Example: Normalize data before any persistence
+    $this->email = strtolower(trim($this->email));
+    // Example: Set a computed field
+    $this->slug = str_slug($this->name);
+}
+```
+
+### afterSave()
+Called after `save()`, regardless of whether it inserted or updated:
+```php
+protected function afterSave()
+{
+    // Example: Invalidate cache after any change
+    Cache::forget('user_' . $this->id);
+    // Example: Sync to external service
+    SearchIndex::upsert('users', $this->id, $this->toArray());
+}
+```
 
 ### beforeInsert()
 Called before inserting a new record:
