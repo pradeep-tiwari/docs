@@ -475,13 +475,17 @@ public function up(): void
 
 ### Defining Foreign Keys
 
-To define a foreign key constraint, use the `foreignKey()` method:
+To define a foreign key constraint, use the `foreignKey()` method. The constraint name is **auto-generated** as `fk_{table}_{column}` — always predictable. Use `->name()` to override.
 
 ```php
 $table->foreignKey('author_id')
     ->references('id')
     ->on('users')
     ->cascadeOnDelete();
+// Generates: CONSTRAINT `fk_posts_author_id` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+
+// Custom constraint name:
+$table->foreignKey('author_id')->name('my_fk_name')->cascadeOnDelete();
 ```
 
 ### Foreign Key Actions
@@ -513,19 +517,19 @@ $table->foreignKey('category_id')
 
 ### Dropping Foreign Keys
 
-To drop one or more foreign key constraints, pass the actual MySQL constraint names:
+Constraint names follow the pattern `fk_{table}_{column}`, so they are always predictable:
 
 ```php
 public function up(): void
 {
-    // Drop single foreign key (MySQL auto-generates names like 'posts_ibfk_1')
-    $this->alter('posts')->dropForeign('posts_ibfk_1');
+    // Drop single foreign key
+    $this->alter('posts')->dropForeign('fk_posts_author_id');
 
     // Drop multiple foreign keys
-    $this->alter('posts')->dropForeign('posts_ibfk_1', 'posts_ibfk_2');
+    $this->alter('posts')->dropForeign('fk_posts_author_id', 'fk_posts_category_id');
 }
 ```
 
-<p class="tip"><b>Tip:</b> Use `SHOW CREATE TABLE posts` or query `INFORMATION_SCHEMA.KEY_COLUMN_USAGE` to find the exact constraint names.</p>
+<p class="tip"><b>Note:</b> If you used <code>->name()</code> to set a custom constraint name, pass that name to <code>dropForeign()</code> instead.</p>
 
 ---
