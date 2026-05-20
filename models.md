@@ -503,8 +503,10 @@ $products = Product::query()->has('orders', '>=', 1)->all();
 **Fetch products with no orders**
 
 ```php
-$products = Product::query()->has('orders', '=', 0)->all();
+$products = Product::query()->doesntHave('orders')->all();
 ```
+
+> You can also write `has('orders', '=', 0)` but `doesntHave()` is more readable.
 
 **Fetch products with at least 2 orders**
 
@@ -529,7 +531,7 @@ You can even pass a callback as **4th** parameter to `has()` method to add more 
 ```php
 $products = Product::query()->has('orders', '>=', 2, function($q) {
     $q->where('paid', '=', true);
-});
+})->all();
 ```
 
 **`whereHas()` — constrained existence check**
@@ -544,6 +546,28 @@ $products = Product::query()->whereHas('reviews', function ($q) {
 ```
 
 Use `whereHas()` when a constraint callback is your only concern. Use `has()` when you also need an operator and count threshold.
+
+**`doesntHave()` — inverse existence check**
+
+Use `doesntHave()` to fetch parent models that have no related records at all:
+
+```php
+// Products with no orders
+$products = Product::query()->doesntHave('orders')->all();
+```
+
+**`whereDoesntHave()` — inverse constrained existence check**
+
+Use `whereDoesntHave()` to fetch parent models that have no related records matching a condition:
+
+```php
+// Projects with no overdue tasks
+$projects = Project::query()->whereDoesntHave('tasks', function ($q) {
+    $q->where('due_date', '<', date('Y-m-d'));
+})->all();
+```
+
+> `doesntHave()` and `whereDoesntHave()` are the negative counterparts of `has()` and `whereHas()`.
 
 ## Query Filters
 
