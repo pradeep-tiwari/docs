@@ -123,6 +123,38 @@ To eager load multiple associations, pass associated method names in the `with` 
 $products = Product::query()->with('seo', 'options')->all();
 ```
 
+### Limited eager loading
+
+When eager loading `1:N` associations, you may only need a subset of related records per parent—for example, the 5 latest comments on each post. You can apply `limit()` and `orderBy()` constraints directly on the relation:
+
+```php
+// Latest 3 comments per post
+$posts = Post::query()
+    ->with(['comments' => function ($q) {
+        $q->orderBy('created_at', 'desc')->limit(3);
+    }])
+    ->all();
+
+foreach ($posts as $post) {
+    echo $post->comments->count(); // Max 3 per post
+}
+```
+
+This works for both `hasMany` and `hasManyThrough` relations. Lightpack uses a `ROW_NUMBER()` window function to enforce per-parent limits in a single query.
+
+You can also combine `limit()` with additional `where` constraints:
+
+```php
+// 2 highest-rated reviews per product
+$products = Product::query()
+    ->with(['reviews' => function ($q) {
+        $q->where('status', 'approved')
+          ->orderBy('rating', 'desc')
+          ->limit(2);
+    }])
+    ->all();
+```
+
 ### Counting associations
 
 To count the associated relations, use `withCount()` method:
