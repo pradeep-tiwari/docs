@@ -177,7 +177,7 @@ foreach($categories as $category) {
 }
 ```
 
-### Ordering by relation count
+### Ordering by relation count or aggregate
 
 You can combine `withCount()` with `orderBy()` to sort results by the number of related records:
 
@@ -200,7 +200,19 @@ $projects = Project::query()
     ->all();
 ```
 
-> **Note:** `loadCount()` cannot be combined with `orderBy()`. Since `loadCount()` runs after the collection is already fetched, there is no query left to sort. Use `withCount()->orderBy()` if sorting by count is required.
+The same pattern works for all aggregate methods. For example, sorting by a sum:
+
+```php
+// Projects ordered by total task cost, highest first
+$projects = Project::query()
+    ->withSum('tasks', 'cost')
+    ->orderBy('tasks_sum_cost', 'desc')
+    ->all();
+```
+
+When `orderBy()` targets an aggregate column, Lightpack automatically switches from a `GROUP BY` query to an injected **correlated subquery** in the `SELECT` clause. This ensures correct ordering without requiring a separate pass over the data.
+
+> **Note:** `loadCount()` and `loadSum()` (and other `load*()` variants) cannot be combined with `orderBy()`. Since these methods run after the collection is already fetched, there is no query left to sort. Use `withCount()->orderBy()` or `withSum()->orderBy()` etc. if sorting is required.
 
 ### Aggregating associations
 
@@ -253,14 +265,23 @@ foreach($hotels as $hotel) {
 > When a parent model has no related records, the aggregate attribute is set to a sensible default that matches SQL semantics:
 >
 > | Aggregate | Default value |
-> |-----------|---------------|
-> | `withSum()` | `0` |
+> |-----------|--------------|
 > | `withCount()` | `0` |
+> | `withSum()` | `null` |
 > | `withAvg()` | `null` |
 > | `withMin()` | `null` |
 > | `withMax()` | `null` |
 >
-> For example, if a project has no tasks, `$project->tasks_sum_hours` will be `0`, while `$project->tasks_avg_hours` will be `null`. This ensures you can safely use the values in calculations without extra null checks for sums and counts.
+> For example, if a project has no tasks, `$project->tasks_count` will be `0`, while `$project->tasks_sum_hours` and `$project->tasks_avg_hours` will be `null`. Use `?? 0` in views when you need a numeric fallback for sum/avg/min/max.
+
+> **Which relation types support aggregates?**
+>
+> | Method | Supported relations |
+> |--------|--------------------|
+> | `withCount()` | `hasMany`, `hasManyThrough`, `morphMany`, `pivot`, `morphToMany`, `morphedByMany` |
+> | `withSum()` / `withAvg()` / `withMin()` / `withMax()` | `hasMany` |
+>
+> `withCount()` works across all collection-style relations including polymorphic many-to-many. Numeric aggregates (`withSum` etc.) currently apply to `hasMany` relations only.
 
 > **Standalone vs. Relation Aggregates**
 >

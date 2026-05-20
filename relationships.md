@@ -689,6 +689,61 @@ $videos = $tag->videos; // All videos with this tag
 
 ---
 
+## Counting Relations
+
+`withCount()` works across all collection-style relationships—not just `hasMany`. This includes many-to-many (`pivot`), polymorphic many-to-many (`morphToMany`, `morphedByMany`), and through relationships.
+
+**Many-to-many (`pivot`):**
+
+```php
+// How many roles does each user have?
+$users = User::query()->withCount('roles')->all();
+
+foreach ($users as $user) {
+    echo $user->roles_count;
+}
+```
+
+**Polymorphic many-to-many (`morphToMany`):**
+
+```php
+// How many tags does each post have?
+$posts = Post::query()->withCount('tags')->all();
+
+foreach ($posts as $post) {
+    echo $post->tags_count;
+}
+```
+
+**Inverse polymorphic many-to-many (`morphedByMany`):**
+
+```php
+// How many posts and videos does each tag have?
+$tags = Tag::query()
+    ->withCount('posts')
+    ->withCount('videos')
+    ->all();
+
+foreach ($tags as $tag) {
+    echo $tag->posts_count;
+    echo $tag->videos_count;
+}
+```
+
+You can also combine `withCount()` with `orderBy()` on these relations:
+
+```php
+// Users ordered by number of roles
+$users = User::query()
+    ->withCount('roles')
+    ->orderBy('roles_count', 'desc')
+    ->all();
+```
+
+For a complete reference on `withCount()`, `withSum()`, and all other aggregate facilities including defaults, callbacks, and deferred loading, see the [Eager Loading documentation](eager-loading.md).
+
+---
+
 ## Querying Relationships
 
 Understanding how to access and work with relationships is fundamental to getting the most out of your ORM. Lightpack ORM makes it intuitive to fetch related data, whether you want a single associated record or a whole collection of related models. This section will guide you through the mechanics, best practices, and the semantics of querying relationships. So let's reconsider the relation where an  **organization** has many **departments**.
