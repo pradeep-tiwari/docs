@@ -55,10 +55,19 @@ $firstUser = $users->first();
 $admin = $users->first(['role' => 'admin']);
 ```
 
+### last()
+Get the last model in the collection. Returns `null` if the collection is empty.
+```php
+$latestUser = $users->last();
+```
+
 ### column()
-Get an array of values for a given column from all models.
+Get an array of values for a given column from all models. Falsy values (`null`, `''`, `false`, `0`) are skipped.
 ```php
 $emails = $users->column('email');
+
+// Only non-empty status values are returned
+$statuses = $users->column('status'); // ['active', 'inactive']
 ```
 
 ### filter()
@@ -132,6 +141,38 @@ foreach ($users as $user) {
 }
 ```
 
+### loadSum() / loadAvg() / loadMin() / loadMax()
+Eager load aggregate values from a related model's column. The attribute is attached using the convention `{relation}_{function}_{column}`.
+```php
+$users->loadSum('orders', 'amount');
+$users->loadAvg('orders', 'amount');
+$users->loadMin('orders', 'amount');
+$users->loadMax('orders', 'amount');
+
+foreach ($users as $user) {
+    echo $user->orders_sum_amount;
+    echo $user->orders_avg_amount;
+}
+```
+
+### sort()
+Return a new `Collection` sorted by a column. Direction defaults to `'asc'`. Does not mutate the original collection.
+
+This is particularly useful when you need to sort by an attribute that was attached via eager loading (e.g. `withCount`, `withSum`).
+```php
+// alphabetical sort
+$teams = Team::query()
+    ->withCount('deals')
+    ->all()
+    ->sort('name');
+
+// ranked by deals count
+$teams = Team::query()
+    ->withCount('deals')
+    ->all()
+    ->sort('deals_count', 'desc');
+```
+
 ### loadMorphs()
 Efficiently eager load polymorphic parents for a collection of models with a `morphTo` relation. Optionally specify the attribute name for the parent (default: `'parent'`).
 ```php
@@ -196,15 +237,18 @@ $payload = $users->transform([
 ```php
 $users = User::query()->with('profile')->all();
 
-// Eager load posts and count of comments for each user
-$users->load('posts')->loadCount('comments');
+// Eager load relations and aggregates
+$users->load('posts')->loadCount('posts');
 
-// Get all user emails who have posted in the last week
-$recent = $users->filter(fn($u) => $u->posts->first()?->created_at > now()->subWeek());
-$emails = $recent->column('email');
+// Filter to users who have at least one post
+$active = $users->filter(fn($u) => $u->posts->isNotEmpty());
+$emails = $active->column('email');
+
+// Sort by post count (SQL ordering not possible on eager-loaded counts)
+$ranked = $users->sort('posts_count', 'desc');
 
 // Transform for API
-return $users->transform([
+return $ranked->transform([
     'fields' => ['id', 'name', 'email'],
     'includes' => ['profile', 'posts'],
 ]);
