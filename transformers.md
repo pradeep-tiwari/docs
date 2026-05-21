@@ -371,10 +371,10 @@ $result = $pagination->transform([
         'total_pages' => 10
     ],
     'links' => [
-        'first' => '?page=1',
-        'last' => '?page=10',
+        'first' => '/projects?page=1',
+        'last' => '/projects?page=10',
         'prev' => null,
-        'next' => '?page=2'
+        'next' => '/projects?page=2'
     ]
 ]
 ```

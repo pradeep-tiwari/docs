@@ -503,8 +503,10 @@ $products = Product::query()->has('orders', '>=', 1)->all();
 **Fetch products with no orders**
 
 ```php
-$products = Product::query()->has('orders', '=', 0)->all();
+$products = Product::query()->doesntHave('orders')->all();
 ```
+
+> You can also write `has('orders', '=', 0)` but `doesntHave()` is more readable.
 
 **Fetch products with at least 2 orders**
 
@@ -529,8 +531,43 @@ You can even pass a callback as **4th** parameter to `has()` method to add more 
 ```php
 $products = Product::query()->has('orders', '>=', 2, function($q) {
     $q->where('paid', '=', true);
-});
+})->all();
 ```
+
+**`whereHas()` — constrained existence check**
+
+`whereHas()` is a convenience wrapper around `has()` for the common case where you want to check for existence with a condition but don't need an operator/count threshold. It reads more naturally when a callback is the primary focus:
+
+```php
+// Products that have at least one approved review
+$products = Product::query()->whereHas('reviews', function ($q) {
+    $q->where('status', '=', 'approved');
+})->all();
+```
+
+Use `whereHas()` when a constraint callback is your only concern. Use `has()` when you also need an operator and count threshold.
+
+**`doesntHave()` — inverse existence check**
+
+Use `doesntHave()` to fetch parent models that have no related records at all:
+
+```php
+// Products with no orders
+$products = Product::query()->doesntHave('orders')->all();
+```
+
+**`whereDoesntHave()` — inverse constrained existence check**
+
+Use `whereDoesntHave()` to fetch parent models that have no related records matching a condition:
+
+```php
+// Projects with no overdue tasks
+$projects = Project::query()->whereDoesntHave('tasks', function ($q) {
+    $q->where('due_date', '<', date('Y-m-d'));
+})->all();
+```
+
+> `doesntHave()` and `whereDoesntHave()` are the negative counterparts of `has()` and `whereHas()`.
 
 ## Query Filters
 
@@ -699,6 +736,30 @@ Lightpack Lucid models provide a set of protected lifecycle hook methods that al
 ---
 
 ### Practical Examples for Each Hook
+
+### beforeSave()
+Called before `save()`, regardless of whether it inserts or updates:
+```php
+protected function beforeSave()
+{
+    // Example: Normalize data before any persistence
+    $this->email = strtolower(trim($this->email));
+    // Example: Set a computed field
+    $this->slug = str_slug($this->name);
+}
+```
+
+### afterSave()
+Called after `save()`, regardless of whether it inserted or updated:
+```php
+protected function afterSave()
+{
+    // Example: Invalidate cache after any change
+    Cache::forget('user_' . $this->id);
+    // Example: Sync to external service
+    SearchIndex::upsert('users', $this->id, $this->toArray());
+}
+```
 
 ### beforeInsert()
 Called before inserting a new record:
