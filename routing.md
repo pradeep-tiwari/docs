@@ -279,6 +279,96 @@ public function dashboard($subdomain)
 
 ---
 
+## Route Model Binding
+
+Automatically resolve route parameters into model instances before they reach your controller. Lightpack supports both **explicit** binding (by ID) and **custom** binding (via callback).
+
+### Explicit Binding (ID Resolution)
+
+```php
+route()->get('/notes/:id', NoteController::class, 'show')
+    ->bind('id', Note::class);
+```
+
+This resolves the `:id` parameter by calling `new Note($id)` — identical to how the `Model` constructor accepts a primary key.
+
+### Custom Binding (Callback Resolution)
+
+```php
+route()->get('/notes/:slug', NoteController::class, 'show')
+    ->bind('slug', Note::class, fn($slug) => Note::query()->where('slug', $slug)->one());
+```
+
+The callback receives the raw route parameter value and must return the resolved model instance (or `null` if not found).
+
+### Important: Parameter Name Match
+
+The route parameter name **must match** the controller parameter name:
+
+```php
+// Route
+route()->get('/notes/:id', NoteController::class, 'show')->bind('id', Note::class);
+
+// Controller — parameter MUST be named $id
+public function show(Note $id) { }     // ✅ Works
+public function show(Note $note) { }   // ❌ Fails — container looks for $args['note']
+```
+
+The container matches `$args` to parameters by name, not by position or type.
+
+### Multiple Bindings
+
+Chain `bind()` calls for routes with multiple parameters:
+
+```php
+route()->get('/posts/:post/comments/:comment', CommentController::class, 'show')
+    ->bind('post', Post::class)
+    ->bind('comment', Comment::class);
+```
+
+Each parameter is resolved independently.
+
+### Group-Level Bindings
+
+Apply bindings to all routes in a group — no repetition:
+
+```php
+route()->group(['bind' => ['id' => ['model' => Note::class, 'resolver' => null]]], function () {
+    route()->get('/notes/:id', NoteController::class, 'show');
+    route()->get('/notes/:id/edit', NoteController::class, 'edit');
+    route()->delete('/notes/:id', NoteController::class, 'destroy');
+});
+```
+
+**Group-level behavior:**
+- All child routes inherit group bindings automatically.
+- Nested groups merge bindings (child bindings override parent for same param).
+- Route-level `->bind()` always wins over group-level binding.
+- Bindings do **not** leak outside the group — routes defined after a group are unaffected.
+
+**Nested groups with merge + override:**
+
+```php
+route()->group(['bind' => ['note' => ['model' => Note::class, 'resolver' => null]]], function () {
+    route()->group(['bind' => ['comment' => ['model' => Comment::class, 'resolver' => null]]], function () {
+        // Both 'note' and 'comment' bindings are active here
+        route()->get('/notes/:note/comments/:comment', CommentController::class, 'show');
+    });
+});
+```
+
+### Missing Parameters
+
+If a bound parameter is not present in the route match, the binding is silently skipped and the raw value is passed through. This makes optional parameters safe:
+
+```php
+route()->get('/items/:id?', ItemController::class, 'show')
+    ->bind('id', Item::class);
+// When :id is missing, binding is skipped; $id is null in the controller
+```
+
+---
+
 ## Best Practices & Gotchas
 
 - **Order matters:** Register more specific routes before generic ones.
@@ -289,6 +379,7 @@ public function dashboard($subdomain)
 - **Group nesting:** Prefixes concatenate, filters merge, host is inherited.
 - **Optional params:** Only the **last** parameter can be optional using `:param?`; missing params are `null`.
 - **Default pattern:** Parameters without explicit patterns default to `:seg` (matches `[^/]+`).
+- **Model binding param names:** The controller parameter name must exactly match the route parameter name for the container to inject the resolved model.
 - **Host matching:** When a route has a host, matching checks `request()->host() . '/' . path`. Routes with hosts will NOT match if the request comes from a different host.
 - **Wildcard subdomains:** The pattern `:subdomain.example.com` only matches hosts ending with `.example.com`. Other domains are rejected.
 - **404s:** If no route matches, Lightpack throws a `RouteNotFoundException`.
