@@ -367,6 +367,45 @@ route()->get('/items/:id?', ItemController::class, 'show')
 // When :id is missing, binding is skipped; $id is null in the controller
 ```
 
+This also means group-level bindings are harmless on routes that don't define the parameter:
+
+```php
+route()->group(['bind' => ['id' => ['model' => Note::class, 'resolver' => null]]], function () {
+    route()->get('/notes', NoteController::class, 'index');     // no :id param — binding skipped
+    route()->get('/notes/:id', NoteController::class, 'show');  // has :id param — binding resolves
+});
+```
+
+### Important Gotcha: Type-Hinted Models Without Route Params
+
+If you type-hint a model in a controller method that has **no matching route parameter**, the container will instantiate it with zero arguments:
+
+```php
+// ✅ CORRECT — empty model is exactly what you want for create
+public function store(Request $request, Note $note)
+{
+    $note->title = $request->input('title');
+    $note->save();    // inserts new row
+}
+```
+
+```php
+// ⚠️ CONFUSING — you expected a DB lookup but got an empty model
+public function show(Note $note)
+{
+    // Route is /notes/:id but param is named $note, not $id
+    // Container does: new Note() — empty, no row loaded
+    return $note->title; // null
+}
+```
+
+`Model::__construct($id = null)` defaults to `null`, so `new Note()` is valid and often useful. The issue is only when you **expected** model binding to load a record from the database.
+
+**Rule of thumb:**
+- **No binding, no param** → empty model (correct for create/update actions)
+- **Binding matches param** → loaded model from DB (correct for show/edit actions)
+- **Binding exists but param name mismatch** → empty model when you expected loaded data — rename the controller param to match
+
 ---
 
 ## Best Practices & Gotchas
