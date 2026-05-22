@@ -279,6 +279,119 @@ public function dashboard($subdomain)
 
 ---
 
+## Route Model Binding
+
+Automatically resolve route parameters into model instances before they reach your controller. Lightpack supports both **explicit** binding (by ID) and **custom** binding (via callback).
+
+In this example, the `:note` parameter in the route will be automatically resolved to a `Note` model instance:
+
+```php
+route()->get('/notes/:note', NoteController::class, 'show')
+    ->bind('note', Note::class);
+```
+
+```php
+class NoteController
+{
+    public function show(Note $note)
+    {
+        return $note->title;
+    }
+}
+```
+
+The Note model will be automatically instantiated with the ID from the route parameter. Behind the scenes, Lightpack calls `new Note($note)` where `$note` is the ID of the note record.
+
+SO this is identical to `new Note(5)` when the URL is `/notes/5`. If no record is found, the model throws a `RecordNotFoundException` (404).
+
+> **Use semantic names** (`:note`, `:comment`, `:post`) instead of generic names (`:id`, `:slug`). It makes controller signatures natural and readable.
+
+### Custom Binding (Callback Resolution)
+
+The default resolution mechanism is to instantiate the model with the route parameter value as record ID. But you can also provide a custom callback for more control.
+
+Provide a callback for non-ID lookups or ownership checks:
+
+```php
+route()->get('/notes/:slug', NoteController::class, 'show')
+    ->bind('note', Note::class, fn($slug) => Note::query()->where('slug', $slug)->one());
+```
+
+The callback receives the raw route parameter value and must return the resolved model instance. If the callback returns `null` the route will result in a 404.
+
+### Multiple Bindings
+
+Chain `bind()` calls for routes with multiple parameters:
+
+```php
+route()->get('/posts/:post/comments/:comment', CommentController::class, 'show')
+    ->bind('post', Post::class)
+    ->bind('comment', Comment::class);
+```
+
+Each parameter is resolved independently. It doesn't check if the comment belongs to the post, for example.
+
+### Group-Level Bindings
+
+Apply bindings to all routes in a group — no repetition. Use the short form (just the class name) for ID-based resolution, or the full array form for custom resolvers:
+
+```php
+// Short form (recommended for ID resolution)
+route()->group([
+    'bind' => [
+        'note' => Note::class
+    ]
+], function () {
+    route()->get('/notes/:note', NoteController::class, 'show');
+    route()->get('/notes/:note/edit', NoteController::class, 'edit');
+    route()->delete('/notes/:note', NoteController::class, 'destroy');
+});
+
+// Full form (for custom resolvers)
+route()->group([
+    'bind' => [
+        'slug' => [
+            'model' => Note::class,
+            'resolver' => fn($slug) => Note::query()->where('slug', $slug)->one()
+        ]
+    ]
+], function () {
+    route()->get('/notes/:slug', NoteController::class, 'show');
+});
+```
+
+// Multiple bindings in a group
+```
+route()->group([
+    'bind' => [
+        'note' => Note::class,
+        'comment' => Comment::class
+    ]
+], function () {
+    route()->get('/notes/:note/comments/:comment', CommentController::class, 'show');
+    route()->put('/notes/:note/comments/:comment', CommentController::class, 'update');
+    route()->delete('/notes/:note/comments/:comment', CommentController::class, 'destroy');
+});
+```
+
+**Group-level behavior:**
+- All child routes inherit group bindings automatically.
+- Nested groups merge bindings (child bindings override parent for same param).
+- Route-level `->bind()` always wins over group-level binding.
+
+**Nested groups with merge + override:**
+
+You can nest groups and the bindings will merge:
+
+```php
+route()->group(['bind' => ['note' => Note::class]], function () {
+    route()->group(['bind' => ['comment' => Comment::class]], function () {
+        // Both 'note' and 'comment' bindings are active here
+        route()->get('/notes/:note/comments/:comment', CommentController::class, 'show');
+    });
+});
+```
+
 ## Best Practices & Gotchas
 
 - **Order matters:** Register more specific routes before generic ones.
@@ -289,6 +402,7 @@ public function dashboard($subdomain)
 - **Group nesting:** Prefixes concatenate, filters merge, host is inherited.
 - **Optional params:** Only the **last** parameter can be optional using `:param?`; missing params are `null`.
 - **Default pattern:** Parameters without explicit patterns default to `:seg` (matches `[^/]+`).
+- **Model binding param names:** The controller parameter name must exactly match the route parameter name for the container to inject the resolved model.
 - **Host matching:** When a route has a host, matching checks `request()->host() . '/' . path`. Routes with hosts will NOT match if the request comes from a different host.
 - **Wildcard subdomains:** The pattern `:subdomain.example.com` only matches hosts ending with `.example.com`. Other domains are rejected.
 - **404s:** If no route matches, Lightpack throws a `RouteNotFoundException`.
