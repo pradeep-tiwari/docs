@@ -330,13 +330,19 @@ Each parameter is resolved independently.
 
 ### Group-Level Bindings
 
-Apply bindings to all routes in a group — no repetition:
+Apply bindings to all routes in a group — no repetition. Use the short form (just the class name) for ID-based resolution, or the full array form for custom resolvers:
 
 ```php
-route()->group(['bind' => ['id' => ['model' => Note::class, 'resolver' => null]]], function () {
+// Short form (recommended for ID resolution)
+route()->group(['bind' => ['id' => Note::class]], function () {
     route()->get('/notes/:id', NoteController::class, 'show');
     route()->get('/notes/:id/edit', NoteController::class, 'edit');
     route()->delete('/notes/:id', NoteController::class, 'destroy');
+});
+
+// Full form (for custom resolvers)
+route()->group(['bind' => ['slug' => ['model' => Note::class, 'resolver' => fn($slug) => Note::query()->where('slug', $slug)->one()]]], function () {
+    route()->get('/notes/:slug', NoteController::class, 'show');
 });
 ```
 
@@ -349,8 +355,8 @@ route()->group(['bind' => ['id' => ['model' => Note::class, 'resolver' => null]]
 **Nested groups with merge + override:**
 
 ```php
-route()->group(['bind' => ['note' => ['model' => Note::class, 'resolver' => null]]], function () {
-    route()->group(['bind' => ['comment' => ['model' => Comment::class, 'resolver' => null]]], function () {
+route()->group(['bind' => ['note' => Note::class]], function () {
+    route()->group(['bind' => ['comment' => Comment::class]], function () {
         // Both 'note' and 'comment' bindings are active here
         route()->get('/notes/:note/comments/:comment', CommentController::class, 'show');
     });
@@ -370,9 +376,9 @@ route()->get('/items/:id?', ItemController::class, 'show')
 This also means group-level bindings are harmless on routes that don't define the parameter:
 
 ```php
-route()->group(['bind' => ['id' => ['model' => Note::class, 'resolver' => null]]], function () {
-    route()->get('/notes', NoteController::class, 'index');     // no :id param — binding skipped
-    route()->get('/notes/:id', NoteController::class, 'show');  // has :id param — binding resolves
+route()->group(['bind' => ['id' => Note::class]], function () {
+    route()->get('/notes', NoteController::class, 'index');     // no :id param — binding skipped, no model created
+    route()->get('/notes/:id', NoteController::class, 'show');  // has :id param — binding resolves, model loaded
 });
 ```
 
