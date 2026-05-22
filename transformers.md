@@ -101,7 +101,7 @@ These options are forwarded to the transformer instance and determine which fiel
 
 ---
 
-A transformer is a PHP class that extends `Lightpack\Database\Lucid\Transformer` and implements a `data($model)` method. This method returns an array representation of the model, controlling which fields are exposed and how relations are included.
+The transformer class extends `Lightpack\Database\Lucid\Transformer` and implements a `data()` method. This method returns an array representation of the model, controlling which fields are exposed and how relations are included.
 
 ### Basic Transformer Example
 ```php
@@ -109,11 +109,11 @@ use Lightpack\Database\Lucid\Transformer;
 
 class ProjectTransformer extends Transformer
 {
-    protected function data($model): array
+    protected function data(Project $project): array
     {
         return [
-            'id' => $model->id,
-            'name' => $model->name,
+            'id' => $project->id,
+            'name' => $project->name,
         ];
     }
 }
@@ -128,24 +128,24 @@ You can define multiple transformers for the same model to support different out
 ```php
 class ProductApiTransformer extends Transformer
 {
-    protected function data($model): array
+    protected function data(Product $product): array
     {
         return [
-            'name' => $model->name,
-            'price' => $model->price,
+            'name' => $product->name,
+            'price' => $product->price,
         ];
     }
 }
 
 class ProductViewTransformer extends Transformer
 {
-    protected function data($model): array
+    protected function data(Product $product): array
     {
         return [
-            'id' => $model->id,
-            'name' => $model->name,
-            'price' => $model->price,
-            'color' => $model->color,
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $product->price,
+            'color' => $product->color,
         ];
     }
 }
@@ -211,11 +211,11 @@ To include related models, you must first define transformers for those relation
 ```php
 class ProjectTransformer extends Transformer
 {
-    protected function data($model): array
+    protected function data(Project $project): array
     {
         return [
-            'id' => $model->id,
-            'name' => $model->name,
+            'id' => $project->id,
+            'name' => $project->name,
         ];
     }
 
@@ -251,9 +251,9 @@ You can include nested relations using dot notation. Each level must have its tr
 ```php
 class ProjectTransformer extends Transformer
 {
-    protected function data($model): array
+    protected function data(Project $project): array
     {
-        return ['id' => $model->id, 'name' => $model->name];
+        return ['id' => $project->id, 'name' => $project->name];
     }
 
     protected function transformerMap(): array
@@ -266,9 +266,9 @@ class ProjectTransformer extends Transformer
 
 class TaskTransformer extends Transformer
 {
-    protected function data($model): array
+    protected function data(Task $task): array
     {
-        return ['id' => $model->id, 'name' => $model->name];
+        return ['id' => $task->id, 'name' => $task->name];
     }
 
     protected function transformerMap(): array
@@ -415,12 +415,12 @@ The `transformerMap()` method is essential for including relations in your trans
 ```php
 class UserTransformer extends Transformer
 {
-    protected function data($model): array
+    protected function data(User $user): array
     {
         return [
-            'id' => $model->id,
-            'name' => $model->name,
-            'email' => $model->email,
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
         ];
     }
 
