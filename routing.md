@@ -283,38 +283,41 @@ public function dashboard($subdomain)
 
 Automatically resolve route parameters into model instances before they reach your controller. Lightpack supports both **explicit** binding (by ID) and **custom** binding (via callback).
 
-### Explicit Binding (ID Resolution)
+In this example, the `:note` parameter in the route will be automatically resolved to a `Note` model instance:
 
 ```php
-route()->get('/notes/:id', NoteController::class, 'show')
-    ->bind('id', Note::class);
+route()->get('/notes/:note', NoteController::class, 'show')
+    ->bind('note', Note::class);
 ```
 
-This resolves the `:id` parameter by calling `new Note($id)` — identical to how the `Model` constructor accepts a primary key.
+```php
+class NoteController
+{
+    public function show(Note $note)
+    {
+        return $note->title;
+    }
+}
+```
+
+The Note model will be automatically instantiated with the ID from the route parameter. Behind the scenes, Lightpack calls `new Note($note)` where `$note` is the ID of the note record.
+
+SO this is identical to `new Note(5)` when the URL is `/notes/5`. If no record is found, the model throws a `RecordNotFoundException` (404).
+
+> **Use semantic names** (`:note`, `:comment`, `:post`) instead of generic names (`:id`, `:slug`). It makes controller signatures natural and readable.
 
 ### Custom Binding (Callback Resolution)
 
+The default resolution mechanism is to instantiate the model with the route parameter value as record ID. But you can also provide a custom callback for more control.
+
+Provide a callback for non-ID lookups or ownership checks:
+
 ```php
 route()->get('/notes/:slug', NoteController::class, 'show')
-    ->bind('slug', Note::class, fn($slug) => Note::query()->where('slug', $slug)->one());
+    ->bind('note', Note::class, fn($slug) => Note::query()->where('slug', $slug)->one());
 ```
 
-The callback receives the raw route parameter value and must return the resolved model instance (or `null` if not found).
-
-### Important: Parameter Name Match
-
-The route parameter name **must match** the controller parameter name:
-
-```php
-// Route
-route()->get('/notes/:id', NoteController::class, 'show')->bind('id', Note::class);
-
-// Controller — parameter MUST be named $id
-public function show(Note $id) { }     // ✅ Works
-public function show(Note $note) { }   // ❌ Fails — container looks for $args['note']
-```
-
-The container matches `$args` to parameters by name, not by position or type.
+The callback receives the raw route parameter value and must return the resolved model instance. If the callback returns `null` the route will result in a 404.
 
 ### Multiple Bindings
 
@@ -326,7 +329,7 @@ route()->get('/posts/:post/comments/:comment', CommentController::class, 'show')
     ->bind('comment', Comment::class);
 ```
 
-Each parameter is resolved independently.
+Each parameter is resolved independently. It doesn't check if the comment belongs to the post, for example.
 
 ### Group-Level Bindings
 
@@ -334,15 +337,40 @@ Apply bindings to all routes in a group — no repetition. Use the short form (j
 
 ```php
 // Short form (recommended for ID resolution)
-route()->group(['bind' => ['id' => Note::class]], function () {
-    route()->get('/notes/:id', NoteController::class, 'show');
-    route()->get('/notes/:id/edit', NoteController::class, 'edit');
-    route()->delete('/notes/:id', NoteController::class, 'destroy');
+route()->group([
+    'bind' => [
+        'note' => Note::class
+    ]
+], function () {
+    route()->get('/notes/:note', NoteController::class, 'show');
+    route()->get('/notes/:note/edit', NoteController::class, 'edit');
+    route()->delete('/notes/:note', NoteController::class, 'destroy');
 });
 
 // Full form (for custom resolvers)
-route()->group(['bind' => ['slug' => ['model' => Note::class, 'resolver' => fn($slug) => Note::query()->where('slug', $slug)->one()]]], function () {
+route()->group([
+    'bind' => [
+        'slug' => [
+            'model' => Note::class,
+            'resolver' => fn($slug) => Note::query()->where('slug', $slug)->one()
+        ]
+    ]
+], function () {
     route()->get('/notes/:slug', NoteController::class, 'show');
+});
+```
+
+// Multiple bindings in a group
+```
+route()->group([
+    'bind' => [
+        'note' => Note::class,
+        'comment' => Comment::class
+    ]
+], function () {
+    route()->get('/notes/:note/comments/:comment', CommentController::class, 'show');
+    route()->put('/notes/:note/comments/:comment', CommentController::class, 'update');
+    route()->delete('/notes/:note/comments/:comment', CommentController::class, 'destroy');
 });
 ```
 
@@ -350,9 +378,10 @@ route()->group(['bind' => ['slug' => ['model' => Note::class, 'resolver' => fn($
 - All child routes inherit group bindings automatically.
 - Nested groups merge bindings (child bindings override parent for same param).
 - Route-level `->bind()` always wins over group-level binding.
-- Bindings do **not** leak outside the group — routes defined after a group are unaffected.
 
 **Nested groups with merge + override:**
+
+You can nest groups and the bindings will merge:
 
 ```php
 route()->group(['bind' => ['note' => Note::class]], function () {
@@ -362,57 +391,6 @@ route()->group(['bind' => ['note' => Note::class]], function () {
     });
 });
 ```
-
-### Missing Parameters
-
-If a bound parameter is not present in the route match, the binding is silently skipped and the raw value is passed through. This makes optional parameters safe:
-
-```php
-route()->get('/items/:id?', ItemController::class, 'show')
-    ->bind('id', Item::class);
-// When :id is missing, binding is skipped; $id is null in the controller
-```
-
-This also means group-level bindings are harmless on routes that don't define the parameter:
-
-```php
-route()->group(['bind' => ['id' => Note::class]], function () {
-    route()->get('/notes', NoteController::class, 'index');     // no :id param — binding skipped, no model created
-    route()->get('/notes/:id', NoteController::class, 'show');  // has :id param — binding resolves, model loaded
-});
-```
-
-### Important Gotcha: Type-Hinted Models Without Route Params
-
-If you type-hint a model in a controller method that has **no matching route parameter**, the container will instantiate it with zero arguments:
-
-```php
-// ✅ CORRECT — empty model is exactly what you want for create
-public function store(Request $request, Note $note)
-{
-    $note->title = $request->input('title');
-    $note->save();    // inserts new row
-}
-```
-
-```php
-// ⚠️ CONFUSING — you expected a DB lookup but got an empty model
-public function show(Note $note)
-{
-    // Route is /notes/:id but param is named $note, not $id
-    // Container does: new Note() — empty, no row loaded
-    return $note->title; // null
-}
-```
-
-`Model::__construct($id = null)` defaults to `null`, so `new Note()` is valid and often useful. The issue is only when you **expected** model binding to load a record from the database.
-
-**Rule of thumb:**
-- **No binding, no param** → empty model (correct for create/update actions)
-- **Binding matches param** → loaded model from DB (correct for show/edit actions)
-- **Binding exists but param name mismatch** → empty model when you expected loaded data — rename the controller param to match
-
----
 
 ## Best Practices & Gotchas
 
