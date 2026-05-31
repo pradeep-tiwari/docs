@@ -105,4 +105,4 @@ Calling methods <code>view()</code>, or <code>json()</code>, or <code>xml()</cod
 thereby saving you some typing. However, you can set them manually using the methods available in <code>response()</code> object.
 </p>
 
-Read more about using [response()](/docs/response) in **Lightpack PHP**.
+Read more about using [response()](/docs/v0.x/response) in **Lightpack PHP**.

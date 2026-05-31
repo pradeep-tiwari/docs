@@ -1,6 +1,6 @@
 # Models
 
-![ORM Model Overview](/docs/assets/_media/orm/orm-model-overview.svg)
+![ORM Model Overview](/docs/v0.x/assets/_media/orm/orm-model-overview.svg)
 
 ## Introduction to ORM Models
 
@@ -461,7 +461,7 @@ In above example, only user's name was changed, so before saving the profile, `$
 
 ## Query Builders
 
-**Lightpack** models are capable [query builders](/docs/db-query-builder) too. 
+**Lightpack** models are capable [query builders](/docs/v0.x/db-query-builder) too. 
 
 To get a query builder on a model, call the static method `query()`:
 
@@ -469,7 +469,7 @@ To get a query builder on a model, call the static method `query()`:
 $productQuery = Product::query();
 ```
 
-Now you can access all the methods on [query builders](/docs/query-builder). Below are some example for using query builder on a model.
+Now you can access all the methods on [query builders](/docs/v0.x/query-builder). Below are some example for using query builder on a model.
 
 **Fetch all products**
 ```php

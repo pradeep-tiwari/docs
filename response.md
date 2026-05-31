@@ -493,7 +493,7 @@ $url = session()->getIntendedUrl();
 session()->forgetIntendedUrl();
 ```
 
-See [Sessions](sessions#intended-url-helpers) for more details on intended URL helpers.
+See [Sessions](/docs/v0.x/sessions#intended-url-helpers) for more details on intended URL helpers.
 
 ---
 

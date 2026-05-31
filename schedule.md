@@ -229,7 +229,7 @@ public function run() {
 }
 ```
 
-See [Mutex Lock documentation](/docs/mutex-lock) for more details.
+See [Mutex Lock documentation](/docs/v0.x/mutex-lock) for more details.
 
 ### Testing Schedules
 You can test if events are scheduled correctly:

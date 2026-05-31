@@ -285,7 +285,7 @@ foreach($hotels as $hotel) {
 
 > **Standalone vs. Relation Aggregates**
 >
-> The methods above (`withCount`, `withSum`, etc.) compute aggregates **on related models** and attach them to each parent. If you need grouped aggregates **on the model's own columns** (e.g., `SUM(price) GROUP BY category` on the `products` table itself), use the query builder's `aggregate()` method instead. See [Multiple Grouped Aggregates](./db-query-builder#multiple-grouped-aggregates) in the Query Builder documentation.
+> The methods above (`withCount`, `withSum`, etc.) compute aggregates **on related models** and attach them to each parent. If you need grouped aggregates **on the model's own columns** (e.g., `SUM(price) GROUP BY category` on the `products` table itself), use the query builder's `aggregate()` method instead. See [Multiple Grouped Aggregates](/docs/v0.x/db-query-builder#multiple-grouped-aggregates) in the Query Builder documentation.
 
 ---
 

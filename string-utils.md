@@ -158,6 +158,6 @@ Lightpack’s `Str` utility class offers a comprehensive set of methods for stri
   - Throws `InvalidArgumentException` if length < 1.
 
 > For more complex OTP generation, Lightpack provides a robust OTP utility
-> [OTP Utility](/docs/otp-utils)
+> [OTP Utility](/docs/v0.x/otp-utils)
 
 ---

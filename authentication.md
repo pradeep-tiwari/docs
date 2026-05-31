@@ -292,6 +292,6 @@ By default, remember-me cookies last for **30 days**. Configure the duration in 
 'remember_duration' => 60 * 24 * 30, // 30 days in minutes
 ```
 
-See [Configuration](auth-configuration#remember_duration) for more details.
+See [Configuration](/docs/v0.x/auth-configuration#remember_duration) for more details.
 
 ---

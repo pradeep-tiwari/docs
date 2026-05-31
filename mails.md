@@ -245,7 +245,7 @@ Use this method to set a rich `HTML` email message.
 $this->body('<p>Hello Devs</p>');
 ```
 
-However, it is recommended to create and send [rich HTML](/docs/mails?id=html-templates)  email templates for a better email templates management.
+However, it is recommended to create and send [rich HTML](/docs/v0.x/mails?id=html-templates)  email templates for a better email templates management.
 
 ### altBody()
 
@@ -821,7 +821,7 @@ class MyTest extends TestCase
 }
 ```
 
-You can view all the available assertions in the [MailAssertionTrait](/docs/testing?id=asserting-emails).
+You can view all the available assertions in the [MailAssertionTrait](/docs/v0.x/testing?id=asserting-emails).
 
 ## Creating Custom Drivers
 

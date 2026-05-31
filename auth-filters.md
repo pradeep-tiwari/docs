@@ -58,7 +58,7 @@ Make sure you have a corresponding named route:
 route()->get('/login', AuthController::class, 'showLogin')->name('login');
 ```
 
-See [Configuration](auth-configuration#routes-configuration) for more details.
+See [Configuration](/docs/v0.x/auth-configuration#routes-configuration) for more details.
 
 ## GuestFilter
 

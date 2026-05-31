@@ -99,6 +99,6 @@ In any robust application, realistic data is the foundation for meaningful devel
 
 Whether you’re populating a development environment, stress-testing features, or preparing impressive demos, model factories transform seeding from a chore into a powerful tool for quality and innovation.
 
-Read the details about Lightpack's support for model factories in the [Factory document](/docs/factory).
+Read the details about Lightpack's support for model factories in the [Factory document](/docs/v0.x/factory).
 
 ---

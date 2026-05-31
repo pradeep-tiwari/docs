@@ -6,7 +6,7 @@ Lightpack aims to provide a performant thin layer of abstraction for easing work
 
 Before you get set with a databse connection, you need to configure database credentials. 
 
-You can set your database credentials in the [environment configuration](/docs/environments) file.
+You can set your database credentials in the [environment configuration](/docs/v0.x/environments) file.
 
 ```php
 DB_HOST=localhost

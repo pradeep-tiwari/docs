@@ -31,7 +31,7 @@ which you might like for its simplicity and performance.
 * Timestamps support
 * Query builder access
 
-Learn more about models [here](/docs/models).
+Learn more about models [here](/docs/v0.x/models).
 
 ## Relationships
 
@@ -43,10 +43,10 @@ Following relationships are supported:
 * 1:N (One-to-many)
 * N:N (Many-to-many)
 
-Learn more about relationships [here](/docs/relationships).
+Learn more about relationships [here](/docs/v0.x/relationships).
 
 ## Eager Loading
 
 **Lucid ORM** supports eager loading for associated models to avoid the `N+1` query performance issue. 
 
-Learn more about relationships [here](/docs/eager-loading).
+Learn more about relationships [here](/docs/v0.x/eager-loading).

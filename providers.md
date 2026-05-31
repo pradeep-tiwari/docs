@@ -137,4 +137,4 @@ app(Mailer::class);   // Via class name
 
 ---
 
-As you can see that in **providers** you bind services in container, so you should read more about [containers](/docs/containers) in Lightpack.
+As you can see that in **providers** you bind services in container, so you should read more about [containers](/docs/v0.x/containers) in Lightpack.

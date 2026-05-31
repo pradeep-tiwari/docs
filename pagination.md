@@ -192,7 +192,7 @@ $products->getPages(); // [1, 2, 3, 4, 5] (when on page 3 with 10 total pages)
 
 ## Lucid ORM Specific Features
 
-When using the [Lucid ORM](/docs/orm-introduction), the returned `Pagination` instance includes additional ORM-specific methods.
+When using the [Lucid ORM](/docs/v0.x/orm-introduction), the returned `Pagination` instance includes additional ORM-specific methods.
 
 ### load(...$relations)
 Lazy-load relationships for the current page's models.

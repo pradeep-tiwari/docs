@@ -2,7 +2,7 @@
 
 ## Introduction
 
-![Order UI and Entity Diagram](/docs/assets/_media/orm/orm-order-items-ui-prototype.svg)
+![Order UI and Entity Diagram](/docs/v0.x/assets/_media/orm/orm-order-items-ui-prototype.svg)
 
 
 ORMs turn the abstract relationships of your database into natural, intuitive code. By mapping database associations to model methods, you unlock the full power of relational data—without the pain of raw SQL joins.
@@ -38,7 +38,7 @@ In **Relation Databases**, we introduce 4 main types of associations:
 * Many to One
 * Many to Many
 
-![Association Types between Entities](/docs/assets/_media/orm/rdbms-association-types.svg)
+![Association Types between Entities](/docs/v0.x/assets/_media/orm/rdbms-association-types.svg)
 
 
 ### Association Types
@@ -104,7 +104,7 @@ In an ORM, each type of database relationship is represented by a specific metho
 
 ### Has One
 
-![ORM One to One Association](/docs/assets/_media/orm/orm-one-to-one-association.svg)
+![ORM One to One Association](/docs/v0.x/assets/_media/orm/orm-one-to-one-association.svg)
 
 Use the relationship method `hasOne()` to define **one to one** relationhsip between **order** and **payment** entity.
 
@@ -164,7 +164,7 @@ $payment->order;
 
 ### Has Many
 
-![ORM One to Many Association](/docs/assets/_media/orm/orm-one-to-many-association.svg)
+![ORM One to Many Association](/docs/v0.x/assets/_media/orm/orm-one-to-many-association.svg)
 
 Use the relationship method `hasMany()` to define a **one to many** relationship between the **customer** and **order** entities.
 
@@ -224,7 +224,7 @@ $customer = $order->customer;
 
 ### Many to Many
 
-![ORM Many to Many Association](/docs/assets/_media/orm/orm-many-to-many-association.svg)
+![ORM Many to Many Association](/docs/v0.x/assets/_media/orm/orm-many-to-many-association.svg)
 
 Use the relationship method `pivot()` to define a **many to many** relationship between the **order** and **product** entities, using a pivot table (like `order_item`).
 
@@ -454,7 +454,7 @@ Behind the scenes, Lightpack ORM joins the `authors`, `books`, and `reviews` tab
 
 Polymorphic relationships are a powerful feature that let a single model relate to more than one type of parent model—using a unified, elegant approach. In Lightpack ORM, this is implemented with confidence and clarity, so you can tackle real-world use cases like comments, media attachments, or user avatars without convoluted table structures.
 
-![Polymorphic Relationship Diagram](/docs/assets/_media/orm/orm-polymorphic-relationships.svg)
+![Polymorphic Relationship Diagram](/docs/v0.x/assets/_media/orm/orm-polymorphic-relationships.svg)
 
 **Polymorphic Table Schema Example**
 
@@ -593,7 +593,7 @@ $parent = $comment->parent; // Could be a Post, Photo, or Video instance
 
 #### Morph To Many
 
-![Polymorphic Many-to-Many Relationship](/docs/assets/_media/orm/orm-polymorphic-many-to-many.svg)
+![Polymorphic Many-to-Many Relationship](/docs/v0.x/assets/_media/orm/orm-polymorphic-many-to-many.svg)
 
 A polymorphic many-to-many relationship lets you share a single pivot table across multiple parent models. For example, both **Posts** and **Videos** can have **Tags**, but instead of creating separate `post_tag` and `video_tag` tables, you use one `tag_morphs` table that works for both.
 
