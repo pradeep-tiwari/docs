@@ -1,0 +1,1461 @@
+# Lightpack AI System
+
+A unified, explicit, and extensible interface for text generation, multimodal AI (vision and document analysis), structured AI tasks, and semantic search in your Lightpack apps. Supports multiple providers, robust schema validation, and a fluent builder for advanced use cases.
+
+- **Purpose:** Seamlessly add AI/ML-powered text generation, vision, document analysis, embeddings, and semantic search to any Lightpack project.
+- **Where to Use:** Blog/content generation, summarization, Q&A, code generation, structured data extraction, image analysis, document processing, semantic search, RAG applications, content recommendations, and more.
+
+**Lightpack AI** exposes four core methods:
+
+```php
+ai()->ask();      // Simple question-answer
+ai()->task();     // Structured data extraction, multimodal AI, tools
+ai()->embed();    // Text to vector embeddings
+ai()->similar();  // Semantic similarity search
+```
+
+## Supported Providers
+
+| Driver      | Class                        | Text Generation | Vision | Documents | Embeddings |
+|-------------|------------------------------|-----------------|--------|-----------|------------|
+| `openai`    | `Providers\OpenAI`           | ✅ GPT-4o | ✅ GPT-4o | ✅ PDFs | ✅ text-embedding-3-small |
+| `gemini`    | `Providers\Gemini`           | ✅ Gemini 2.0  | ✅ Gemini 2.0 | ✅ All formats | ✅ text-embedding-004 (FREE) |
+| `anthropic` | `Providers\Anthropic`        | ✅ Claude Sonnet  | ✅ Claude Sonnet | ✅ PDFs | ❌ Not supported |
+| `groq`      | `Providers\Groq`             | ✅ Llama 3.2 Vision | ✅ Llama 3.2 Vision | ❌ Not supported | ❌ Not supported |
+| `mistral`   | `Providers\Mistral`          | ✅ Mistral models | ❌ Not supported | ❌ Not supported | ✅ mistral-embed |
+
+**Add your own:** Implement `ProviderInterface` and register in config.
+
+## Configuration
+
+Please run following command to create `config/ai.php` configuration file.
+
+```cli
+php console create:config --support=ai
+```
+
+### Recommended Models
+
+**For text-only tasks:**
+```php
+'providers' => [
+    'openai' => ['model' => 'gpt-4o-mini'],      // Fast, cost-effective
+    'anthropic' => ['model' => 'claude-sonnet-4-5'],
+    'gemini' => ['model' => 'gemini-2.0-flash'],  // FREE tier available
+    'groq' => ['model' => 'llama-3.1-8b-instant'], // Ultra-fast
+]
+```
+
+**For vision/multimodal tasks:**
+```php
+'providers' => [
+    'openai' => ['model' => 'gpt-4o'],           // Best for PDFs
+    'anthropic' => ['model' => 'claude-sonnet-4-5'], // Native PDF support
+    'gemini' => ['model' => 'gemini-2.0-flash'], // All document formats
+    'groq' => ['model' => 'llama-3.2-11b-vision-preview'], // Fast vision
+]
+```
+
+**Note:** Vision models work for both text and multimodal tasks. Use text-only models when you don't need vision capabilities to save costs.
+
+
+## Usage
+
+| Method | Use When | Returns |
+|--------|----------|---------|
+| `ask()` | Simple questions, plain text answers | String |
+| `task()` | Structured data extraction, tool calling, streaming | Array with `success`, `data`, `errors`, `raw` |
+| `embed()` | Convert text to vector embeddings | Array of floats (single) or array of arrays (batch) |
+| `similar()` | Find semantically similar items | Array of matches with similarity scores |
+
+**Quick Decision Guide:**
+- Need a quick answer? → `ask()`
+- Need to analyze an image? → `task()` with `image()`
+- Need to analyze a PDF/document? → `task()` with `document()`
+- Need JSON with specific fields? → `task()` with `expect()`
+- Need real-time streaming output? → `task()` with `stream()`
+- Need to call ONE function/API? → `task()` with `tool()`
+- Need to chain MULTIPLE tools? → `task()` with `tool()` + `loop()`
+- Need AI to solve complex problems? → `task()` with `loop()` + `goal()`
+- Need semantic search? → `embed()` + `similar()`
+
+---
+
+### ask()
+
+**Use for:** Quick questions that need plain text answers.
+
+For simple, one-off questions, use the `ask()` method:
+
+```php
+$answer = ai()->ask('What is the capital of France?');
+echo $answer; // "Paris"
+```
+
+- Returns the raw answer as a plain string.
+
+---
+
+### task()
+
+**Use for:** Extracting structured data with type validation and required field checks.
+
+```php
+$result = ai()->task()
+    ->prompt('Who created Monalisa and at what age?')
+    ->expect(['name' => 'string', 'age' => 'int'])
+    ->required('name', 'age')
+    ->run();
+
+if ($result['success']) {
+    echo $result['data']['name']; // "Leonardo da Vinci"
+    echo $result['data']['age'];  // 51
+} else {
+    print_r($result['errors']);   // ["Missing required field: name"]
+}
+```
+
+**Key methods:**
+- `prompt(string)` - Set the question
+- `text(string)` - Add text content (alias for prompt)
+- `image(base64, mimeType)` - Add image for vision analysis
+- `imageUrl(url)` - Add image from URL
+- `document(base64, mimeType)` - Add document (PDF, etc.) for analysis
+- `expect(array)` - Define JSON schema with types
+- `required(...fields)` - Mark fields as required
+- `expectArray(key)` - Expect array of objects
+- `example(array)` - Provide custom example for schema (optional, auto-generated by default)
+- `message(role, content)` - Add message to conversation history
+- `system(string)` - Set system prompt
+- `model(string)` - Override model
+- `temperature(float)` - Set randomness (0.0-2.0)
+- `maxTokens(int)` - Limit response length
+- `cache(bool)` - Enable caching
+- `cacheTtl(int)` - Cache duration in seconds
+- `tool(name, fn, description, params)` - Register a tool
+- `loop(int)` - Enable multi-turn agent mode (default: 10 turns)
+- `goal(string)` - Set explicit goal for agent to achieve
+- `stream(callback)` - Stream response in real-time
+- `run()` - Execute and return `['success', 'data', 'errors', 'raw']`
+
+---
+
+#### Example Recipes
+
+**1. Validate Array of Objects**
+
+```php
+$result = ai()->task()
+    ->prompt('List 2 movies with title, rating, and summary.')
+    ->expect(['title' => 'string', 'rating' => 'int', 'summary' => 'string'])
+    ->required('title', 'rating', 'summary')
+    ->expectArray('movie')
+    ->run();
+
+if (!$result['success']) {
+    // $result['errors'] contains missing fields per item
+}
+```
+
+**2. Use Conversation History**
+
+```php
+$result = ai()->task()
+    ->message('system', 'You are a helpful assistant.')
+    ->message('user', 'How do I reset my password?')
+    ->run();
+```
+
+**3. Control Temperature and Tokens**
+
+```php
+$result = ai()->task()
+    ->prompt('Generate 3 product names')
+    ->temperature(0.9)  // More creative (0.0 = deterministic, 2.0 = very random)
+    ->maxTokens(100)    // Limit response length
+    ->run();
+```
+
+**4. Custom Schema Examples**
+
+```php
+$result = ai()->task()
+    ->prompt('Extract user info from: John Smith, 35 years old')
+    ->expect(['name' => 'string', 'age' => 'int', 'active' => 'bool'])
+    ->example(['name' => 'John Doe', 'age' => 25, 'active' => true])
+    ->run();
+```
+
+**Note:** Custom examples are optional. The framework auto-generates examples from your schema that work well for most cases.
+
+---
+
+### tool()
+
+**Use for:** Giving AI access to external functions, APIs, or data sources.
+
+Tools allow AI to call PHP functions to fetch data, perform calculations, or interact with your application. The AI decides which tool to call based on the user's question.
+
+**Basic Example:**
+
+```php
+$result = ai()->task()
+    ->tool('search_products', function($params) {
+        return db()->table('products')
+            ->where('name', 'LIKE', "%{$params['query']}%")
+            ->limit(5)
+            ->all();
+    }, 'Search products by name', ['query' => 'string'])
+    ->prompt('Find laptops')
+    ->run();
+
+if ($result['success']) {
+    echo $result['raw'];  // AI's natural language answer
+    print_r($result['tools_used']);    // ['search_products']
+    print_r($result['tool_results']);  // ['search_products' => [...]]
+}
+```
+
+**Tool Definition:**
+
+```php
+->tool(
+    string $name,           // Tool identifier
+    mixed $fn,              // Closure, invokable object, or class string
+    ?string $description,   // What the tool does (helps AI decide)
+    array $params           // Parameter schema: ['param' => 'type']
+)
+```
+
+**Supported parameter types:**
+- `'string'` - Text
+- `'int'` - Integer
+- `'number'` - Float/decimal
+- `'bool'` - Boolean
+- `'array'` - Array
+
+**Parameter schema formats:**
+
+```php
+// Simple: just type
+['query' => 'string', 'limit' => 'int']
+
+// With description (helps AI understand)
+['query' => ['string', 'Search term'], 'limit' => ['int', 'Max results']]
+
+// List format (defaults to string)
+['query', 'category']  // Both become 'string' type
+```
+
+---
+
+#### Tool Examples
+
+**1. Multiple Tools**
+
+```php
+$result = ai()->task()
+    ->tool('get_weather', function($params) {
+        return http()->get("api.weather.com/{$params['city']}");
+    }, 'Get current weather', ['city' => 'string'])
+    
+    ->tool('get_forecast', function($params) {
+        return http()->get("api.weather.com/forecast/{$params['city']}");
+    }, 'Get 7-day forecast', ['city' => 'string'])
+    
+    ->prompt('What is the weather in Paris?')
+    ->run();
+
+// AI should choose 'get_weather' (not 'get_forecast')
+```
+
+**2. Invokable Tool Classes**
+
+For complex tools, use invokable classes instead of closures. This keeps your code organized and allows the tool to define its own description and parameters.
+
+**Scaffold a tool class:**
+```bash
+php console create:tool SearchProducts
+```
+
+This creates `app/Tools/SearchProducts.php` with the `ToolInterface` already implemented.
+
+---
+
+### stream()
+
+**Use for:** Real-time streaming of AI responses as they're generated.
+
+Streaming allows you to display AI output progressively as it's being generated, rather than waiting for the complete response. This creates a better user experience for long-form content like essays, blog posts, or chat interfaces.
+
+The `stream()` method has **two modes**:
+
+1. **HTTP/SSE Mode** (default) - Returns `Response` for Server-Sent Events
+2. **Callback Mode** - Accepts callback for CLI scripts and testing
+
+---
+
+#### HTTP/SSE Mode (Primary Use Case)
+
+**Use in controllers** to stream AI responses to the browser using Server-Sent Events (SSE).
+
+**Controller Example:**
+
+```php
+public function stream()
+{
+    return ai()->task()
+        ->prompt('Write a blog post about PHP frameworks')
+        ->stream();
+}
+```
+
+- Returns a `Response` object configured for SSE streaming
+- Sets SSE headers automatically (`Content-Type: text/event-stream`, etc.)
+- Streams events in format: `data: {"event":"chunk","text":"..."}\n\n`
+- Sends `done` event when complete
+
+**Frontend Integration:**
+
+```html
+<div id="output"></div>
+
+<script>
+const eventSource = new EventSource('/stream');
+const output = document.getElementById('output');
+
+eventSource.addEventListener('message', (e) => {
+    const data = JSON.parse(e.data);
+    
+    if (data.event === 'chunk') {
+        output.textContent += data.text;
+    } else if (data.event === 'done') {
+        eventSource.close();
+        console.log('Stream complete');
+    }
+});
+
+eventSource.addEventListener('error', (e) => {
+    console.error('Stream error:', e);
+    eventSource.close();
+});
+</script>
+```
+
+**SSE Event Format:**
+
+```javascript
+// Chunk event
+data: {"event":"chunk","text":"Hello "}
+
+// Chunk event
+data: {"event":"chunk","text":"world!"}
+
+// Done event
+data: {"event":"done"}
+```
+
+---
+
+#### Callback Mode (CLI/Testing)
+
+**Use in CLI scripts, background jobs, or tests** where you need direct access to chunks.
+
+**CLI Example:**
+
+```php
+// console command or script
+ai()->task()
+    ->prompt('Write a blog post about PHP frameworks')
+    ->stream(function($chunk) {
+        echo $chunk;
+        flush();
+    });
+```
+
+#### When to Use Which Mode
+
+| Scenario | Mode | Example |
+|----------|------|---------|
+| Web controller | HTTP/SSE | `return ai()->task()->stream();` |
+| Chat interface | HTTP/SSE | Real-time browser updates |
+| CLI command | Callback | `stream(fn($chunk) => echo $chunk)` |
+| Background job | Callback | Process chunks without HTTP |
+| Unit tests | Callback | Capture chunks for assertions |
+
+---
+
+#### Key Points
+
+- **Incompatible with:** `expect()`, `expectArray()`, `tool()`, `loop()`
+- **Compatible with:** `prompt()`, `system()`, `temperature()`, `maxTokens()`, `model()`
+- All providers support streaming (OpenAI, Anthropic, Groq, Mistral, Gemini)
+- HTTP mode uses Server-Sent Events (SSE) standard
+- Callback mode is synchronous - blocks until complete
+
+---
+
+#### Validation Errors
+
+Streaming throws exceptions if used with incompatible features:
+
+```php
+// ❌ ERROR: Cannot use streaming with schema extraction
+ai()->task()
+    ->prompt('Extract data')
+    ->expect(['name' => 'string'])
+    ->stream();
+// Throws: "Streaming is not supported with schema extraction"
+
+// ❌ ERROR: Cannot use streaming with tools
+ai()->task()
+    ->tool('search', $fn)
+    ->prompt('Search products')
+    ->stream();
+// Throws: "Streaming is not supported with tools"
+
+// ❌ ERROR: Cannot use streaming with agent mode
+ai()->task()
+    ->loop(5)
+    ->prompt('Research topic')
+    ->stream();
+// Throws: "Streaming is not supported in agent mode"
+```
+
+---
+
+#### When to Use Streaming
+
+| Use Case | Streaming | Regular (`run()`) |
+|----------|-----------|-------------------|
+| Long blog posts | ✅ Better UX | ❌ User waits |
+| Chat interfaces | ✅ Real-time feel | ❌ Delayed response |
+| Code generation | ✅ Progressive display | ❌ All at once |
+| Data extraction | ❌ Need structured output | ✅ Use `expect()` |
+| Tool calling | ❌ Need function results | ✅ Use `tool()` |
+| Multi-step tasks | ❌ Need agent mode | ✅ Use `loop()` |
+
+---
+
+### embed()
+
+**Use for:** Converting text into vector embeddings for semantic search, similarity matching, or RAG applications.
+
+```php
+// Single text
+$embedding = ai()->embed('wireless headphones');
+// Returns: [0.123, -0.456, 0.789, ...] (768-1536 floats)
+
+// Batch processing (efficient - single API call)
+$texts = [
+    'Product A description',
+    'Product B description',
+    'Product C description'
+];
+$embeddings = ai()->embed($texts);
+
+// Use batch results - CRITICAL: maintains same order as input!
+foreach ($texts as $i => $text) {
+    echo "Text: {$text}\n";
+    echo "Embedding: " . json_encode($embeddings[$i]) . "\n";
+}
+```
+
+**Method signature:**
+```php
+ai()->embed(
+    string|array $input,  // Required: Single text or array of texts
+    array $options = []   // Optional: Provider-specific options
+): array
+```
+
+**Options parameter:**
+```php
+$options = [
+    'model' => 'text-embedding-3-small',  // Override default model
+    // Provider-specific options vary
+];
+```
+
+**Returns:**
+- **Single input:** `array` of floats (e.g., 768 or 1536 dimensions)
+- **Batch input:** `array` of arrays (one embedding per input text, **same order as input**)
+
+**Key points:**
+- Returns array of floats (vector representation of text)
+- Batch processing uses single API call (cost-efficient)
+- Batch results maintain same order as input array
+- Store embeddings in database for reuse
+- Dimensions vary by provider (768 for Gemini, 1536 for OpenAI)
+- Not all providers support embeddings (see provider table above)
+- Options parameter allows model override and provider-specific settings
+- Embeddings are NOT cross-compatible. Always use the same provider for embedding and searching.
+
+---
+
+### similar()
+
+**Use for:** Finding semantically similar items.
+
+```php
+$queryEmbedding = ai()->embed('laptop for programming');
+
+$results = ai()->similar($queryEmbedding, $products);
+
+foreach ($results as $result) {
+    echo $result['id'];         // Product ID
+    echo $result['similarity']; // 0.0-1.0 score
+    echo $result['item'];       // Original item data
+}
+```
+
+**Method signature:**
+```php
+ai()->similar(
+    array $queryEmbedding,  // Required: Query vector
+    mixed $target,          // Required: Array of items (in-memory) or collection name (vector DB)
+    int $limit = 5,         // Optional: Max results (default: 5)
+    float $threshold = 0.0  // Optional: Min similarity score (default: 0.0)
+): array
+```
+
+**Returns:**
+```php
+[
+    [
+        'id' => mixed,           // Item identifier
+        'similarity' => float,   // Score 0.0-1.0
+        'item' => array          // Original item data
+    ],
+    // ... more results
+]
+```
+
+**Key points:**
+- Returns exact matches (100% recall, not approximate)
+- Works in-memory by default (fast for < 5K items)
+- Scores range from 0.0 (different) to 1.0 (identical)
+- Results sorted by similarity (highest first)
+- **Threshold defaults to 0.0** (returns all results) - set to 0.6-0.8 for quality filtering
+- Extensible via `setVectorSearch()` for custom implementations
+
+**Threshold recommendations:**
+- `0.0` (default) - Return all results, let user decide
+- `0.6-0.7` - Moderate similarity (related items)
+- `0.8-0.9` - High similarity (very similar items)
+- `0.95+` - Near-identical items
+
+---
+
+#### Example Recipes 1: Storing Embeddings
+
+**1. Store Product Embeddings**
+
+```php
+// In your model
+class Product extends Model
+{
+    protected $casts = [
+        'embedding' => 'array'
+    ];
+}
+
+// store the embeddings for the product
+$product->embedding = ai()->embed($product->description);
+$product->save();
+```
+
+**2. Semantic Product Search**
+
+```php
+// fetch products with their embeddings
+$items = Product::query()
+    ->select('id', 'embedding')
+    ->whereNotNull('embedding')
+    ->all()
+    ->map(fn($p) => [
+        'id' => $p->id,
+        'embedding' => $p->embedding
+    ]);
+
+// semantic search for similar products
+$query = 'best laptop for programming';
+$queryEmbedding = ai()->embed($query);
+$results = ai()->similar($queryEmbedding, $items, limit: 10);
+
+// process results
+foreach ($results as $result) {
+    // Product ID: $result['id'];
+}
+```
+
+---
+
+#### Example Recipes 2: Filtering and RAG
+
+**1. Filter by Similarity Threshold**
+
+```php
+// Only return matches with 70%+ similarity
+$results = ai()->similar($queryEmbedding, $items, limit: 10, threshold: 0.7);
+```
+
+**2. RAG (Retrieval Augmented Generation)**
+
+```php
+// Find relevant docs
+$userQuestion = 'How do I reset my password?';
+$queryEmbedding = ai()->embed($userQuestion);
+$relevant = ai()->similar($queryEmbedding, $docs, limit: 3);
+
+// Build context
+$context = implode("\n\n", array_column($relevant, 'item'));
+
+// Ask AI with context
+$answer = ai()->task()
+    ->system("Answer based on this documentation:\n\n{$context}")
+    ->prompt($userQuestion)
+    ->run();
+```
+
+**3. Content Recommendations**
+
+```php
+$articles = Article::query()
+    ->select('id', 'embedding')
+    ->whereNotNull('embedding')
+    ->all()
+    ->map(fn($a) => [
+        'id' => $a->id,
+        'embedding' => $a->embedding
+    ]);
+
+// "Users who read this also read..."
+$similar = ai()->similar($article->embedding, $articles, limit: 5);
+```
+
+---
+
+
+### Multimodal AI (Vision & Documents)
+
+**Use for:** Analyzing images, PDFs, and documents with AI vision capabilities.
+
+Lightpack AI supports multimodal inputs, allowing you to combine text prompts with images and documents. The framework automatically handles provider-specific formats.
+
+#### Image Analysis
+
+**Analyze an image from file path (recommended):**
+
+```php
+$result = ai()->task()
+    ->text('What items are in this receipt and what is the total?')
+    ->attachImage('receipt.jpg')  // Auto-detects MIME type and encodes
+    ->run();
+
+echo $result['raw'];  // "The receipt contains: Coffee $4.50, Sandwich $8.99. Total: $13.49"
+```
+
+**Analyze an image from base64:**
+
+```php
+// Manual encoding (use attachImage() instead for convenience)
+$imageData = base64_encode(file_get_contents('receipt.jpg'));
+
+$result = ai()->task()
+    ->text('What items are in this receipt and what is the total?')
+    ->image($imageData, 'image/jpeg')
+    ->run();
+```
+
+**Analyze an image from URL:**
+
+```php
+$result = ai()->task()
+    ->text('Describe this image in detail')
+    ->imageUrl('https://example.com/photo.jpg')
+    ->run();
+```
+
+**Extract structured data from images:**
+
+```php
+$result = ai()->task()
+    ->text('Extract the business card information')
+    ->attachImage('business-card.png')
+    ->expect(['name' => 'string', 'email' => 'string', 'phone' => 'string', 'company' => 'string'])
+    ->required('name', 'email')
+    ->run();
+
+if ($result['success']) {
+    echo $result['data']['name'];     // "John Smith"
+    echo $result['data']['email'];    // "john@example.com"
+    echo $result['data']['company'];  // "Acme Corp"
+}
+```
+
+#### Document Analysis
+
+**Analyze a PDF document from file path (recommended):**
+
+```php
+$result = ai()->task()
+    ->text('Summarize this invoice and extract key details')
+    ->attachDocument('invoice.pdf')  // Auto-detects MIME type and encodes
+    ->run();
+
+echo $result['raw'];
+```
+
+**Analyze a PDF from base64:**
+
+```php
+// Manual encoding (use attachDocument() instead for convenience)
+$pdfData = base64_encode(file_get_contents('invoice.pdf'));
+
+$result = ai()->task()
+    ->text('Summarize this invoice and extract key details')
+    ->document($pdfData, 'application/pdf')
+    ->run();
+```
+
+**Extract structured data from documents:**
+
+```php
+$result = ai()->task()
+    ->text('Extract invoice details')
+    ->attachDocument('invoice.pdf')
+    ->expect([
+        'invoice_number' => 'string',
+        'date' => 'string',
+        'vendor' => 'string',
+        'total' => 'number',
+        'items' => 'array'
+    ])
+    ->required('invoice_number', 'total')
+    ->run();
+
+if ($result['success']) {
+    echo $result['data']['invoice_number'];  // "INV-2024-001"
+    echo $result['data']['total'];           // 1250.00
+}
+```
+
+**Combine multiple images:**
+
+```php
+$result = ai()->task()
+    ->text('Compare these two product images and list the differences')
+    ->attachImage('product-v1.jpg')
+    ->attachImage('product-v2.jpg')
+    ->run();
+```
+
+**Supported MIME types:**
+- **Images:** `image/jpeg`, `image/png`, `image/gif`, `image/webp`
+- **Documents:** `application/pdf` (OpenAI, Anthropic, Gemini)
+
+---
+
+## Agent Mode: Multi-Turn Problem Solving
+
+**Use for:** Complex tasks that require multiple steps, tool calls, or reasoning cycles.
+
+### What is Agent Mode?
+
+Agent mode allows AI to work through problems step-by-step across multiple "turns" until it achieves the goal. Each turn, the agent can:
+- Call a tool to get data
+- Analyze the results
+- Decide what to do next
+- Stop when the goal is achieved
+
+**Think of it like this:**
+- **Single-turn (default):** AI does ONE thing and stops
+- **Agent mode:** AI does MULTIPLE things until problem solved
+
+### When to Use Agent Mode
+
+| Scenario | Single-Turn | Agent Mode |
+|----------|-------------|------------|
+| "What's the weather?" | ✅ One API call | ❌ Overkill |
+| "Find cheapest flight" | ❌ Returns 50 options | ✅ Searches → filters → compares → picks best |
+| "Debug this error" | ❌ Shows error | ✅ Reads logs → traces code → finds root cause |
+| "Analyze sales trends" | ❌ Dumps data | ✅ Queries → analyzes → identifies patterns |
+
+### Basic Agent Example
+
+**Without Agent Mode (Single-Turn):**
+```php
+$result = ai()->task()
+    ->tool('search_products', $searchFn)
+    ->prompt('Find laptops under $1000')
+    ->run();
+
+// Returns: 50 laptops
+// Problem: User has to manually filter through them
+```
+
+**With Agent Mode (Multi-Turn):**
+```php
+$result = ai()->task()
+    ->tool('search_products', $searchFn)
+    ->tool('filter_by_price', $filterFn)
+    ->tool('check_reviews', $reviewFn)
+    ->tool('compare_specs', $compareFn)
+    ->loop(5)  // Allow up to 5 thinking cycles
+    ->goal('Find the BEST laptop under $1000')
+    ->prompt('Find the best laptop under $1000')
+    ->run();
+
+// Agent automatically:
+// Turn 1: search_products() → 50 laptops
+// Turn 2: filter_by_price(max: 1000) → 12 laptops
+// Turn 3: check_reviews(min_rating: 4) → 5 laptops
+// Turn 4: compare_specs() → picks top 2
+// Turn 5: Returns: "I recommend the Dell XPS 13 because..."
+```
+
+### Agent Mode Methods
+
+#### loop(int $maxTurns = 10)
+
+Enable multi-turn mode with a maximum number of attempts.
+
+```php
+->loop(5)   // Allow up to 5 turns
+->loop(10)  // Allow up to 10 turns (default)
+->loop(20)  // For complex research tasks
+```
+
+**How to choose the number:**
+- **Simple tasks (2-3 turns):** Quick operations like "get data → format"
+- **Medium tasks (5-10 turns):** Multi-step processes like "search → filter → compare"
+- **Complex tasks (10-20 turns):** Deep analysis like "research → analyze → synthesize"
+- **Research tasks (20-50 turns):** Comprehensive investigations
+
+**Safety:** Agent automatically stops when:
+- ✅ Goal is achieved
+- ✅ No more tools needed (got final answer)
+- ✅ Max turns reached (prevents infinite loops)
+
+#### goal(string $goal)
+
+Set an explicit objective for the agent to work toward.
+
+```php
+->goal('Find the root cause of the bug')
+->goal('Identify what is driving sales growth')
+->goal('Create a complete market analysis')
+```
+
+**With goal:** Agent knows when to stop (when goal achieved)
+**Without goal:** Agent stops when no more tools are needed
+
+### Real-World Examples
+
+#### Example 1: E-Commerce Product Finder
+
+**Problem:** User wants the best option, not just a list.
+
+```php
+$result = ai()->task()
+    ->tool('search_products', function($params) {
+        return db()->table('products')
+            ->where('category', '=', $params['category'])
+            ->all();
+    })
+    ->tool('filter_by_price', function($params) {
+        return db()->table('products')
+            ->where('price', '<=', $params['max_price'])
+            ->all();
+    })
+    ->tool('get_reviews', function($params) {
+        return db()->table('reviews')
+            ->where('product_id', '=', $params['product_id'])
+            ->avg('rating');
+    })
+    ->loop(7)
+    ->goal('Find the best value laptop for programming')
+    ->prompt('I need a laptop for coding, budget $1200')
+    ->run();
+
+if ($result['goal_achieved']) {
+    echo $result['raw'];  // "I recommend the ThinkPad X1 Carbon..."
+    
+    // See what the agent did
+    foreach ($result['agent_memory'] as $turn) {
+        echo "Turn {$turn['turn']}: {$turn['content']}\n";
+    }
+}
+```
+
+**What the agent does:**
+1. Searches laptops category
+2. Filters by price ≤ $1200
+3. Checks reviews for top options
+4. Compares specs (RAM, CPU, storage)
+5. Picks best value
+6. Explains recommendation
+
+#### Example 2: Customer Support Automation
+
+**Problem:** Resolve issues without human intervention.
+
+```php
+$result = ai()->task()
+    ->tool('get_order_status', function($params) {
+        return db()->table('orders')
+            ->where('id', '=', $params['order_id'])
+            ->first();
+    })
+    
+    ->tool('track_shipment', function($params) {
+        return http()->get("shipping-api.com/track/{$params['tracking_number']}");
+    })
+    
+    ->tool('estimate_delivery', function($params) {
+        return http()->get("shipping-api.com/estimate/{$params['tracking_number']}");
+    })
+    
+    ->loop(5)
+    ->goal('Tell customer exactly when their order will arrive')
+    ->prompt("Where is my order #12345?")
+    ->run();
+
+// Agent automatically:
+// Turn 1: get_order_status(12345) → tracking: ABC123
+// Turn 2: track_shipment(ABC123) → location: "Memphis, TN"
+// Turn 3: estimate_delivery(ABC123) → "Jan 31, 2pm-5pm"
+// Returns: "Your order is in Memphis and will arrive tomorrow between 2-5pm"
+```
+
+#### Example 3: Data Analysis Assistant
+
+**Problem:** Need insights, not just raw data.
+
+```php
+$result = ai()->task()
+    ->tool('query_sales_data', function($params) {
+        return db()->table('sales')
+            ->where('date', '>=', $params['start_date'])
+            ->where('date', '<=', $params['end_date'])
+            ->all();
+    })
+    
+    ->tool('calculate_trends', function($params) {
+        // Calculate month-over-month growth
+        return analytics()->trends($params['data']);
+    })
+    
+    ->tool('find_outliers', function($params) {
+        // Identify unusual spikes or drops
+        return analytics()->outliers($params['data']);
+    })
+    
+    ->loop(10)
+    ->goal('Identify what is driving sales growth')
+    ->prompt('Why did sales increase 23% last quarter?')
+    ->run();
+
+// Agent automatically:
+// Turn 1: query_sales_data(last_quarter) → 10,000 rows
+// Turn 2: calculate_trends() → "23% growth in Q4"
+// Turn 3: find_outliers() → "Product X spiked 300%"
+// Turn 4: query_sales_data(product_X) → detailed data
+// Turn 5: Returns: "Product X drove growth due to viral TikTok video in November"
+```
+
+#### Example 4: Research Assistant
+
+**Problem:** Gather and synthesize information from multiple sources.
+
+```php
+$result = ai()->task()
+    ->tool('search_web', function($params) {
+        return http()->get("search-api.com?q={$params['query']}");
+    })
+    
+    ->tool('scrape_article', function($params) {
+        return http()->get($params['url'])->body();
+    })
+    
+    ->tool('summarize_text', function($params) {
+        return ai()->task()
+            ->prompt("Summarize: {$params['text']}")
+            ->run()['raw'];
+    })
+    
+    ->loop(15)
+    ->goal('Create comprehensive report on AI trends in 2026')
+    ->prompt('Research AI trends in 2026 and create a report')
+    ->run();
+
+// Agent automatically:
+// Turn 1-3: Searches multiple sources
+// Turn 4-8: Scrapes and reads articles
+// Turn 9-12: Summarizes key findings
+// Turn 13-15: Synthesizes into coherent report
+```
+
+### Agent Memory
+
+Every turn is stored in memory, allowing the agent to build context:
+
+```php
+$result = ai()->task()
+    ->tool('get_data', $fn)
+    ->tool('analyze', $fn)
+    ->loop(5)
+    ->prompt('Analyze user behavior')
+    ->run();
+
+// Access memory
+foreach ($result['agent_memory'] as $turn) {
+    echo "Turn {$turn['turn']}: ";
+    echo "Role: {$turn['role']}\n";
+    echo "Content: {$turn['content']}\n";
+    echo "Tools used: " . implode(', ', $turn['tools_used'] ?? []) . "\n\n";
+}
+```
+
+**Memory structure:**
+```php
+[
+    ['role' => 'user', 'content' => 'Analyze user behavior', 'turn' => 0],
+    ['role' => 'assistant', 'content' => '...', 'tools_used' => ['get_data'], 'turn' => 1],
+    ['role' => 'assistant', 'content' => '...', 'tools_used' => ['analyze'], 'turn' => 2],
+    // ...
+]
+```
+
+### Agent Response Format
+
+Agent mode returns additional fields:
+
+```php
+[
+    'success' => true,
+    'data' => null,  // Or structured data if expect() was used
+    'raw' => 'The final answer...',
+    'errors' => [],
+    
+    // Agent-specific fields
+    'goal_achieved' => true,
+    'agent_turns' => 3,  // How many turns it took
+    'agent_memory' => [...],  // Full conversation history
+    'tools_used' => ['search', 'filter', 'compare'],
+    'tool_results' => ['search' => [...], 'filter' => [...], ...]
+]
+```
+
+### Best Practices
+
+**1. Start with fewer turns, increase if needed:**
+```php
+// Start conservative
+->loop(3)
+
+// If agent hits max turns without completing, increase
+->loop(7)
+```
+
+**2. Use explicit goals for complex tasks:**
+```php
+// Vague (agent might not know when to stop)
+->prompt('Research competitors')
+
+// Clear (agent knows the objective)
+->goal('Create competitive analysis with pricing, features, and market position')
+->prompt('Research our top 3 competitors')
+```
+
+**3. Provide focused tools:**
+```php
+// Too broad (agent might get confused)
+->tool('do_everything', $fn)
+
+// Focused (agent can reason better)
+->tool('search_products', $searchFn)
+->tool('filter_results', $filterFn)
+->tool('get_details', $detailsFn)
+```
+
+**4. Check goal achievement:**
+```php
+if ($result['goal_achieved']) {
+    // Task completed successfully
+    log()->info("Agent completed in {$result['agent_turns']} turns");
+} else {
+    // Hit max turns or failed
+    log()->warning("Agent did not complete goal", $result['errors']);
+}
+```
+
+**5. Monitor turn usage:**
+```php
+// Log for optimization
+log()->info("Agent used {$result['agent_turns']} of {$maxTurns} turns");
+
+// If consistently hitting max, increase limit or simplify task
+if ($result['agent_turns'] >= $maxTurns) {
+    // Consider: more turns, simpler goal, or better tools
+}
+```
+
+### Common Patterns
+
+#### Pattern 1: Search → Filter → Select
+```php
+ai()->task()
+    ->tool('search', $searchFn)
+    ->tool('filter', $filterFn)
+    ->tool('select_best', $selectFn)
+    ->loop(5)
+    ->goal('Find best option')
+    ->run();
+```
+
+#### Pattern 2: Gather → Analyze → Report
+```php
+ai()->task()
+    ->tool('fetch_data', $fetchFn)
+    ->tool('analyze_data', $analyzeFn)
+    ->tool('generate_report', $reportFn)
+    ->loop(10)
+    ->goal('Create analysis report')
+    ->run();
+```
+
+#### Pattern 3: Diagnose → Fix → Verify
+```php
+ai()->task()
+    ->tool('check_logs', $logsFn)
+    ->tool('trace_error', $traceFn)
+    ->tool('verify_fix', $verifyFn)
+    ->loop(7)
+    ->goal('Find and fix the bug')
+    ->run();
+```
+
+### Troubleshooting
+
+**Agent hits max turns without completing:**
+- Increase `loop()` number
+- Simplify the goal
+- Add more specific tools
+- Check if tools are returning useful data
+
+**Agent stops too early:**
+- Set explicit `goal()`
+- Make goal more specific
+- Ensure tools return actionable data
+
+**Agent calls wrong tools:**
+- Improve tool descriptions
+- Make parameter schemas clearer
+- Reduce number of similar tools
+
+**Agent is too slow:**
+- Reduce `loop()` number
+- Optimize tool execution time
+- Cache expensive operations
+- Use faster AI model
+
+The framework automatically extracts `description()` and `params()` from the class, so you don't need to repeat them when registering the tool.
+
+```php
+use Lightpack\AI\Tools\ToolInterface;
+
+class SearchProducts implements ToolInterface
+{
+    public function __invoke(array $params): mixed
+    {
+        return db()->table('products')
+            ->where('category', '=', $params['category'])
+            ->where('price', '<=', $params['max_price'])
+            ->all();
+    }
+    
+    public static function description(): string
+    {
+        return 'Search products by category and price';
+    }
+    
+    public static function params(): array
+    {
+        return [
+            'category' => ['string', 'Product category'],
+            'max_price' => ['number', 'Maximum price']
+        ];
+    }
+}
+
+// Usage - description and params are auto-extracted
+$result = ai()->task()
+    ->tool('search', SearchProducts::class)
+    ->prompt('Find laptops under $1000')
+    ->run();
+```
+
+**4. Tool Result Format**
+
+```php
+$result = ai()->task()
+    ->tool('calculate', fn($p) => $p['a'] + $p['b'])
+    ->prompt('What is 5 + 3?')
+    ->run();
+
+[
+    'success' => true,
+    'data' => null,                    // Only set when using expect()
+    'raw' => 'The answer is 8',        // AI's natural language response
+    'errors' => [],
+    'tools_used' => ['calculate'],     // Which tools were called
+    'tool_results' => [
+        'calculate' => 8               // Raw tool output
+    ]
+]
+```
+
+**Key Points:**
+- AI calls **ONE tool per request** (single-shot, not multi-step)
+- AI decides which tool to call (or none) based on the question
+- Tools receive validated parameters (type-checked and coerced)
+- Tool results are passed back to AI to generate natural language answer
+- Tools can be closures, invokable objects, or class strings
+
+---
+
+## Vector Search: Architecture & Extensibility
+
+When you call `ai()->similar()`, Lightpack uses a `VectorSearchInterface` implementation to find matches. By default, this is `InMemoryVectorSearch`, but you can swap it for Qdrant, Meilisearch, or any custom implementation. Lightpack's vector search is designed with a simple principle: **start simple, scale when needed**. The default in-memory implementation is good for most of real-world applications, but you can seamlessly upgrade to vector databases when you outgrow it.
+
+```php
+// Default behavior - uses InMemoryVectorSearch automatically
+$results = ai()->similar($queryEmbedding, $items);
+
+// Custom implementation - swap to vector database
+ai()->setVectorSearch(new QdrantVectorSearch());
+$results = ai()->similar($queryEmbedding, 'products_collection');
+```
+
+---
+
+### Default: InMemoryVectorSearch
+
+**What it is:** A brute-force cosine similarity search that compares your query against every item in memory.
+
+| Aspect | Details |
+|--------|---------|
+| **Algorithm** | Brute-force cosine similarity (O(n)) |
+| **Accuracy** | 100% recall (exact, not approximate) |
+| **Performance** | ~20-250ms for < 5K items |
+| **Memory** | ~3 KB per item (embeddings only) |
+| **Scale** | < 5K documents, < 50 concurrent searches/sec |
+
+**Note:** Above is not a hard benchmark but a good approximation.
+
+**Example:**
+```php
+// Load only embeddings (not full models!)
+$items = Product::query()
+    ->select('id', 'embedding')
+    ->whereNotNull('embedding')
+    ->all()
+    ->map(fn($p) => [
+        'id' => $p->id,
+        'embedding' => $p->embedding
+    ]);
+
+// Search for similar items
+$results = ai()->similar($queryEmbedding, $items, limit: 10);
+```
+
+---
+
+### Extending with Vector Databases
+
+**Extend with vector databases for larger scale:**
+
+```php
+use Lightpack\AI\VectorSearch\VectorSearchInterface;
+
+class QdrantVectorSearch implements VectorSearchInterface
+{
+    public function __construct(private $client) {}
+
+    public function search(array $queryEmbedding, mixed $target, int $limit = 5, array $options = []): array
+    {
+        // $target is collection name for vector DBs
+        $response = $this->client->search($target, [
+            'vector' => $queryEmbedding,
+            'limit' => $limit,
+            'score_threshold' => $options['threshold'] ?? 0.0
+        ]);
+        
+        return $this->formatResults($response);
+    }
+    
+    private function formatResults($response): array
+    {
+        // Must return same format as InMemoryVectorSearch
+        return array_map(fn($hit) => [
+            'id' => $hit['id'],
+            'similarity' => $hit['score'],
+            'item' => $hit['payload']
+        ], $response['result']);
+    }
+}
+
+// Use custom implementation
+$vectorSearch = app(QdrantVectorSearch::class);
+ai()->setVectorSearch($vectorSearch);
+
+// Now similar() uses Qdrant
+$results = ai()->similar($queryEmbedding, 'products_collection', limit: 10);
+```
+
+**Interface contract:**
+```php
+interface VectorSearchInterface
+{
+    /**
+     * @param array $queryEmbedding The query vector
+     * @param mixed $target For in-memory: array of items. For vector DBs: collection name
+     * @param int $limit Max results to return
+     * @param array $options Implementation-specific options (threshold, filters, etc.)
+     * @return array Array of results with 'id', 'similarity', and 'item' keys
+     */
+    public function search(array $queryEmbedding, mixed $target, int $limit = 5, array $options = []): array;
+}
+```
+
+**Return format (must match):**
+```php
+[
+    [
+        'id' => mixed,           // Required: Item identifier
+        'similarity' => float,   // Required: Score 0.0-1.0
+        'item' => array          // Required: Item data
+    ],
+    // ...
+]
+```
+
+---
+
+## Caching
+
+Lightpack AI supports **provider-level caching** (delegated to AI provider) for response optimization.
+
+**Enable caching:**
+
+```php
+ai()->task()
+    ->prompt('Extract email from: john@example.com')
+    ->cache(true)     // Enable provider-level caching
+    ->cacheTtl(3600)  // Cache duration in seconds (default: 3600)
+    ->run();
+```
+
+**How it works:**
+- Cache parameters (`cache`, `cache_ttl`) are passed to the AI provider
+- Provider handles caching based on request parameters (model, messages, temperature, etc.)
+- Cache key is generated from: `model`, `messages`, `temperature`, `max_tokens`, `system`
+- Cached responses are returned instantly without API calls
+
+**When to cache:**
+- ✅ Deterministic tasks (`temperature: 0`)
+- ✅ Expensive structured data extraction
+- ✅ Repeated identical queries
+- ✅ Classification/categorization tasks
+
+**When NOT to cache:**
+- ❌ Creative writing (`temperature > 0.7`)
+- ❌ Real-time data queries
+- ❌ Personalized responses
+- ❌ Tool-based tasks (tool results may change)
+
+**Note:** Not all providers support caching. Check provider documentation for details.
+
+## Error Handling
+
+**Exception-based errors (thrown):**
+- API connection failures
+- Invalid API keys
+- Network timeouts
+- Provider-specific errors
+
+**Validation errors (in result):**
+- Missing required fields
+- Schema type mismatches
+- Tool parameter validation failures
+- Tool execution errors
+
+**Always check `success` flag:**
+
+```php
+$result = ai()->task()
+    ->expect(['name' => 'string'])
+    ->required('name')
+    ->prompt('Extract name from: John Doe')
+    ->run();
+
+if ($result['success']) {
+    echo $result['data']['name'];
+} else {
+    // Handle validation errors
+    foreach ($result['errors'] as $error) {
+        logger()->error('AI validation error: ' . $error);
+    }
+}
+```
+
+**Tool execution errors:**
+
+```php
+$result = ai()->task()
+    ->tool('search', function($params) {
+        throw new \Exception('Database connection failed');
+    })
+    ->prompt('Search products')
+    ->run();
+
+// $result['success'] = false
+// $result['errors'] = ['Tool execution failed: Database connection failed']
+```
+
+## Security & Best Practices
+
+**API Keys:**
+- ✅ Store in environment variables or secure config
+- ❌ Never commit to version control
+- ✅ Use different keys for dev/staging/production
+
+**Cost Control:**
+- Set `maxTokens()` to limit response length
+- Use `temperature(0.0)` for deterministic tasks (cheaper)
+- Enable caching for repeated queries
+- Monitor token usage via provider dashboards
+
+**Production Readiness:**
+- Always check `$result['success']` before using data
+- Log AI errors and validation failures
+- Set reasonable timeouts (default: 10s)
+- Use `required()` fields for critical data extraction
+- Validate tool results before using in application
+
+**Tool Security:**
+- Validate and sanitize tool parameters
+- Don't trust AI-generated user IDs - get them from auth/session
+- Limit tool access to necessary data only
+- Never expose sensitive operations as tools
+- Log all tool executions for audit trails
+
+**Data Privacy:**
+- Be aware: AI provider sees all prompts and responses
+- Don't send PII unless necessary and compliant
+- Consider data retention policies of AI providers
+- Use anonymization where possible
+
+---
