@@ -1,6 +1,6 @@
 # Lightpack PHP Documentation
 
-This repository contains the official documentation source for [Lightpack PHP](https://github.com/lightpack/lightpack), a modern PHP web framework built for extreme performance with a small footprint.
+This repository contains the official documentation source for [Lightpack PHP](https://lightpackphp.com), a modern PHP web framework built for extreme performance with a small footprint.
 
 ## Structure
 
