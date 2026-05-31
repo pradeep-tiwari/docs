@@ -1,0 +1,268 @@
+# Lightpack MFA: Complete Developer Guide
+
+> **Lightpack MFA** enables robust, flexible, and secure multi-factor authentication for modern PHP applications. It supports TOTP (authenticator app), SMS, Email, and backup codes out of the box, and is designed for extensibility, security, and ease of use.
+
+## Supported Factors
+
+- **TOTP (Authenticator App):**  
+  - Time-based one-time passwords (Google Authenticator, Authy, etc.)
+- **SMS:**  
+  - One-time code sent to user’s phone (uses Lightpack SMS subsystem)
+- **Email:**  
+  - One-time code sent to user’s email
+- **Backup Codes:**  
+  - Single-use codes for account recovery
+- **Null:**  
+  - No MFA (for testing or fallback)
+
+## Installation
+
+### 1. Migration
+
+Your **users** table already contains required fields to support **MFA** features. You do not need a seperate migration to be generated and run.
+
+### 2. Install Dependencies
+
+- For TOTP (required):  
+  `composer require robthree/twofactorauth`
+- For TOTP QR Codes (optional):  
+  `composer require bacon/bacon-qr-code`  
+  **Only needed if generating QR codes server-side (PDFs, emails, reports)**  
+  **Not needed for web pages** - use client-side JavaScript QR generation instead
+- For SMS:  
+  See [Lightpack SMS](sms) documentation (Twilio, etc.)
+
+---
+
+### 3. Configure MFA
+
+Please run following command to create `config/mfa.php` configuration file.
+
+```cli
+php console create:config --support=mfa
+```
+
+## User Model Integration
+
+Add the trait to your User model:
+
+```php
+use Lightpack\Mfa\MfaTrait;
+
+class User extends Model {
+    use MfaTrait;
+    // ...
+}
+```
+
+This extends your User model capabilities with methods:
+
+- `getMfaFactor()`
+- `sendMfa()`
+- `validateMfa($input)`
+
+---
+
+## Usage Patterns
+
+### Enrollment
+
+1. **TOTP:**  
+   - Generate secret: `TotpSetupHelper::generateSecret()`
+   - Get URI: `TotpSetupHelper::getOtpAuthUri($secret, $user->email)`
+   - Save secret to user: `$user->mfa_totp_secret = $secret; $user->save();`
+   - Show QR code to user (client-side or server-side)
+   - User scans QR with authenticator app.
+
+2. **SMS/Email:**  
+   - Ensure user's phone/email is set.
+   - SMS requires the `$user->phone` field.
+   - Set `$user->mfa_method = 'sms'` or `'email'`, `$user->save();`
+
+3. **Backup Codes:**  
+
+Generate and show codes to user (store only hashes!)
+
+```php
+$codes = BackupCodeHelper::generateCodes(); // array of codes
+$hashes = BackupCodeHelper::hashCodes($codes);
+$user->mfa_backup_codes = $hashes;
+$user->save();
+```
+
+### Verification
+
+- To send challenge:  
+  `$user->sendMfa(); // sends code via chosen factor`
+- To validate:  
+  `$user->validateMfa($input); // returns true/false`
+
+### Backup Codes
+
+- On form input, use:  
+
+```php
+$hashes = $user->mfa_backup_codes;
+
+[$ok, $remaining] = BackupCodeHelper::verifyAndRemoveCode($hashes, $input);
+
+if ($ok) {
+    $user->mfa_backup_codes = $remaining;
+    $user->save();
+}
+```
+
+### TOTP (Authenticator App)
+
+- Use `TotpSetupHelper` for QR code and secret generation.
+- Validation is handled by TOTP factor automatically.
+
+### SMS & Email
+
+- SMS uses the configured SMS provider (see Lightpack SMS docs).
+- Email uses the built-in mail system.
+
+---
+
+## Example using TOTP
+
+
+### 1. Enrolling TOTP (Client-Side QR)
+
+```php
+$secret = TotpSetupHelper::generateSecret();
+$user->mfa_totp_secret = $secret;
+$user->mfa_method = 'totp';
+$user->save();
+
+$otpAuthUri = TotpSetupHelper::getOtpAuthUri($secret, $user->email);
+// Pass $otpAuthUri to view for client-side QR generation
+```
+
+**View (HTML + JavaScript):**
+
+```html
+<div id="qrcode"></div>
+<p>Secret: <code><?= $secret ?></code></p>
+
+<script src="/js/qrcode.min.js"></script>
+<script>
+    new QRCode(document.getElementById("qrcode"), {
+        text: "<?= $otpAuthUri ?>",
+        width: 256,
+        height: 256
+    });
+</script>
+```
+
+### 2. Enrolling TOTP (Server-Side QR for PDFs/Emails)
+
+This is useful for generating QR codes for PDFs, emails, reports, etc on server side.
+
+```php
+$secret = TotpSetupHelper::generateSecret();
+$user->mfa_totp_secret = $secret;
+$user->mfa_method = 'totp';
+$user->save();
+
+// For PDFs (SVG)
+$qrSvg = TotpSetupHelper::getQrCodeSvg($secret, $user->email, 256);
+
+// For Emails (Data URI)
+$qrDataUri = TotpSetupHelper::getQrCodeDataUri($secret, $user->email, 256);
+```
+
+### 3. Sending and Validating MFA
+
+```php
+$user->sendMfa(); // Sends challenge via chosen factor
+
+if ($user->validateMfa($inputCode)) {
+    // MFA successful
+} else {
+    // MFA failed
+}
+```
+
+### 4. Generating and Using Backup Codes
+
+```php
+$codes = BackupCodeHelper::generateCodes();
+$hashes = BackupCodeHelper::hashCodes($codes);
+$user->mfa_backup_codes = $hashes;
+$user->save();
+// Show $codes to user (never show hashes)
+```
+
+## Extending with Custom Factors
+
+Create a new factor:
+
+```php
+namespace App\Mfa\Drivers;
+use Lightpack\Mfa\MfaInterface;
+use Lightpack\Auth\Models\AuthUser;
+
+class PushDriver implements MfaInterface {
+    public function send(AuthUser $user): void {
+        // Send push notification
+    }
+    public function validate(AuthUser $user, ?string $input): bool {
+        // Validate push approval
+        return true;
+    }
+    public function getName(): string {
+        return 'push';
+    }
+}
+```
+
+Register at runtime (e.g., in a service provider):
+
+```php
+$manager = app('mfa.manager');
+$manager->register('push', function ($container) {
+    return new \App\Mfa\Drivers\PushDriver;
+});
+```
+
+You can also override a built-in driver by registering the same name.
+
+---
+
+## Error Handling & Security
+
+- **All secrets/codes are hashed or encrypted.**
+- **Backup codes are one-time use.**
+- **TOTP uses secure, random secrets.**
+- **SMS/email codes are time-limited via cache TTL (configured in `config/mfa.php`).**
+- **Always check return value of `validateMfa()`.**
+- **Never log or expose secrets/codes.**
+
+---
+
+## Best Practices & Tips
+
+- Always offer backup codes for account recovery.
+- Encourage TOTP as the most secure default.
+- Use SMS/email as fallback, not primary, if possible.
+- Rotate secrets/codes after use or on user request.
+- Log failed attempts for monitoring.
+
+---
+
+## FAQ & Troubleshooting
+
+**Q: How do I reset a user's MFA?**  
+A: Clear all MFA fields on the user model.
+
+**Q: Can I require MFA for only some users?**  
+A: Only users with a set `mfa_method` will be challenged. Leave it empty/null for users without MFA.
+
+**Q: How do I support multiple factors per user?**  
+A: Extend your user model and UI view to allow selection/switching.
+
+**Q: How do I test MFA?**  
+A: Use the 'null' factor or set predictable secrets/codes in dev.
+
+---

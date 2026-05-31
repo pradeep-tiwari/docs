@@ -1,25 +1,13 @@
-<!-- <img src="_media/logo-red.svg" style="width: 20%"> -->
+# Lightpack PHP Documentation
 
-# Lightpack PHP
+This repository contains the official documentation source for [Lightpack PHP](https://github.com/lightpack/lightpack), a modern PHP web framework built for extreme performance with a small footprint.
 
+## Structure
 
-<p class="tip">A modern PHP web framework with extreme performance and small footprint.</p>
+- `v0.x/` — Documentation for the current stable release
+  - Guides, references, and tutorials covering every framework feature
+  - `_media/` — Images, diagrams, and assets used throughout the docs
 
-<p>
-    <a href="https://packagist.org/packages/lightpack/framework"><img src="https://img.shields.io/packagist/l/lightpack/framework" alt="License"></a>
-    <a href="https://packagist.org/packages/lightpack/framework"><img src="https://img.shields.io/packagist/v/lightpack/framework" alt="Latest Release"></a>
-</p>
+## Contributing
 
-The philosophy that drives `Lightpack` PHP framework:
-
-* Avoid facades for unnecessary syntactic sugar.
-* Avoid interfaces just for the sake of interfaces.
-* Avoid wrappers around wrappers around wrappers. "The wrappers hell."
-* Avoid jargons in favor of well known terms. (Example: Model instead of Gateway)
-* Avoid thick abstractions to promote less bloated core. 
-* Avoid promoting thousand ways for doing the same thing.
-* Cut down the layers to minimize deep call chains.
-* All design choices come with tradeoffs.
-* It's okay to violate few industry best practices.
-
-[Lightpack](https://github.com/lightpack/) is released under [MIT] License Terms | &copy; [Pradeep Tiwari](https://pradeep-tiwari.github.io/about/) 
+Docs are written in Markdown. Edit or add files under `v0.x/` and open a pull request.
