@@ -1,0 +1,16 @@
+name: Trigger Docs Build
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger build in lightpack.github.io
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.PAT_TOKEN }}" \
+            https://api.github.com/repos/lightpack/lightpack.github.io/dispatches \
+            -d '{"event_type":"docs-updated"}'
