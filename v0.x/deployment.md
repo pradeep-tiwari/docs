@@ -1,6 +1,6 @@
 # Lightpack Deploy
 
-> *From your laptop to production in minutes, not hours.*
+> *From your local dev-machine to production in minutes, not hours.*
 
 Deploy and manage Lightpack applications on a remote Ubuntu server. Provision once, deploy daily.
 
