@@ -383,5 +383,3 @@ php console server:queue:setup shop --name=shop-worker
 | `php console server:run <env> --cmd="..."` | Run any command on the server |
 
 ---
-
-*Built for developers who want to ship code, not manage infrastructure.*
