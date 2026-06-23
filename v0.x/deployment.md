@@ -92,7 +92,7 @@ After adding the domain, enable a secure HTTPS connection using Let's Encrypt ce
 php console server:site:ssl
 ```
 
-**Congratulations! Your application is now live with HTTPS.**
+**⭐️ Congratulations! Your application is now live with HTTPS ⭐️**
 
 If everything goes well, you should be able to access your application at the domain you added. Usually DNS propagation takes a few minutes. So if your browser doesn't load the domain immediately, try refreshing the page after a few minutes.
 
