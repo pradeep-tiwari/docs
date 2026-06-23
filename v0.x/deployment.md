@@ -101,7 +101,7 @@ If everything goes well, you should be able to access your application at the do
 ## Rolling Back
 
 ```bash
-php console app:rollback production
+php console app:rollback
 ```
 
 Go back further with `--steps=3`.
